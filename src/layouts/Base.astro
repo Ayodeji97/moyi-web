@@ -20,6 +20,10 @@ const { title, noindex = false, fonts = false, description, bodyAttrs = {} } = A
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {fonts && <link rel="stylesheet" href="/fonts/fonts.css" />}
   </head>
   <body {...bodyAttrs}>

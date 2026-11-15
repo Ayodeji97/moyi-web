@@ -1,0 +1,17 @@
+---
+import { STORES, comingSoonLine } from '../config/stores';
+
+interface Props {
+  id?: string;
+}
+
+const { id } = Astro.props;
+const live = [STORES.apple, STORES.google].filter((s) => s.live);
+const soon = comingSoonLine(STORES.apple.live, STORES.google.live);
+---
+<div class="stores" id={id}>
+  {live.map((s) => (
+    <a class="store" href={s.url}><img src={s.badge} alt={s.label} height="48" /></a>
+  ))}
+  {soon && <p class="soon">{soon}</p>}
+</div>

@@ -58,8 +58,19 @@ describe('built pages', () => {
     for (const f of htmlFiles('dist')) {
       const html = readFileSync(f, 'utf8');
       for (const m of html.matchAll(/\s(?:src|href)=["']?([^"'\s>]+)/g)) {
-        expect(m[1], f).not.toMatch(/^(https?:|\/\/)/);
+        const external = /^(https?:|\/\/)/.test(m[1]);
+        const storeHref =
+          m[0].trimStart().startsWith('href') &&
+          (m[1].startsWith('https://apps.apple.com/') || m[1].startsWith('https://play.google.com/'));
+        expect(external && !storeHref, `${f}: ${m[1]}`).toBe(false);
       }
+    }
+  });
+
+  it('icons are built as real PNGs', () => {
+    for (const f of ['favicon-32.png', 'favicon-16.png', 'apple-touch-icon.png']) {
+      const bytes = readFileSync(`dist/${f}`);
+      expect([...bytes.subarray(0, 4)], f).toEqual([0x89, 0x50, 0x4e, 0x47]);
     }
   });
 

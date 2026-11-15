@@ -1,14 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
 import Brand from '../components/Brand.astro';
+import TopBar from '../components/TopBar.astro';
+import Footer from '../components/Footer.astro';
+import StoreButtons from '../components/StoreButtons.astro';
+import '../styles/home.css';
 ---
 <Base title="Mọyì" fonts>
+  <TopBar />
   <main>
     <Brand />
     <h1>A private gratitude journal for two.</h1>
     <p>Each of you writes one thing a day. Neither reads the other's until both have written.</p>
     <p>Not open to the public yet.</p>
+    <StoreButtons />
   </main>
+  <StoreButtons id="get" />
+  <Footer />
 </Base>
 
 <style>
