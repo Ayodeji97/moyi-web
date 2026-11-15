@@ -48,16 +48,20 @@ describe('link.js on the built pages', () => {
   it('a broken escape shows the incomplete panel', () => {
     const p = load('invite', 'https://getmoyi.app/i/%E0%A4%A');
     expect(p.hidden('missing')).toBe(false);
+    expect(p.hidden('found')).toBe(true);
   });
 
+  // Under Pages /i/abc/ is a 404 (pinned in scripts/headers-table.mjs); this covers link.js's own guard.
   it('a trailing slash shows the incomplete panel', () => {
     const p = load('invite', 'https://getmoyi.app/i/abc/');
     expect(p.hidden('missing')).toBe(false);
+    expect(p.hidden('found')).toBe(true);
   });
 
   it('129 characters is too long', () => {
     const long = load('verify', `https://getmoyi.app/verify?token=${'a'.repeat(129)}`);
     expect(long.hidden('missing')).toBe(false);
+    expect(long.hidden('found')).toBe(true);
     const ok = load('verify', `https://getmoyi.app/verify?token=${'a'.repeat(128)}`);
     expect(ok.hidden('missing')).toBe(true);
     expect(ok.text('value')).toBe('a'.repeat(128));
@@ -66,5 +70,6 @@ describe('link.js on the built pages', () => {
   it('no token', () => {
     const p = load('verify', 'https://getmoyi.app/verify');
     expect(p.hidden('missing')).toBe(false);
+    expect(p.hidden('found')).toBe(true);
   });
 });

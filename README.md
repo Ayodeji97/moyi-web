@@ -13,7 +13,9 @@ npm ci
 npm run dev
 ```
 
-Node 22.23.5 (see `.node-version`). `npm run check` type-checks, `npm test` builds and runs the tests.
+Node 22.23.5 (see `.node-version`). `npm run check` type-checks the site and the tests, and `npm test` builds and runs the tests.
+
+`scripts/subset-fonts.sh` needs Python 3 and the sibling `../moyi-app` checkout.
 
 ## Checks
 

@@ -22,6 +22,7 @@ export const ROUTES = [
   { path: '/reset-password?token=a', csp: STRICT, noStore: true },
   { path: '/invite', csp: STRICT, noStore: true },
   { path: '/i/ABC123', csp: STRICT, noStore: true },
+  { path: '/i/abc/', csp: STRICT, noStore: true },
   { path: '/no-such-page', csp: STRICT, noStore: false },
   { path: '/.well-known/assetlinks.json', csp: STRICT, noStore: false, json: true },
   { path: '/.well-known/apple-app-site-association', csp: STRICT, noStore: false, json: true },
