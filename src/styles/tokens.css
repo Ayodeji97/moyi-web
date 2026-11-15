@@ -1,0 +1,14 @@
+:root {
+  --surface: #171313;
+  --surface-raised: #211A1A;
+  --ink: #F8EFE9;
+  --ink-muted: #CDBBB5;
+  --outline: #493737;
+  --outline-strong: #7E6A6A;
+  --danger: #D4857C;
+
+  --fs-entry: 34px;
+  --fs-title: 26px;
+  --fs-body: 16px;
+  --fs-small: 13px;
+}
