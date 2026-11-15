@@ -26,7 +26,7 @@ Everything in slice 1's Global Constraints still binds (pinned versions, no thir
   - every `<em>` becomes `<span class="quiet">`. No italics anywhere;
   - the preview's phone breakpoint (container width under 700 px) becomes `@media (max-width: 699px)`;
   - the preview's `.grain` (a `data:` SVG) and the "Footage stand-in" tag are **not** ported. `img-src 'self'` blocks `data:` URLs.
-- **Copy is exactly the strings in this plan**, which come from the preview v7 and spec §5. The four FAQ answers are draft: each carries `data-copy="draft"` (spec §8, "marked DRAFT for Daniel to approve").
+- **Copy is exactly the strings in this plan**, which come from the preview v7 and spec §5. Daniel approved the four FAQ answers as written on 2026-11-15, so they ship as final copy with no draft mark. Answer 3 is re-checked against the privacy page in slice 4.
 - **No new CSP.** The home page keeps the slice 1 `HOME` policy. Nothing in this slice needs a script, so no `<script>` appears in `dist/index.html`.
 - **Links to pages that arrive in slice 4** (`/privacy`, `/terms`, `/data-processing`, `/support`, `/delete-account`) are written now and 404 until then.
 - **Store links** are the only absolute URLs allowed in an `href`. They must start with `https://apps.apple.com/` or `https://play.google.com/`. No `src` may ever be absolute.
@@ -37,7 +37,7 @@ Everything in slice 1's Global Constraints still binds (pinned versions, no thir
 2. **A store flipped to live with no URL or no badge file** would ship a dead button or a broken image. The build must fail instead. Owned by Task 1 (`tests/stores.test.ts`).
 3. **Two phone screens visible at once.** In every phone, exactly one view lacks `hidden`. Owned by Task 2 (phone markup test) and checked again in Task 3 for every phone on the page.
 4. **The hero at 390 px wide.** The headline, the line under it and the badges or "coming soon" text must fit with no horizontal scroll, and must not sit on the phone. Owned by Task 5 (browser check at 390 and 1280).
-5. **A draft FAQ answer shipping silently.** Exactly four elements carry `data-copy="draft"`, and they are the four answers. Owned by Task 4.
+5. **An approved string drifting.** The four FAQ questions and answers must appear word for word as approved. Owned by Task 4, whose test pins all eight strings.
 
 ---
 
@@ -168,13 +168,17 @@ Everything in slice 1's Global Constraints still binds (pinned versions, no thir
     - wide, `lamp`: label "Just the two of you"; struck-through pills in `<ul aria-label="Things Mọyì does not have">` with `<s>` "Read receipts", "Last seen", "Typing dots", "Followers", "A feed"; `h3` "Two people. Nobody else."; "No audience, and no sign of who opened the app or when. Leave a bond at any time, with no questions.";
     - `rain`: label "Kind to missed days"; the week of dots `role="img" aria-label="A week with six days written and one missed"`, days M T W T F S S with Thursday hollow (a ring, not a colour); `h3` "Miss a day. Nothing is lost."; "Only the streak count resets. Nobody is told, and nobody is waiting on you.";
     - `bed`: label "Honest about privacy"; `h3` "Your words stay yours."; "No ads, and your words are never sold. Entries are not end to end encrypted, and we explain why in plain words."; link "Read the privacy page" → `/privacy`.
-  - **Questions** (`.faq`): eyebrow "Questions"; `h2` "Before you download."; four `<details class="qa">`, the first `open`, summaries and answers exactly as the preview's option 4 (time zones; if one of us stops writing; can Mọyì read our entries; how do I delete my account). Each answer `<p>` carries `data-copy="draft"`.
+  - **Questions** (`.faq`): eyebrow "Questions"; `h2` "Before you download."; four `<details class="qa">`, the first `open`, summaries and answers exactly as the preview's option 4 (time zones; if one of us stops writing; can Mọyì read our entries; how do I delete my account). The eight strings, verbatim:
+    - "How does one shared day work across time zones?" / "Each bond keeps one shared day, set by a single time zone for the bond (the creator's own, to begin with). You both write within that day wherever you are, and either of you can propose a different time zone in Bond settings."
+    - "What happens if one of us stops writing?" / "Nothing is sent to the other person, and nobody is told they are waiting on you. A missed day only resets the streak count. You can also leave a bond at any time, without explaining."
+    - "Can Mọyì read our entries?" / "Entries are not end to end encrypted, so in principle they can be read on our servers. We never sell them or use them for ads, and the privacy page explains exactly who can see them, and when."
+    - "How do I delete my account?" / "In the app, go to Settings, then Account, then Delete account. No phone? Email hello@getmoyi.app from your account's address. The delete account page lists what is removed, and when."
   - **Close** (`.closing`): `h2` "I know your worth."; `<p class="yo" lang="yo">Mo mọ ìyì rẹ.</p>`; `<StoreButtons id="get"/>`; `<Footer/>`.
 
 - [ ] **Step 1: Extend `tests/home.test.ts`:**
   - section order in `main`: `#how`, then the statement, For two, Private, Questions and Close, by a `data-section` attribute on each (`statement`, `for-two`, `private`, `questions`, `close`);
   - every copy string above appears in the page text;
-  - exactly four `[data-copy="draft"]`, all inside `details.qa`;
+  - four `details.qa`, whose summaries and answers equal the eight strings above;
   - the first `details.qa` has `open`, the other three do not;
   - every `a[href]` on the page is one of `/`, `#how`, `#get`, `/privacy`, `/terms`, `/data-processing`, `/support`, `/delete-account`, `mailto:hello@getmoyi.app`, or a store URL.
 - [ ] **Step 2: Run** `npm test`. Expected: FAIL.
@@ -190,6 +194,6 @@ Everything in slice 1's Global Constraints still binds (pinned versions, no thir
 
 - [ ] **Step 1: Weight test.** Sum the bytes of `dist/index.html`, every stylesheet and script it links, and both font files. Assert the total is under 150 KB (spec §6.5).
 - [ ] **Step 2: Run** `npm test`. Expected: PASS (if it fails, the cause is a real regression; fix it, do not raise the limit).
-- [ ] **Step 3: README.** Add a "Home page" section: the four frames are the fallback for reduced motion and no JavaScript; how to flip a store live (set `live` and `url` in `src/config/stores.ts`, add the official badge file under `public/badges/`); the four FAQ answers are draft until Daniel approves them, and removing `data-copy="draft"` is part of that approval; icons are regenerated by `scripts/make-icons.sh`.
-- [ ] **Step 4: Commit** `docs: the home page, its launch flag and its draft copy`.
+- [ ] **Step 3: README.** Add a "Home page" section: the four frames are the fallback for reduced motion and no JavaScript; how to flip a store live (set `live` and `url` in `src/config/stores.ts`, add the official badge file under `public/badges/`); the FAQ answers are approved copy (2026-11-15), so a change to them needs Daniel's approval again; icons are regenerated by `scripts/make-icons.sh`.
+- [ ] **Step 4: Commit** `docs: the home page, and its launch flag`.
 - [ ] **Step 5: The look (controller, in the browser, not an implementer).** Under `wrangler pages dev dist`, at 1280 and 390 px wide: each frame and section against the preview's option 4; no horizontal scroll; no caption, headline or label on a phone; the coming-soon line legible on the sky; every FAQ opens and closes from the keyboard; no console errors (the live CSP is on). Note any deviation in the PR.
