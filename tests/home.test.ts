@@ -34,8 +34,30 @@ describe('home page, the evening', () => {
     expect(shown).toEqual(['write', 'wait', 'write', 'reveal']);
   });
 
-  it('ships no script', () => {
-    expect(html).not.toContain('<script');
+  it('ships exactly one script: an external module from /_astro/', () => {
+    const tags = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+    expect(html.match(/<script\b/g) ?? []).toHaveLength(1);
+    expect(tags).toHaveLength(1);
+    const [, attrs, inner] = tags[0]!;
+    expect(attrs).toMatch(/\stype="module"/);
+    expect(/\ssrc="([^"]+)"/.exec(attrs!)?.[1]).toMatch(/^\/_astro\/[^/]+\.js$/);
+    expect(inner!.trim()).toBe('');
+  });
+
+  it('keeps the live-only rail, progress line and hint hidden in the built page', () => {
+    for (const r of ['rail', 'progress', 'hint']) {
+      const el = doc.querySelector(`#how [data-role="${r}"]`);
+      expect(el, r).not.toBeNull();
+      expect(el!.hasAttribute('hidden'), r).toBe(true);
+      expect(el!.getAttribute('aria-hidden'), r).toBe('true');
+    }
+    expect([...doc.querySelectorAll('[data-role="rail"] li')].map((li) => li.textContent)).toEqual([
+      'Amara writes',
+      'Tunde writes',
+      'Read together',
+    ]);
+    expect(doc.querySelectorAll('[data-role="progress"] > span > i')).toHaveLength(3);
+    expect(doc.querySelector('#how')!.hasAttribute('data-live')).toBe(false);
   });
 });
 
