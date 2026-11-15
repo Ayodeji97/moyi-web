@@ -54,7 +54,7 @@ describe('Phone', () => {
 describe('phone view switching hook', () => {
   it('hides a hidden view with display none (slice 3 depends on it)', () => {
     const css = readFileSync('src/styles/phone.css', 'utf8');
-    const m = /\.v\[hidden\]\s*\{([^}]*)\}/.exec(css);
+    const m = /\.dev \.v\[hidden\]\s*\{([^}]*)\}/.exec(css);
     expect(m, '.v[hidden] rule').not.toBeNull();
     expect(m![1]).toMatch(/display:\s*none/);
   });

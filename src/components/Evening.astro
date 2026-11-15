@@ -5,60 +5,76 @@ import StoreButtons from './StoreButtons.astro';
 import '../styles/evening.css';
 ---
 <section id="how" class="evening" aria-label="How it works">
-  <div class="frame frame--hero" data-frame="1">
-    <Scene name="sky-afternoon" />
-    <div class="evening__hero">
-      <p class="eyebrow">Daily gratitude, for two</p>
-      <h1>Write before you read.</h1>
-      <p class="evening__lede">One short thing about each other, every day.<br />Your day opens when you both have.</p>
-      <StoreButtons />
-    </div>
-  </div>
-
-  <div class="frame frame--solo" data-frame="2">
-    <Scene name="sky-dusk" />
-    <div class="evening__caption">
-      <span class="ct">Lagos</span>
-      <span class="tm">21:40</span>
-      <p>Amara writes one true sentence about Tunde.</p>
-    </div>
-    <div class="evening__phone"><Phone view="write" time="21:40" /></div>
-    <p class="evening__step">Amara writes</p>
-  </div>
-
-  <div class="frame frame--split" data-frame="3">
-    <div class="evening__panes">
-      <div class="evening__pane">
-        <Scene name="lagos" />
-        <div class="evening__who"><b>21:42</b><span>Lagos · Amara</span></div>
-        <div class="evening__phone"><Phone view="wait" size="pane" time="21:42" /></div>
+  <div class="evening__stage" data-stage>
+    <div class="frame frame--hero" data-frame="1">
+      <Scene name="sky-afternoon" />
+      <div class="evening__hero" data-role="hero">
+        <p class="eyebrow">Daily gratitude, for two</p>
+        <h1>Write before you read.</h1>
+        <p class="evening__lede">One short thing about each other, every day.<br />Your day opens when you both have.</p>
+        <StoreButtons />
       </div>
-      <div class="evening__pane">
-        <Scene name="rain" />
-        <div class="evening__who"><b>20:42</b><span>London · Tunde</span></div>
-        <div class="evening__phone">
-          <Phone
-            view="write"
-            size="pane"
-            time="20:42"
-            partner="Amara"
-            mine="You called my mum on her birthday before I remembered."
-            theirs="You waited up so I wouldn't walk home alone."
-          />
+    </div>
+
+    <div class="frame frame--solo" data-frame="2">
+      <Scene name="sky-dusk" />
+      <div class="evening__caption" data-role="caption">
+        <span class="ct" data-city>Lagos</span>
+        <span class="tm" data-time>21:40</span>
+        <p data-text>Amara writes one true sentence about Tunde.</p>
+      </div>
+      <div class="evening__phone" data-role="centre"><Phone view="write" time="21:40" /></div>
+      <p class="evening__step">Amara writes</p>
+    </div>
+
+    <div class="frame frame--split" data-frame="3">
+      <div class="evening__panes" data-role="panes">
+        <div class="evening__pane">
+          <Scene name="lagos" />
+          <div class="evening__who" data-role="who"><b data-clock>21:42</b><span>Lagos · Amara</span></div>
+          <div class="evening__phone" data-role="amara"><Phone view="wait" size="pane" time="21:42" /></div>
         </div>
+        <div class="evening__pane">
+          <Scene name="rain" />
+          <div class="evening__who" data-role="who"><b data-clock>20:42</b><span>London · Tunde</span></div>
+          <div class="evening__phone" data-role="tunde">
+            <Phone
+              view="write"
+              size="pane"
+              time="20:42"
+              partner="Amara"
+              mine="You called my mum on her birthday before I remembered."
+              theirs="You waited up so I wouldn't walk home alone."
+            />
+          </div>
+        </div>
+        <div class="evening__seam" aria-hidden="true"></div>
       </div>
-      <div class="evening__seam" aria-hidden="true"></div>
+      <p class="evening__step">Tunde writes</p>
     </div>
-    <p class="evening__step">Tunde writes</p>
+
+    <div class="frame frame--solo" data-frame="4">
+      <Scene name="sky-night" />
+      <div class="evening__caption">
+        <span class="ct">Lagos 23:10 · London 22:10</span>
+        <p>Your day is open. Both of you, at the same moment.</p>
+      </div>
+      <div class="evening__phone"><Phone view="reveal" time="23:10" /></div>
+      <p class="evening__step">Read together</p>
+    </div>
+
+    <ol class="evening__rail" data-role="rail" aria-hidden="true" hidden>
+      <li>Amara writes</li>
+      <li>Tunde writes</li>
+      <li>Read together</li>
+    </ol>
+    <div class="evening__progress" data-role="progress" aria-hidden="true" hidden>
+      <span><i></i></span><span><i></i></span><span><i></i></span>
+    </div>
+    <div class="evening__hint" data-role="hint" aria-hidden="true" hidden><span>Scroll</span><i></i></div>
   </div>
 
-  <div class="frame frame--solo" data-frame="4">
-    <Scene name="sky-night" />
-    <div class="evening__caption">
-      <span class="ct">Lagos 23:10 · London 22:10</span>
-      <p>Your day is open. Both of you, at the same moment.</p>
-    </div>
-    <div class="evening__phone"><Phone view="reveal" time="23:10" /></div>
-    <p class="evening__step">Read together</p>
-  </div>
+  <script>
+    import '../scripts/evening/main.ts';
+  </script>
 </section>

@@ -28,6 +28,18 @@ describe('visible copy', () => {
     });
   }
 
+  for (const f of htmlFiles('dist')) {
+    const html = readFileSync(f, 'utf8');
+    const values = [...html.matchAll(/\s(?:aria-label|alt|data-label-[a-z]+)="([^"]*)"/g)].map((m) => m[1]!);
+    it(`${f} has clean aria-label, alt and data-label values`, () => {
+      for (const v of values) {
+        expect(v).not.toMatch(/[—–]/);
+        expect(v).not.toContain('!');
+        expect(v).not.toMatch(/\bMoyi\b/);
+      }
+    });
+  }
+
   it('functional page headings', () => {
     expect(readFileSync('dist/verify.html', 'utf8')).toContain('Confirm your email');
     expect(readFileSync('dist/invite.html', 'utf8')).toContain('You have been invited to a Mọyì bond');
