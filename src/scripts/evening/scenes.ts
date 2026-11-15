@@ -111,7 +111,7 @@ const lamp = scene({
   },
 });
 
-interface Building { x: number; w: number; h: number; win: Array<[number, number, number]>; cols: number; rows: number }
+interface Building { x: number; w: number; h: number; win: Array<[number, number, number, string]>; cols: number; rows: number }
 
 const sky = scene({
   init(r) {
@@ -120,11 +120,14 @@ const sky = scene({
     while (x < 1.02) {
       const bw = 0.03 + r() * 0.07;
       const bh = 0.08 + r() * 0.26;
-      const win: Array<[number, number, number]> = [];
+      const win: Array<[number, number, number, string]> = [];
       const cols = Math.max(2, Math.floor(bw * 90));
       const rows = Math.floor(bh * 60);
       for (let i = 0; i < cols; i++)
-        for (let j = 0; j < rows; j++) if (r() > 0.35) win.push([i / cols, j / rows, r()]);
+        for (let j = 0; j < rows; j++) if (r() > 0.35) {
+            const thr = r();
+            win.push([i / cols, j / rows, thr, `rgba(${mixRgb(K.winA, K.winB, thr).join(',')},${0.55 + thr * 0.4})`]);
+          }
       b.push({ x, w: bw, h: bh, win, cols, rows });
       x += bw + r() * 0.006;
     }
@@ -176,9 +179,9 @@ const sky = scene({
       const bh = b.h * h * 1.35;
       ctx.fillStyle = sil;
       ctx.fillRect(bx, base - bh, bw, bh);
-      for (const [wx, wy, thr] of b.win) {
+      for (const [wx, wy, thr, lit] of b.win) {
         if (p > thr * 0.75 + 0.18) {
-          ctx.fillStyle = `rgba(${mixRgb(K.winA, K.winB, thr).join(',')},${0.55 + thr * 0.4})`;
+          ctx.fillStyle = lit;
           ctx.fillRect(bx + 3 + wx * (bw - 6), base - bh + 6 + wy * (bh - 8), Math.max(1.5, (bw / b.cols) * 0.45), 2.2);
         }
       }
@@ -429,13 +432,17 @@ export function mountScenes(
         const h = s.canvas.clientHeight;
         if (!w || !h) continue;
         const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-        if (s.canvas.width !== Math.round(w * dpr)) {
+        if (s.canvas.width !== Math.round(w * dpr) || s.canvas.height !== Math.round(h * dpr)) {
           s.canvas.width = Math.round(w * dpr);
           s.canvas.height = Math.round(h * dpr);
         }
         s.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         SCENES[s.kind].draw(s.ctx, w, h, t, s.st, s.p);
       }
+    }
+    if (!slots.some((s) => s.visible)) {
+      running = false; // idle off screen; the IntersectionObserver callback restarts us
+      return;
     }
     raf(frame);
   };

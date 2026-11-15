@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mountScenes } from '../src/scripts/evening/scenes';
 
@@ -26,7 +27,7 @@ function harness() {
     queue = [];
     q.forEach((cb) => cb(clock));
   };
-  return { raf, now: () => clock, step };
+  return { raf, now: () => clock, step, pending: () => queue.length };
 }
 
 function fragment() {
@@ -102,6 +103,7 @@ describe('mountScenes', () => {
     h.step(100);
     expect(fills).toBe(0);
     expect(observed.length).toBe(2);
+    expect(h.pending()).toBe(0); // idle: nothing queued while all canvases are off screen
     cb([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
     h.step(100);
     expect(fills).toBeGreaterThan(0);
@@ -130,5 +132,12 @@ describe('mountScenes', () => {
     document.dispatchEvent(new Event('visibilitychange'));
     h.step(100);
     expect(fills).toBeGreaterThan(0);
+  });
+});
+
+describe('scenes.ts source', () => {
+  it('uses no literal colours; everything comes from the palette', () => {
+    const src = readFileSync('src/scripts/evening/scenes.ts', 'utf8');
+    expect(src).not.toMatch(/#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d/);
   });
 });
