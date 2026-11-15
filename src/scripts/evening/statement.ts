@@ -34,7 +34,7 @@ function wrap(doc: Document, src: Node, dst: Node, words: HTMLElement[]): void {
   }
 }
 
-export function lightStatement(p: HTMLElement): { update(viewport: number): void; stop(): void } {
+export function lightStatement(p: HTMLElement): { update(top: number, viewport: number): void; stop(): void } {
   const original = p.innerHTML;
   const section = p.closest('section');
   const words: HTMLElement[] = [];
@@ -45,8 +45,9 @@ export function lightStatement(p: HTMLElement): { update(viewport: number): void
 
   let lit = 0;
   return {
-    update(viewport: number) {
-      const n = litCount(p.getBoundingClientRect().top, viewport, words.length);
+    // `top` is the paragraph's getBoundingClientRect().top, read by the caller before any write.
+    update(top: number, viewport: number) {
+      const n = litCount(top, viewport, words.length);
       if (n === lit) return;
       const lo = Math.min(n, lit);
       const hi = Math.max(n, lit);

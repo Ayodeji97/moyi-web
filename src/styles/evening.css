@@ -128,7 +128,9 @@
 .evening[data-live] .evening__rail li::before { content: ""; width: 22px; height: 1px; background: currentColor; }
 .evening[data-live] .evening__rail li[aria-current] { color: #fff; }
 .evening[data-live] .evening__progress {
-  position: absolute; left: 22px; right: 22px; top: 100px;
+  /* Near the top: the top bar is position: absolute and has scrolled away before the line
+     shows (p > .10), and lower down it would cross Amara's pane phone on most phones. */
+  position: absolute; left: 22px; right: 22px; top: max(14px, env(safe-area-inset-top));
   display: flex; gap: 8px; opacity: var(--rail); transition: opacity .3s var(--ease, ease);
 }
 .evening[data-live] .evening__progress span { flex: 1; height: 2px; border-radius: 2px; background: rgba(255, 255, 255, .25); overflow: hidden; }
@@ -145,7 +147,6 @@
 }
 .evening[data-live] .evening__hint i { width: 1px; height: 28px; background: rgba(255, 255, 255, .7); transform-origin: top; animation: evening-hint 1.8s ease-in-out infinite; }
 @keyframes evening-hint { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(0); transform-origin: bottom; } }
-@media (prefers-reduced-motion: reduce) { .evening__hint i { animation: none; } }
 
 @media (min-width: 900px) {
   .evening[data-live] .evening__rail { display: flex; }

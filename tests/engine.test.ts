@@ -90,6 +90,34 @@ describe('start under reduced motion', () => {
   });
 });
 
+describe('start on a short viewport', () => {
+  it('keeps the still frames below 480px tall, like reduced motion', () => {
+    stubReduce(false);
+    const before = document.body.innerHTML;
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 479 });
+    try {
+      teardowns.push(start(document, window));
+      vi.advanceTimersByTime(500);
+      expect(section().hasAttribute('data-live')).toBe(false);
+      expect(document.querySelector('canvas')).toBeNull();
+      expect(document.body.innerHTML).toBe(before);
+    } finally {
+      Object.defineProperty(window, 'innerHeight', { configurable: true, value: 768 });
+    }
+  });
+
+  it('goes live at exactly 480px', () => {
+    stubReduce(false);
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 480 });
+    try {
+      teardowns.push(start(document, window));
+      expect(section().hasAttribute('data-live')).toBe(true);
+    } finally {
+      Object.defineProperty(window, 'innerHeight', { configurable: true, value: 768 });
+    }
+  });
+});
+
 describe('start with motion allowed', () => {
   it('goes live: data-live, the rail, progress line and hint unhidden, canvases in', () => {
     stubReduce(false);

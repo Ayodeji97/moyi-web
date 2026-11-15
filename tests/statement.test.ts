@@ -58,8 +58,7 @@ describe('lightStatement', () => {
   it('lights the first n words as the paragraph rises, and dims them again', () => {
     const s = lightStatement(p);
     const at = (top: number) => {
-      p.getBoundingClientRect = () => ({ top } as DOMRect);
-      s.update(1000);
+      s.update(top, 1000);
       return p.querySelectorAll('.w.lit').length;
     };
     expect(at(1000)).toBe(0);
@@ -82,8 +81,7 @@ describe('lightStatement', () => {
     const spies = (['toggle', 'add', 'remove'] as const).map((m) => vi.spyOn(DOMTokenList.prototype, m));
     const calls = () => spies.reduce((n, sp) => n + sp.mock.calls.length, 0);
     const at = (top: number) => {
-      p.getBoundingClientRect = () => ({ top } as DOMRect);
-      s.update(1000);
+      s.update(top, 1000);
     };
     // 14 words: top 640 lights 4; find tops for 5 and 7 from the formula.
     const topFor = (n: number) => 1000 - 900 * (0.25 + 0.6 * (n / 14));

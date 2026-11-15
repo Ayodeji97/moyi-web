@@ -55,8 +55,31 @@ describe.each([
   });
 });
 
-describe('frame 4 in live mode (source order)', () => {
-  it('no live rule sets display on frame 4 itself; its hide rule targets children and comes after .frame--solo', () => {
+// Enough of selector specificity for these rules: ids; classes, attributes and pseudo-classes
+// (a :not() counts as its argument); type selectors and pseudo-elements.
+function specificity(sel: string): [number, number, number] {
+  let s = sel.replace(/:not\(([^)]*)\)/g, ' $1 ');
+  const ids = (s.match(/#[\w-]+/g) ?? []).length;
+  const pseudoEls = (s.match(/::[\w-]+/g) ?? []).length;
+  s = s.replace(/::[\w-]+/g, '');
+  const classes = (s.match(/\.[\w-]+|\[[^\]]+\]|:[\w-]+/g) ?? []).length;
+  s = s.replace(/#[\w-]+|\.[\w-]+|\[[^\]]+\]|:[\w-]+/g, ' ');
+  const types = (s.match(/(^|[\s>+~])[a-z][\w-]*/gi) ?? []).length;
+  return [ids, classes, types + pseudoEls];
+}
+const beats = (a: number[], b: number[]) => {
+  for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i]! > b[i]!;
+  return false;
+};
+
+describe('frame 4 in live mode (cascade)', () => {
+  it('scores specificity as browsers do for these shapes', () => {
+    expect(specificity('.evening[data-live] .frame--solo')).toEqual([0, 3, 0]);
+    expect(specificity('.evening[data-live] [data-frame="4"] > :not(.evening__step)')).toEqual([0, 4, 0]);
+    expect(specificity('#how main > p::before')).toEqual([1, 0, 3]);
+  });
+
+  it("no live rule sets display on frame 4 itself, and its child hide rule outranks the live .frame--solo rule", () => {
     const rules = [...eveningCss.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({
       sel: m[1]!.trim(),
       body: m[2]!,
@@ -69,7 +92,11 @@ describe('frame 4 in live mode (source order)', () => {
     expect(hide?.body).toMatch(/display:\s*none/);
     const solo = rules.filter((r) => /\[data-live\][^,]*\.frame--solo\s*$/.test(r.sel) && /display\s*:/.test(r.body));
     expect(solo.length).toBeGreaterThan(0);
-    // Different targets, so they never compete; if anyone ever retargets, the hide rule still wins on order.
-    for (const s of solo) expect(hide!.at).toBeGreaterThan(-1), expect(s.sel).not.toContain(':not(.evening__step)');
+    // They target different elements today; should they ever meet, the hide rule must still win.
+    expect(specificity(hide!.sel)).toEqual([0, 4, 0]);
+    for (const s of solo) {
+      expect(specificity(s.sel)).toEqual([0, 3, 0]);
+      expect(beats(specificity(hide!.sel), specificity(s.sel)), s.sel).toBe(true);
+    }
   });
 });

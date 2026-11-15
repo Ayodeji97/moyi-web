@@ -245,6 +245,7 @@ const rain = scene({
       })),
       drops: Array.from({ length: 110 }, (): [number, number, number] => [r(), r(), 0.6 + r() * 2]),
       runs: Array.from({ length: 22 }, () => ({ x: r(), y: r(), v: 0.0008 + r() * 0.002, l: 0.02 + r() * 0.05 })),
+      rng: r, // the slot's seeded generator, so a run that restarts lands in the same place every time
     };
   },
   draw(ctx, w, h, t, st) {
@@ -268,7 +269,7 @@ const rain = scene({
       d.y += d.v * 16;
       if (d.y > 1.1) {
         d.y = -0.1;
-        d.x = Math.random();
+        d.x = st.rng();
       }
       ctx.beginPath();
       ctx.moveTo(d.x * w, (d.y - d.l) * h);

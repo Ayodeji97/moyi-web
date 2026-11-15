@@ -45,6 +45,8 @@ Live mode is what the evening becomes when JavaScript runs and reduced motion is
 
 It never runs under reduced motion. If that setting turns on while the page is open, the engine tears itself down and the four still frames return exactly as built. With no JavaScript the page is slice 2's, unchanged.
 
+It also stays on the still frames when the window is shorter than 480 px at load (a landscape phone, say), where the pinned scene would shrink the phone to almost nothing. That check runs once, at start: resizing past 480 px afterwards does not switch modes until the page is reloaded.
+
 The timeline numbers (what happens at each scroll progress `p`) live in `src/scripts/evening/timeline.ts`, as the pure function `evening(p)`. Spec section 5 has the table they come from.
 
 The canvases in the scenes are stand-ins for footage. Slice 5 replaces them with video.

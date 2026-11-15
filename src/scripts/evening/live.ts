@@ -6,6 +6,7 @@ import { lightStatement } from './statement';
 import { evening } from './timeline';
 
 const noop = () => {};
+export const MIN_HEIGHT = 480;
 
 type Change = (e: { matches: boolean }) => void;
 // Safari before 14 has only the deprecated addListener/removeListener on MediaQueryList.
@@ -19,6 +20,9 @@ export function start(doc: Document, win: Window): () => void {
   if (!section || typeof win.matchMedia !== 'function') return noop;
   const reduce = win.matchMedia('(prefers-reduced-motion: reduce)');
   if (reduce.matches) return noop;
+  // Too short for the pinned scene (a landscape phone): keep the still frames.
+  // Evaluated once at start; a later resize past the threshold does not switch modes.
+  if (win.innerHeight < MIN_HEIGHT) return noop;
 
   const extras = ['rail', 'progress', 'hint']
     .map((r) => section.querySelector<HTMLElement>(`[data-role="${r}"]`))
@@ -35,9 +39,12 @@ export function start(doc: Document, win: Window): () => void {
   let frameId = 0;
   const tick = () => {
     queued = false;
+    // Every read before any write, so the frame forces no layout.
     const r = section.getBoundingClientRect();
-    bound.apply(evening(progress(win.scrollY, r.top + win.scrollY, r.height, win.innerHeight)));
-    statement?.update(win.innerHeight);
+    const statementTop = stp ? stp.getBoundingClientRect().top : 0;
+    const vh = win.innerHeight;
+    bound.apply(evening(progress(win.scrollY, r.top + win.scrollY, r.height, vh)));
+    statement?.update(statementTop, vh);
   };
   const schedule = () => {
     if (queued) return;
