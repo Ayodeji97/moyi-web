@@ -2,6 +2,7 @@
 // Never runs under reduced motion; tears itself down if that setting turns on.
 import { bind, progress } from './engine';
 import { mountScenes } from './scenes';
+import { lightStatement } from './statement';
 import { evening } from './timeline';
 
 const noop = () => {};
@@ -27,6 +28,8 @@ export function start(doc: Document, win: Window): () => void {
   for (const el of extras) el.hidden = false;
   const scenes = mountScenes(doc);
   const bound = bind(section, scenes);
+  const stp = doc.querySelector<HTMLElement>('[data-section="statement"] .st2');
+  const statement = stp ? lightStatement(stp) : null;
 
   let queued = false;
   let frameId = 0;
@@ -34,6 +37,7 @@ export function start(doc: Document, win: Window): () => void {
     queued = false;
     const r = section.getBoundingClientRect();
     bound.apply(evening(progress(win.scrollY, r.top + win.scrollY, r.height, win.innerHeight)));
+    statement?.update(win.innerHeight);
   };
   const schedule = () => {
     if (queued) return;
@@ -54,6 +58,7 @@ export function start(doc: Document, win: Window): () => void {
     section.removeAttribute('data-live');
     for (const el of extras) el.hidden = true;
     bound.restore();
+    statement?.stop();
   };
   function onChange(e: { matches: boolean }) {
     if (e.matches) teardown();

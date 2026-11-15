@@ -16,7 +16,7 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
 .store img { display: block; height: 48px; width: auto; }
 .soon { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; color: var(--ink); }
 
-.foot { margin: 90px auto 0; max-width: 1180px; padding: 24px 56px 0; border-top: 1px solid var(--outline); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; font-size: 13px; color: var(--ink-muted); }
+.foot { margin: 90px auto 0; max-width: 1180px; padding: 24px 56px 40px; border-top: 1px solid var(--outline); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; font-size: 13px; color: var(--ink-muted); }
 .foot nav { display: flex; gap: 18px; flex-wrap: wrap; }
 .foot a { display: inline-flex; align-items: center; min-height: 48px; color: var(--ink-muted); }
 .foot span { display: inline-flex; align-items: center; gap: 6px; }
@@ -26,5 +26,5 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
   .topbar { padding: max(20px, env(safe-area-inset-top)) 20px 0; }
   .topbar nav { display: none; }
   .topbar .get { padding: 0 14px; font-size: 13px; }
-  .foot { padding: 22px 22px 0; margin-top: 60px; }
+  .foot { padding: 22px 22px 40px; margin-top: 60px; }
 }

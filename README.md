@@ -38,3 +38,13 @@ The FAQ answers are approved copy (2026-11-15). A change to them needs Daniel's 
 `scripts/make-icons.sh` regenerates the icons.
 
 `npm test` also checks that the home page, its stylesheets, any scripts and both fonts total under 150 KB.
+
+## Motion
+
+Live mode is what the evening becomes when JavaScript runs and reduced motion is off: the four still frames turn into one pinned scene four screens tall, driven by scroll, and the statement paragraph lights up word by word. One module script starts it by setting `data-live` on `#how`; all the live CSS is scoped under `[data-live]`.
+
+It never runs under reduced motion. If that setting turns on while the page is open, the engine tears itself down and the four still frames return exactly as built. With no JavaScript the page is slice 2's, unchanged.
+
+The timeline numbers (what happens at each scroll progress `p`) live in `src/scripts/evening/timeline.ts`, as the pure function `evening(p)`. Spec section 5 has the table they come from.
+
+The canvases in the scenes are stand-ins for footage. Slice 5 replaces them with video.
