@@ -5,17 +5,31 @@ import { createServer } from 'node:net';
 const PORT = 8788;
 const URL_ = `http://localhost:${PORT}`;
 
-function portFree() {
+// Probe each loopback address explicitly: a bind to "::" can succeed on macOS
+// while another process holds 127.0.0.1:PORT.
+function portFreeOn(host) {
   return new Promise((resolve) => {
     const s = createServer();
-    s.once('error', () => resolve(false));
+    s.once('error', (e) => resolve(e.code === 'EADDRNOTAVAIL' || e.code === 'EAFNOSUPPORT'));
     s.once('listening', () => s.close(() => resolve(true)));
-    s.listen(PORT);
+    s.listen(PORT, host);
   });
 }
 
-if (!(await portFree())) {
-  console.error(`port ${PORT} is already in use; stop whatever is using it and retry`);
+async function answers(url) {
+  try {
+    const r = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(2000) });
+    await r.arrayBuffer();
+    return true;
+  } catch { return false; }
+}
+
+// One at a time: concurrent probes would collide with each other.
+let free = true;
+for (const h of ['127.0.0.1', '::1', '::', '0.0.0.0']) free = (await portFreeOn(h)) && free;
+const answered = (await Promise.all([`http://localhost:${PORT}/`, `http://127.0.0.1:${PORT}/`, `http://[::1]:${PORT}/`].map(answers))).some(Boolean);
+if (!free || answered) {
+  console.error(`port ${PORT} busy: something is already listening; stop it and retry (a stale server would make the check pass falsely)`);
   process.exit(1);
 }
 
