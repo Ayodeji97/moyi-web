@@ -1,0 +1,681 @@
+<meta charset="utf-8">
+<title>Mọyì Directions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap">
+<style>
+/* Layout: a review console. Each direction renders live twice, in a 1280x800 desktop browser (scaled to fit)
+   and in a 390x844 phone, each its own scroll container so scroll-driven scenes behave as on the real site.
+   Canvas scenes stand in for the footage; phone screens are the real app states drawn in HTML. */
+:root{
+  --bg:#110D0C; --panel:#1A1413; --ink:#F8EFE9; --muted:#CDBBB5; --line:#3A2E2C; --line2:#7E6A6A;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sys:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --out:cubic-bezier(.16,1,.3,1); --ease:cubic-bezier(.2,0,0,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sys);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
+
+/* ---------- console ---------- */
+.top{max-width:1500px;margin:0 auto 16px;display:flex;flex-wrap:wrap;gap:14px 28px;align-items:flex-end;justify-content:space-between}
+.top h1{font-family:var(--serif);font-weight:500;font-size:28px;margin:0}
+.top p{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.5;max-width:72ch}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{font:inherit;font-size:14px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:10px 16px;cursor:pointer;min-height:44px}
+.tab b{font-weight:600;color:var(--ink);margin-right:6px}
+.tab[aria-pressed="true"]{background:var(--ink);color:#171313;border-color:var(--ink)}
+.tab[aria-pressed="true"] b{color:#171313}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.act{font:inherit;font-size:13px;color:var(--ink);background:none;border:1px solid var(--line2);border-radius:999px;padding:9px 14px;cursor:pointer;min-height:40px}
+
+.devices{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:start}
+.cap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.desk{min-width:0}
+.browser{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.bbar{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.bbar i{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.bbar .url{flex:1;font-size:12px;color:var(--muted);background:var(--bg);border-radius:7px;padding:5px 10px}
+.vp{position:relative;overflow:hidden}
+.handset{position:relative;padding:12px;border-radius:52px;background:linear-gradient(150deg,#4a3d3a,#151010 40%,#2c2321 75%,#0e0a09);box-shadow:0 0 0 1px #4f403d,0 40px 80px -40px #000}
+.handset .vp{border-radius:40px}
+.frame{position:absolute;left:0;top:0;transform-origin:0 0;overflow-y:auto;overflow-x:hidden;container-type:inline-size;background:#171313;scrollbar-width:thin}
+.frame.d{width:1280px;height:800px}
+.frame.m{width:390px;height:844px;scrollbar-width:none}
+.frame.m::-webkit-scrollbar{display:none}
+.notch{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:110px;height:30px;border-radius:20px;background:#000;z-index:5;pointer-events:none}
+.notes{max-width:1500px;margin:22px auto 0;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}
+.notes section{border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.notes h2{font-family:var(--serif);font-weight:500;font-size:21px;margin:0}
+.notes p,.notes li{color:var(--muted);font-size:14px;line-height:1.55;margin:0}
+.notes ul{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;gap:6px}
+.notes a{color:var(--ink)}
+@media (max-width:980px){.devices{grid-template-columns:1fr}.mob{justify-self:center}.notes{grid-template-columns:1fr}}
+
+/* =================== THE SITE (inside each frame) =================== */
+.site{position:relative;--s:#171313;--r:#211A1A;--i:#F8EFE9;--m:#CDBBB5;--o:#493737;--paper:#FFF9F5;--pink:#2A2020;--pm:#695A57;--pl:#E9D8D1;
+  color:var(--i);font-family:var(--sys);font-size:16px;line-height:1.5;background:var(--s)}
+.site .wrap{max-width:1180px;margin:0 auto;padding-inline:56px}
+.site .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--m);margin:0}
+.site h1,.site h2,.site h3{font-family:var(--serif);font-weight:400;margin:0;text-wrap:balance}
+.stick{position:sticky;top:0;height:var(--vh);overflow:hidden}
+.scene{position:absolute;inset:-3%;width:106%;height:106%;display:block;animation:cam 26s ease-in-out infinite alternate}
+@keyframes cam{from{transform:scale(1) translate(0,0)}to{transform:scale(1.035) translate(-1%,.6%)}}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,rgba(23,19,19,0) 45%,rgba(14,10,10,.75) 100%)}
+.tag{position:absolute;right:16px;bottom:12px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(248,239,233,.45);z-index:3}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.b{display:inline-flex;align-items:center;gap:9px;min-height:50px;padding:0 22px;border-radius:999px;font-size:15px;text-decoration:none;border:0}
+.b.solid{background:var(--i);color:var(--s)}
+.b.line{color:var(--i);box-shadow:inset 0 0 0 1px rgba(248,239,233,.45);background:rgba(23,19,19,.35)}
+.b svg{width:14px;height:14px}
+.snav{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:22px 32px}
+.snav .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-weight:500;font-size:22px;color:var(--i);text-decoration:none}
+.snav .brand svg{width:18px}
+.snav .links{display:flex;gap:26px;font-size:14px;color:var(--m)}
+.snav .get{font-size:14px;padding:10px 18px;border-radius:999px;background:rgba(248,239,233,.12);box-shadow:inset 0 0 0 1px rgba(248,239,233,.25);color:var(--i);text-decoration:none}
+
+/* phone device */
+.dev{--pw:300px;position:relative;width:var(--pw);aspect-ratio:9/19.4;border-radius:calc(var(--pw)*.165);padding:calc(var(--pw)*.034);
+  background:linear-gradient(140deg,#6d5c57 0%,#2a201e 18%,#120d0c 50%,#3a2f2c 82%,#1a1312 100%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 calc(var(--pw)*.18) calc(var(--pw)*.3) calc(var(--pw)*-.12) rgba(0,0,0,.75),0 0 calc(var(--pw)*.5) calc(var(--pw)*-.2) rgba(232,160,96,.25)}
+.dev::before{content:"";position:absolute;right:calc(var(--pw)*-.012);top:28%;width:calc(var(--pw)*.012);height:12%;border-radius:2px;background:#3a2f2c}
+.dev::after{content:"";position:absolute;left:calc(var(--pw)*-.012);top:22%;width:calc(var(--pw)*.012);height:8%;border-radius:2px;background:#3a2f2c;box-shadow:0 calc(var(--pw)*.14) 0 #3a2f2c}
+.scr{position:relative;width:100%;height:100%;border-radius:calc(var(--pw)*.135);overflow:hidden;background:#171313;color:#F8EFE9;font-size:calc(var(--pw)*.039);line-height:1.45}
+.scr .glass{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 70%,rgba(255,255,255,.04) 100%)}
+.scr .isl{position:absolute;top:2.4%;left:50%;transform:translateX(-50%);width:31%;height:3.4%;border-radius:99px;background:#000;z-index:5}
+.scr .sb{position:absolute;top:2.7%;left:9%;right:9%;display:flex;justify-content:space-between;font-weight:600;font-size:.9em;z-index:3}
+.v{position:absolute;inset:0;padding:14% 7.5% 8%;display:flex;flex-direction:column;gap:3.6%;opacity:0;transform:translateY(6px);transition:opacity .2s var(--ease),transform .2s var(--ease)}
+.v.on{opacity:1;transform:none;transition:opacity .35s var(--ease) .18s,transform .35s var(--ease) .18s}
+.an{display:flex;justify-content:space-between;align-items:center;color:#CDBBB5;font-size:.92em}
+.an b{color:#F8EFE9;font-weight:600}.an u{text-underline-offset:2px;margin-left:9px}
+.lb{font-size:.74em;letter-spacing:.14em;text-transform:uppercase;color:#CDBBB5;margin:0}
+.en{font-family:var(--serif);font-size:1.62em;line-height:1.36;margin:0}
+.en.s{font-size:1.28em}
+.st{color:#CDBBB5;margin:0;font-size:.98em}
+.gr{flex:1}
+.pa{border-radius:12px;background:#F8EFE9;color:#171313;text-align:center;font-weight:600;padding:4.6% 0}
+.pa.busy{animation:br 1.8s ease-in-out infinite}
+@keyframes br{50%{opacity:.55}}
+.ec{border:1px solid #493737;border-radius:12px;padding:5.5%;display:flex;flex-direction:column;gap:5px;background:#211A1A}
+.car{display:inline-block;width:1.5px;height:.95em;background:currentColor;vertical-align:-2px;margin-left:1px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* closing + footer (shared) */
+.closing{position:relative;padding:120px 0 40px;text-align:center;background:var(--s);border-top:1px solid var(--o)}
+.closing h2{font-size:clamp(48px,8cqi,104px);font-weight:300;line-height:1;letter-spacing:-.03em}
+.closing .yo{font-family:var(--serif);color:var(--m);font-size:22px;margin:14px 0 30px}
+.stores{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.store{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:8px 20px 8px 16px;border-radius:14px;background:var(--i);color:var(--s);text-decoration:none;line-height:1.15;text-align:left}
+.store small{display:block;font-size:11px;opacity:.75}
+.store svg{width:20px;height:20px}
+.foot{margin:90px auto 0;max-width:1180px;padding:24px 56px 0;border-top:1px solid var(--o);display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font-size:13px;color:var(--m)}
+.foot nav{display:flex;gap:18px;flex-wrap:wrap}
+
+/* ---------- OPTION 1 · LAMPLIGHT ---------- */
+.o1h{position:relative;height:var(--vh);min-height:640px;overflow:hidden}
+.o1g{position:relative;z-index:2;height:100%;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:40px;padding-top:40px}
+.o1c{display:flex;flex-direction:column;gap:26px}
+.o1c h1{font-size:clamp(52px,5.6cqi,78px);line-height:1.02;letter-spacing:-.02em}
+.o1c h1 em{display:block;font-weight:300;color:var(--m)}
+.o1c p{margin:0;color:var(--m);font-size:18px;max-width:36ch}
+.o1p{display:flex;justify-content:center}
+.o1p .dev{--pw:290px;transform:rotate(-4deg)}
+.in{animation:rise 1.1s var(--out) both}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.o1p .dev.in{animation-name:riseTilt}
+@keyframes riseTilt{from{opacity:0;transform:translateY(40px) rotate(-4deg)}to{opacity:1;transform:rotate(-4deg)}}
+.o1l{background:var(--paper);color:var(--pink)}
+.o1l .stick{display:flex;align-items:center;justify-content:center}
+.memo{width:min(760px,88%)}
+.mr{display:grid;grid-template-columns:90px 1fr;align-items:center;gap:14px;padding:8px 0}
+.mr .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pm)}
+.chip{display:inline-flex;gap:8px;align-items:center;padding:6px 14px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--pl);font-size:15px;width:fit-content}
+.chip i{font-style:normal;color:var(--pm);font-size:13px}
+.mrule{height:1px;background:var(--pl);margin:14px 0 30px}
+.mb{font-family:var(--serif);font-weight:300;font-size:clamp(32px,4.6cqi,58px);line-height:1.17;letter-spacing:-.015em;margin:0;min-height:3.6em}
+.mb .gh{color:var(--pl)}
+.send{margin-top:34px;position:relative;height:68px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--pl);overflow:hidden}
+.send .f{position:absolute;inset:0;background:var(--pink);transform-origin:left;transform:scaleX(0)}
+.send .t{position:absolute;inset:0;display:grid;place-items:center;font-weight:600;font-size:17px;color:var(--pm)}
+.send.full .t{color:var(--paper)}
+.send.sealed .t{font-family:var(--serif);font-weight:400;font-size:20px}
+.o1x .stick{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center;max-width:1180px;margin:0 auto;padding-inline:56px}
+.o1x h2{font-size:clamp(32px,3.2cqi,44px);line-height:1.08;margin:10px 0 18px;letter-spacing:-.015em}
+.stp{display:grid;grid-template-columns:3px 1fr;gap:20px;padding:8px 0;opacity:.36;transition:opacity .35s}
+.stp.on{opacity:1}
+.stp .bar{background:var(--o);border-radius:3px;position:relative;overflow:hidden}
+.stp .bar i{position:absolute;inset:0;background:var(--i);transform-origin:top;transform:scaleY(0)}
+.stp h3{font-size:24px;margin:0 0 2px}
+.stp p{margin:0;color:var(--m);max-width:36ch}
+.film{position:relative;border-radius:28px;overflow:hidden;height:calc(var(--vh)*.78);display:flex;align-items:center;justify-content:center}
+.film .dev{--pw:min(270px,calc(var(--vh)*.32));position:relative;z-index:2}
+.o1t{padding:110px 0 30px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tile{border-radius:26px;background:var(--r);border:1px solid var(--o);padding:28px;min-height:260px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;position:relative;overflow:hidden}
+.tile h3{font-size:26px;line-height:1.15;position:relative}
+.tile p{margin:0;color:var(--m);position:relative}
+.tile .big{position:absolute;top:24px;left:28px;font-family:var(--serif);font-weight:300;font-size:58px;line-height:1;color:var(--m);font-variant-numeric:tabular-nums}
+.tile s{display:block;font-family:var(--serif);font-size:22px;color:var(--m);text-decoration-thickness:2px;text-decoration-color:var(--i)}
+.tile .strikes{position:relative;display:flex;flex-direction:column;gap:2px;margin-bottom:auto;padding-bottom:18px}
+
+/* ---------- OPTION 2 · DAY INTO NIGHT ---------- */
+.o2t{position:absolute;left:0;right:0;top:20%;z-index:3;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;padding-inline:24px}
+.o2t h1{font-size:clamp(52px,7.2cqi,104px);line-height:1;letter-spacing:-.025em;color:#fff;text-shadow:0 2px 40px rgba(60,30,20,.35)}
+.o2t h1 em{display:block;font-weight:300}
+.o2t p{margin:0;font-size:18px;color:rgba(255,255,255,.9);text-shadow:0 1px 20px rgba(60,30,20,.4)}
+.hint{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:3;font-size:13px;color:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;gap:6px}
+.hint i{width:1px;height:28px;background:rgba(255,255,255,.7);animation:hint 1.8s ease-in-out infinite;transform-origin:top}
+@keyframes hint{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(0);transform-origin:bottom}}
+.o2p{position:absolute;left:50%;top:50%;z-index:4;will-change:transform}
+.o2p .dev{--pw:min(300px,calc(var(--vh)*.34))}
+.o2c{position:absolute;z-index:4;left:56px;top:50%;transform:translateY(-50%);max-width:300px;display:flex;flex-direction:column;gap:10px;transition:opacity .4s}
+.o2c .tm{font-family:var(--serif);font-weight:300;font-size:72px;line-height:1;font-variant-numeric:tabular-nums;color:#fff}
+.o2c .ct{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.o2c p{margin:0;font-family:var(--serif);font-size:22px;line-height:1.35;color:#fff}
+.o2r{position:absolute;z-index:4;right:56px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;font-size:13px;color:rgba(255,255,255,.55);transition:opacity .4s}
+.o2r span{display:flex;align-items:center;gap:10px}
+.o2r span::before{content:"";width:22px;height:1px;background:currentColor}
+.o2r span.on{color:#fff}
+.o2s{padding:120px 0}
+.o2s .st2{font-family:var(--serif);font-weight:300;font-size:clamp(40px,6cqi,84px);line-height:1.04;letter-spacing:-.025em;margin:0 auto;max-width:15ch;text-align:center}
+.o2s .w{opacity:.14;transition:opacity .3s}
+.o2s .w.lit{opacity:1}
+.o2s em{color:var(--m)}
+.cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-bottom:20px}
+.fc{position:relative;border-radius:30px;overflow:hidden;height:440px;display:flex;flex-direction:column;justify-content:flex-end;padding:30px;gap:6px}
+.fc .scene{animation-duration:20s}
+.fc h3{position:relative;z-index:2;font-size:30px;color:#fff}
+.fc p{position:relative;z-index:2;margin:0;color:rgba(255,255,255,.85);max-width:34ch}
+.fc .lbl2{position:absolute;z-index:2;top:26px;left:30px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+.fc::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(14,10,10,.8),rgba(14,10,10,0) 55%);z-index:1}
+
+/* ---------- OPTION 3 · TWO CITIES ---------- */
+.o3 .stick{display:block}
+.panes{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr}
+.pane{position:relative;overflow:hidden}
+.pane .who{position:absolute;z-index:3;top:96px;left:0;right:0;text-align:center;color:#fff;display:flex;flex-direction:column;gap:2px}
+.pane .who b{font-family:var(--serif);font-weight:300;font-size:46px;line-height:1;font-variant-numeric:tabular-nums}
+.pane .who span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.pane .pp{position:absolute;z-index:3;left:50%;top:58%;transform:translate(-50%,-50%)}
+.pane .pp .dev{--pw:min(250px,calc(var(--vh)*.28))}
+.seam{position:absolute;z-index:3;top:0;bottom:0;left:50%;width:1px;background:rgba(255,255,255,.25)}
+.night{position:absolute;inset:0;z-index:4;background:#171313;opacity:0;pointer-events:none}
+.o3t{position:absolute;z-index:6;left:0;right:0;bottom:7%;text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;gap:16px;padding-inline:24px}
+.o3t h1{font-size:clamp(44px,5.4cqi,76px);line-height:1;letter-spacing:-.02em;text-shadow:0 2px 30px rgba(0,0,0,.45)}
+.o3t h1 em{font-weight:300}
+.o3t p{margin:0;color:rgba(255,255,255,.88);font-size:17px}
+.o3m{position:absolute;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);opacity:0}
+.o3m .dev{--pw:min(300px,calc(var(--vh)*.34))}
+.o3cap{position:absolute;z-index:7;left:0;right:0;top:92px;text-align:center;font-family:var(--serif);font-size:30px;color:#fff;opacity:0;transition:opacity .4s}
+.o3h{padding:110px 0 40px}
+.o3h h2{font-size:clamp(36px,4.4cqi,56px);line-height:1.08;max-width:18ch;margin-bottom:46px;letter-spacing:-.015em}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.three div{border-left:1px solid var(--o);padding:6px 28px 6px 24px;display:flex;flex-direction:column;gap:8px}
+.three div:first-child{border-left:0;padding-left:0}
+.three .n{font-family:var(--serif);font-weight:300;font-size:64px;line-height:1;color:var(--m)}
+.three h3{font-size:28px}
+.three p{margin:0;color:var(--m)}
+
+/* ---------- OPTION 4 · ONE EVENING, TWO CITIES ---------- */
+.p4{z-index:2;visibility:hidden}
+.o4 .seam{opacity:0}
+.o2c .tm:empty{display:none}
+.o4v{padding:20px 0 30px}
+.o4v .head{display:flex;flex-direction:column;gap:12px;margin-bottom:30px}
+.o4v .head h2{font-size:clamp(34px,3.6cqi,50px);line-height:1.08;letter-spacing:-.015em;max-width:20ch}
+.vcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.vc{position:relative;isolation:isolate;border-radius:30px;overflow:hidden;min-height:440px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:34px;color:#fff}
+.vc.wide{grid-column:1/-1;min-height:480px}
+.vc .scene{z-index:0;animation-duration:22s}
+.vc .grain{z-index:1}
+.vc::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(14,10,10,.9) 0%,rgba(14,10,10,.55) 38%,rgba(14,10,10,0) 70%)}
+.vc>:where(:not(canvas):not(.grain)){position:relative;z-index:2}
+.vc>.lbl3{position:absolute;top:28px;left:34px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+.vc h3{font-size:clamp(28px,2.8cqi,40px);line-height:1.1;letter-spacing:-.01em}
+.vc p{margin:0;color:rgba(255,255,255,.86);max-width:42ch;font-size:16px}
+.vc a{color:#fff;text-underline-offset:3px;font-size:15px}
+.nots{display:flex;flex-wrap:wrap;gap:8px}
+.nots s{padding:7px 14px;border-radius:999px;background:rgba(23,19,19,.5);box-shadow:inset 0 0 0 1px rgba(248,239,233,.32);font-size:14px;color:rgba(248,239,233,.88);text-decoration-thickness:1.5px}
+.days{display:flex;gap:10px;align-items:flex-end}
+.days span{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;letter-spacing:.08em;color:rgba(255,255,255,.75)}
+.days i{width:24px;height:24px;border-radius:50%;background:#F8EFE9}
+.days i.miss{background:none;box-shadow:inset 0 0 0 1.5px rgba(248,239,233,.7)}
+.hstores{margin-top:8px}.hstores .store{box-shadow:0 10px 30px -12px rgba(40,20,10,.5)}
+.prog4{display:none}
+.for2{padding:40px 0 70px}
+.for2 .head,.faq .head{display:flex;flex-direction:column;gap:12px;margin-bottom:30px}
+.for2 h2,.faq h2{font-size:clamp(34px,3.6cqi,50px);line-height:1.08;letter-spacing:-.015em}
+.for2 .row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.w2{border:1px solid var(--o);border-radius:24px;background:var(--r);padding:28px;min-height:200px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px}
+.w2 .n2{font-family:var(--serif);font-weight:300;font-size:20px;color:var(--m);margin-bottom:auto}
+.w2 h3{font-size:28px}.w2 p{margin:0;color:var(--m)}
+.far{margin:26px 0 0;font-family:var(--serif);font-size:22px;color:var(--m);max-width:44ch}
+.faq{padding:90px 0 10px}
+.faq .wrap>.qa{max-width:820px}
+.qa{border-top:1px solid var(--o)}.qa:last-child{border-bottom:1px solid var(--o)}
+.qa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;font-family:var(--serif);font-size:24px;line-height:1.3;min-height:48px}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";font-family:var(--sys);font-size:24px;color:var(--m);flex:none}
+.qa[open] summary::after{content:"\2212"}
+.qa p{margin:0 0 24px;color:var(--m);max-width:62ch;font-size:17px;line-height:1.6}
+/* ---------- no italics anywhere on the site: the second line is quieter by weight and colour ---------- */
+.site em,.site i:not(.car),.site .far,.site .yo,.site .send.sealed .t{font-style:normal}
+.site h1 em,.site h2 em,.site .st2 em{font-weight:300;letter-spacing:-.02em}
+.o2t h1 em,.o3t h1 em{color:rgba(255,255,255,.8)}
+.o2t h1{font-weight:400}
+.yo{letter-spacing:.02em}
+.far{color:var(--m)}
+.o2t h1.h4{font-size:clamp(64px,8.4cqi,118px);line-height:.98;letter-spacing:-.03em;max-width:11ch}
+.o2t h1.h4+p{line-height:1.55}
+/* =================== PHONE WIDTH (inside the 390 frame) =================== */
+@container (max-width:700px){
+  .site .wrap{padding-inline:22px}
+  .snav{padding:58px 20px 0}
+  .snav .links{display:none}
+  .snav .get{padding:8px 14px;font-size:13px}
+  .o1h{min-height:0}
+  .o1g{grid-template-columns:1fr;align-content:start;gap:30px;padding-top:130px}
+  .o1c{gap:18px;text-align:left}
+  .o1c h1{font-size:40px}
+  .o1c p{font-size:16px}
+  .o1c .btns .b.line{display:none}
+  .o1p .dev{--pw:200px}
+  .mr{grid-template-columns:62px 1fr}
+  .chip{font-size:13px;padding:5px 11px}
+  .mb{font-size:30px}
+  .o1x .stick{grid-template-columns:1fr;gap:16px;padding:110px 22px 20px;align-content:start}
+  .o1x h2{display:none}
+  .o1x .eyebrow{display:none}
+  .stp{display:none}
+  .stp.on{display:grid}
+  .film{height:calc(var(--vh)*.5);border-radius:22px;order:-1}
+  .film .dev{--pw:min(170px,calc(var(--vh)*.2))}
+  .o1t{padding:70px 0 20px}
+  .tiles{grid-template-columns:1fr}
+  .tile{min-height:220px}
+  .o2t{top:17%}
+  .o2t h1{font-size:46px}
+  .o2t p{font-size:15px}
+  .o2p .dev{--pw:min(210px,calc(var(--vh)*.26))}
+  .o2c{left:0;right:0;top:auto;bottom:34px;transform:none;max-width:none;text-align:center;align-items:center;padding-inline:24px;gap:4px}
+  .o2c .tm{font-size:40px}
+  .o2c p{font-size:17px}
+  .o2r{display:none}
+  .o2s{padding:80px 0}
+  .o2s .st2{font-size:40px}
+  .cards2{grid-template-columns:1fr}
+  .fc{height:340px;border-radius:24px}
+  .panes{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+  .seam{left:0;right:0;top:50%;bottom:auto;width:auto;height:1px}
+  .pane .who{top:16px;bottom:auto;left:auto;right:18px;text-align:right}
+  .pane.la .who{top:118px}
+  .pane .who b{font-size:28px}
+  .pane .pp{left:34%;top:56%}
+  .pane.la .pp{top:62%}
+  .pane .pp .dev{--pw:min(150px,calc(var(--vh)*.17))}
+  .o3t{bottom:auto;top:110px}
+  .o3t h1{font-size:34px}
+  .o3t p{display:none}
+  .o3m .dev{--pw:min(220px,calc(var(--vh)*.26))}
+  .o3cap{top:118px;font-size:24px}
+  .o3h{padding:70px 0 20px}
+  .three{grid-template-columns:1fr;gap:26px}
+  .three div{border-left:0;padding:18px 0 0;border-top:1px solid var(--o)}
+  .three div:first-child{padding-top:0;border-top:0}
+  .foot{padding:22px 22px 0;margin-top:60px}
+  .closing{padding-top:80px}
+  .o4v .head h2{font-size:32px}
+  .o2t h1.h4{font-size:56px}
+  .o4 .o2t{top:19%}
+  .hstores .stores{flex-wrap:nowrap}.hstores .store{padding:6px 14px 6px 12px;min-height:48px;font-size:14px}.hstores .store small{font-size:10px}
+  .prog4{display:flex;position:absolute;z-index:6;left:22px;right:22px;top:100px;gap:8px;transition:opacity .3s}
+  .prog4 span{flex:1;display:flex;flex-direction:column;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .prog4 span.on{color:#fff}
+  .prog4 i{display:block;height:2px;border-radius:2px;background:rgba(255,255,255,.25);overflow:hidden}
+  .prog4 b{display:block;height:100%;background:#fff;transform-origin:left;transform:scaleX(0)}
+  .o4 .pane .pp .dev{--pw:min(140px,calc(var(--vh)*.16))}
+  .o4 .pane.la .pp{top:64%}
+  .o4 .pane.la .who{top:140px}
+  .for2 h2,.faq h2{font-size:32px}
+  .for2 .row{grid-template-columns:1fr}
+  .w2{min-height:150px;padding:22px}
+  .far{font-size:19px}
+  .faq{padding-top:60px}
+  .qa summary{font-size:20px}
+  .vcards{grid-template-columns:1fr}
+  .vc,.vc.wide{min-height:400px;padding:24px;border-radius:24px}
+  .vc>.lbl3{top:22px;left:24px}
+  .vc h3{font-size:28px}
+  .days{gap:7px}.days i{width:20px;height:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  .scene,.in,.pa.busy,.car,.hint i{animation:none !important}
+  .v,.v.on{transition-duration:.01s;transition-delay:0s}
+}
+</style>
+
+<div class="top">
+  <div>
+    <h1>Mọyì, three directions</h1>
+    <p>Each direction runs live on a desktop and on a phone. Scroll inside either screen, or press Play the scroll tour to watch both scroll on their own. The moving scenes stand in for real footage; the phone screens are the real app states.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end">
+    <div class="tabs" role="tablist" aria-label="Directions">
+      <button class="tab" id="t1" data-o="1" aria-pressed="true"><b>1</b>Lamplight</button>
+      <button class="tab" id="t2" data-o="2" aria-pressed="false"><b>2</b>Day into night</button>
+      <button class="tab" id="t3" data-o="3" aria-pressed="false"><b>3</b>Two cities</button>
+      <button class="tab" id="t4" data-o="4" aria-pressed="false"><b>4</b>Best of 2 and 3</button>
+    </div>
+    <div class="acts"><button class="act" id="tour">Play the scroll tour</button><button class="act" id="toTop">Back to top</button></div>
+  </div>
+</div>
+
+<div class="devices">
+  <div class="desk"><p class="cap">Desktop · 1280 × 800</p>
+    <div class="browser"><div class="bbar"><i></i><i></i><i></i><span class="url">getmoyi.app</span></div><div class="vp" id="dvp"><div class="frame d" id="fd"></div></div></div>
+  </div>
+  <div class="mob"><p class="cap">Phone · 390 × 844</p>
+    <div class="handset"><div class="vp" id="mvp"><div class="notch"></div><div class="frame m" id="fm"></div></div></div>
+  </div>
+</div>
+
+<div class="notes">
+  <section><h2 id="nTitle"></h2><p id="nBody"></p><ul id="nList"></ul></section>
+  <section><h2>Where each idea comes from</h2><ul id="nRefs"></ul><p>Footage prompts and a shot list for the real clips are in moyi-web/preview/footage-prompts.md.</p></section>
+</div>
+
+<script>
+(function(){
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const MINE="You waited up so I wouldn't walk home alone.";
+const HIS="You called my mum on her birthday before I remembered.";
+const MARK='<svg viewBox="0 0 40 52" aria-hidden="true"><circle cx="20" cy="20" r="14.5" fill="none" stroke="currentColor" stroke-width="4.5"/><circle cx="20" cy="46" r="4" fill="currentColor"/></svg>';
+const STORES='<div class="stores"><a class="store" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8C6.9 7.3 5.4 8.2 4.6 9.7c-1.7 2.9-.4 7.2 1.2 9.6.8 1.2 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.8-1-2.8-4.1zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg><span><small>Download on the</small>App Store</span></a><a class="store" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 2.8v18.4c0 .4.4.6.7.4l10.5-9.2c.2-.2.2-.6 0-.8L4.7 2.4c-.3-.2-.7 0-.7.4zm12.6 8.4L6.7 2.6l11.4 6.5-1.5 2.1zm0 1.6l1.5 2.1-11.4 6.5 9.9-8.6zm2.8-2.9l2.2 1.3c.4.2.4.8 0 1.1l-2.2 1.3-1.7-1.8 1.7-1.9z"/></svg><span><small>Get it on</small>Google Play</span></a></div>';
+const NAV=`<header class="snav"><a class="brand" href="#">${MARK}Mọyì</a><nav class="links"><span>How it works</span><span>Privacy</span><span>Support</span></nav><a class="get" href="#">Get the app</a></header>`;
+const CLOSE=`<section class="closing"><div class="wrap"><h2>I know your worth.</h2><p class="yo" lang="yo">Mo mọ ìyì rẹ.</p>${STORES}</div><footer class="foot"><nav><span>Privacy</span><span>Terms</span><span>Data processing</span><span>Support</span><span>Delete account</span></nav><span>hello@getmoyi.app · © 2026 Mọyì</span></footer></section>`;
+
+/* ---------- phone ---------- */
+function phone(opt){
+  const o=Object.assign({mine:MINE,theirs:HIS,partner:"Tunde",date:"Sat 15 Nov",time:"9:41"},opt||{});
+  return `<div class="dev ${o.cls||""}" role="img" aria-label="The Mọyì app"><div class="scr" data-partner="${o.partner}">
+   <div class="isl"></div><div class="sb"><span class="clock">${o.time}</span><span>●●●</span></div><div class="glass"></div>
+   <div class="v today on"><div class="an"><b>${o.date}</b><span><u>Archive</u><u>Bond</u></span></div><div class="gr"></div><p class="lb">Today</p><p class="en">Not yet written for today.</p><p class="st">One true sentence is enough.</p><div class="gr"></div><div class="pa">Write</div></div>
+   <div class="v write"><div class="an"><span>Cancel</span><b>Write</b><span style="width:3em"></span></div><p class="st">Something small they did this week.</p><p class="en s"><span class="ty"></span><span class="car"></span></p><div class="gr"></div><div class="pa sendb">Send</div></div>
+   <div class="v wait"><div class="an"><b>${o.date}</b><span><u>Archive</u><u>Bond</u></span></div><div class="gr"></div><p class="lb">Today</p><p class="en s">${o.mine}</p><p class="st">Written. You'll see ${o.partner}'s when it's ready.</p><div class="gr"></div></div>
+   <div class="v reveal"><p class="st" style="margin-top:4%">Your day is open.</p><div class="ec c1"><p class="lb">${o.partner}</p><p class="en s">${o.theirs}</p></div><div class="ec c2"><p class="lb">You</p><p class="en s">${o.mine}</p></div><div class="gr"></div></div>
+  </div></div>`;
+}
+function ctl(scr){
+  const mine=scr.querySelector(".wait .en").textContent;
+  let cur="today";
+  const api={
+    set(n){if(n===cur)return;cur=n;scr.querySelectorAll(".v").forEach(v=>v.classList.toggle("on",v.classList.contains(n)))},
+    type(k){scr.querySelector(".ty").textContent=mine.slice(0,Math.round(clamp(k)*mine.length))},
+    busy(b){const s=scr.querySelector(".sendb");s.textContent=b?"Sending":"Send";s.classList.toggle("busy",!!b)},
+    cards(a,b){const c1=scr.querySelector(".c1"),c2=scr.querySelector(".c2");c1.style.opacity=a;c1.style.transform=`translateY(${(1-a)*14}px)`;c2.style.opacity=b;c2.style.transform=`translateY(${(1-b)*14}px)`},
+    time(t){scr.querySelector(".clock").textContent=t},
+    get cur(){return cur}
+  };return api;
+}
+/* scroll-scrubbed day: k 0..1 -> state */
+function scrub(api,k){
+  if(k<.12){api.set("today");api.busy(false)}
+  else if(k<.55){api.set("write");api.type((k-.14)/.33);api.busy(k>.49)}
+  else if(k<.75){api.set("wait");api.busy(false)}
+  else{api.set("reveal");api.cards(clamp((k-.77)/.1),clamp((k-.85)/.1))}
+}
+/* autoplay a day */
+function autoplay(api){
+  let stop=false,ts=[];const L=(f,ms)=>ts.push(setTimeout(()=>{if(!stop)f()},ms));
+  function cycle(){api.set("today");api.busy(false);api.type(0);api.cards(1,1);
+    if(reduce){api.set("reveal");return}
+    L(()=>{api.set("write");let k=0;const tick=()=>{k+=1/46;api.type(k);if(k<1)L(tick,46);else L(()=>{api.busy(true);
+      L(()=>{api.busy(false);api.set("wait");L(()=>{api.cards(0,0);api.set("reveal");L(()=>api.cards(1,0),300);L(()=>api.cards(1,1),650);L(cycle,4800)},2400)},1300)},450)};tick()},1700)}
+  cycle();return()=>{stop=true;ts.forEach(clearTimeout)};
+}
+
+/* ---------- scenes (footage stand-ins) ---------- */
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+function hex(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]}
+function mix(a,b,t){const A=hex(a),B=hex(b);return`rgb(${Math.round(lerp(A[0],B[0],t))},${Math.round(lerp(A[1],B[1],t))},${Math.round(lerp(A[2],B[2],t))})`}
+function ramp(stops,p){for(let i=0;i<stops.length-1;i++){const[a,ca]=stops[i],[b,cb]=stops[i+1];if(p<=b)return mix(ca,cb,clamp((p-a)/(b-a)))}return stops[stops.length-1][1]}
+function orb(ctx,x,y,r,c,a){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${c},${a})`);g.addColorStop(.6,`rgba(${c},${a*.4})`);g.addColorStop(1,`rgba(${c},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,6.283);ctx.fill()}
+const SCENES={
+  lamp:{init(r){return{orbs:Array.from({length:28},()=>({x:r(),y:r()*.9,s:.015+r()*.07,a:.08+r()*.3,c:["240,170,100","226,140,110","255,226,190","200,120,70"][Math.floor(r()*4)],vx:(r()-.5)*.00004,ph:r()*6.28}))}},
+    draw(ctx,w,h,t,st){const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,"#1d1412");g.addColorStop(1,"#0f0b0a");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      orb(ctx,w*.82,h*.32,Math.max(w,h)*.42,"236,160,92",.30);orb(ctx,w*.82,h*.30,Math.max(w,h)*.1,"255,214,160",.5);
+      ctx.fillStyle="rgba(90,110,150,.07)";ctx.fillRect(w*.04,h*.12,w*.22,h*.6);ctx.strokeStyle="rgba(255,230,200,.06)";ctx.lineWidth=3;ctx.strokeRect(w*.04,h*.12,w*.22,h*.6);ctx.beginPath();ctx.moveTo(w*.15,h*.12);ctx.lineTo(w*.15,h*.72);ctx.stroke();
+      const S=Math.max(w,h);for(const o of st.orbs){if(!reduce)o.x+=o.vx*16;if(o.x>1.1)o.x=-.1;if(o.x<-.1)o.x=1.1;orb(ctx,o.x*w,o.y*h,o.s*S*(reduce?1:.85+.15*Math.sin(t/1500+o.ph)),o.c,o.a)}
+      const f=ctx.createLinearGradient(0,h*.75,0,h);f.addColorStop(0,"rgba(15,11,10,0)");f.addColorStop(1,"rgba(15,11,10,.85)");ctx.fillStyle=f;ctx.fillRect(0,h*.7,w,h*.3)}},
+  sky:{init(r){const b=[];let x=-.02;while(x<1.02){const bw=.03+r()*.07,bh=.08+r()*.26;const win=[];const cols=Math.max(2,Math.floor(bw*90)),rows=Math.floor(bh*60);for(let i=0;i<cols;i++)for(let j=0;j<rows;j++)if(r()>.35)win.push([i/cols,j/rows,r()]);b.push({x,w:bw,h:bh,win,cols,rows});x+=bw+r()*.006}
+      return{b,stars:Array.from({length:90},()=>[r(),r()*.55,r()]),clouds:Array.from({length:6},()=>({x:r(),y:.12+r()*.3,s:.12+r()*.18,v:.000006+r()*.00001}))}},
+    draw(ctx,w,h,t,st,p){const top=ramp([[0,"#7E9FBE"],[.45,"#3A3A66"],[.75,"#151325"],[1,"#0D0B14"]],p),mid=ramp([[0,"#E9CDA4"],[.45,"#C0687A"],[.75,"#3A2340"],[1,"#1C1424"]],p),bot=ramp([[0,"#F4B47A"],[.45,"#F08A55"],[.75,"#6E3A3A"],[1,"#2E1F27"]],p);
+      const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,top);g.addColorStop(.55,mid);g.addColorStop(.85,bot);g.addColorStop(1,bot);ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      const sa=clamp(1-p*1.7);if(sa>0){const sy=h*(.48+p*.5);orb(ctx,w*.66,sy,Math.min(w,h)*.5,"255,200,140",.35*sa);orb(ctx,w*.66,sy,Math.min(w,h)*.06,"255,236,200",.95*sa)}
+      const sta=clamp((p-.55)/.35);if(sta>0)for(const s of st.stars){ctx.fillStyle=`rgba(255,248,235,${sta*(.4+.6*Math.abs(Math.sin(t/900+s[2]*20)))})`;ctx.fillRect(s[0]*w,s[1]*h,1.3,1.3)}
+      for(const c of st.clouds){if(!reduce){c.x+=c.v*16;if(c.x>1.3)c.x=-.3}ctx.save();ctx.translate(c.x*w,c.y*h);ctx.scale(3,1);orb(ctx,0,0,c.s*w/3,p<.5?"255,236,215":"120,90,120",lerp(.35,.12,p));ctx.restore()}
+      const base=h*.98,sil=ramp([[0,"#6A5A6A"],[.45,"#2E2333"],[1,"#090708"]],p);
+      for(const b of st.b){const bx=b.x*w,bw=b.w*w,bh=b.h*h*1.35;ctx.fillStyle=sil;ctx.fillRect(bx,base-bh,bw,bh);
+        for(const[wx,wy,thr]of b.win){if(p>thr*.75+.18){ctx.fillStyle=`rgba(255,${190+Math.floor(thr*40)},120,${.55+thr*.4})`;ctx.fillRect(bx+3+wx*(bw-6),base-bh+6+wy*(bh-8),Math.max(1.5,bw/b.cols*.45),2.2)}}}
+      const hz=ctx.createLinearGradient(0,h*.6,0,h);hz.addColorStop(0,"rgba(0,0,0,0)");hz.addColorStop(1,`rgba(23,19,19,${lerp(.25,.7,p)})`);ctx.fillStyle=hz;ctx.fillRect(0,h*.6,w,h*.4)}},
+  lagos:{init(r){return{lights:Array.from({length:40},()=>({x:r(),y:.55+r()*.12,s:.004+r()*.02,a:.3+r()*.5,c:["255,200,130","255,170,110","255,230,190"][Math.floor(r()*3)],ph:r()*6}))}},
+    draw(ctx,w,h,t,st){const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,"#2A1C30");g.addColorStop(.42,"#9A4D4A");g.addColorStop(.6,"#E18A52");g.addColorStop(.62,"#3A2422");g.addColorStop(1,"#1B1110");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      orb(ctx,w*.4,h*.6,Math.max(w,h)*.35,"255,170,100",.28);const S=Math.max(w,h);
+      for(const l of st.lights)orb(ctx,l.x*w,l.y*h,l.s*S*(reduce?1:.85+.15*Math.sin(t/800+l.ph)),l.c,l.a);
+      ctx.fillStyle="#120B0A";ctx.fillRect(0,h*.78,w,h*.035);for(let x=0;x<w;x+=Math.max(14,w*.035))ctx.fillRect(x,h*.78,Math.max(3,w*.006),h*.22);ctx.fillRect(0,h*.95,w,h*.05);
+      const sway=reduce?0:Math.sin(t/1700)*.015;ctx.fillStyle="#0E0908";for(let i=0;i<7;i++){ctx.save();ctx.translate(w*.92,h*.8);ctx.rotate(-1.1-i*.32+sway);ctx.beginPath();ctx.ellipse(w*.16,0,w*.17,h*.022,0,0,6.283);ctx.fill();ctx.restore()}}},
+  rain:{init(r){return{lights:Array.from({length:30},()=>({x:r(),y:.2+r()*.6,s:.02+r()*.06,a:.15+r()*.3,c:r()>.5?"140,170,215":"230,165,110",ph:r()*6})),drops:Array.from({length:110},()=>[r(),r(),.6+r()*2]),runs:Array.from({length:22},()=>({x:r(),y:r(),v:.0008+r()*.002,l:.02+r()*.05}))}},
+    draw(ctx,w,h,t,st){const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,"#161C27");g.addColorStop(1,"#25202B");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);const S=Math.max(w,h);
+      for(const l of st.lights)orb(ctx,l.x*w,l.y*h,l.s*S*(reduce?1:.9+.1*Math.sin(t/1300+l.ph)),l.c,l.a);
+      ctx.fillStyle="rgba(220,230,245,.35)";for(const[x,y,r]of st.drops){ctx.beginPath();ctx.arc(x*w,y*h,r,0,6.283);ctx.fill()}
+      ctx.strokeStyle="rgba(220,230,245,.28)";ctx.lineWidth=1.4;for(const d of st.runs){if(!reduce){d.y+=d.v*16;if(d.y>1.1){d.y=-.1;d.x=Math.random()}}ctx.beginPath();ctx.moveTo(d.x*w,(d.y-d.l)*h);ctx.lineTo(d.x*w+1,d.y*h);ctx.stroke();ctx.beginPath();ctx.arc(d.x*w+1,d.y*h,1.8,0,6.283);ctx.fillStyle="rgba(230,238,250,.5)";ctx.fill()}
+      ctx.fillStyle="rgba(10,10,14,.35)";ctx.fillRect(0,0,w*.03,h);ctx.fillRect(0,h*.97,w,h*.03)}}
+};
+SCENES.bed={init(r){return{steam:Array.from({length:3},(_,i)=>({ph:r()*6,dx:i*.012}))}},
+  draw(ctx,w,h,t,st){const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#3b2519");g.addColorStop(1,"#1a100b");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle="rgba(255,220,180,.05)";ctx.lineWidth=1;for(let y=0;y<h;y+=h/26){ctx.beginPath();ctx.moveTo(0,y);for(let x=0;x<=w;x+=w/12)ctx.lineTo(x,y+Math.sin(x*.01+y)*3);ctx.stroke()}
+    orb(ctx,w*.86,h*.16,Math.max(w,h)*.55,"240,165,95",.42);orb(ctx,w*.86,h*.16,Math.max(w,h)*.09,"255,226,180",.75);
+    ctx.save();ctx.translate(w*.34,h*.3);ctx.rotate(-.2);const pw=Math.min(w*.2,h*.28),ph=pw*2.05;
+    ctx.fillStyle="rgba(0,0,0,.45)";ctx.beginPath();ctx.roundRect(-pw/2+10,-ph/2+14,pw,ph,pw*.16);ctx.fill();
+    ctx.fillStyle="#120d0c";ctx.beginPath();ctx.roundRect(-pw/2,-ph/2,pw,ph,pw*.16);ctx.fill();
+    const glow=reduce?.35:.2+.25*(.5+.5*Math.sin(t/1800));ctx.fillStyle=`rgba(248,239,233,${glow*.35})`;ctx.beginPath();ctx.roundRect(-pw/2+pw*.05,-ph/2+pw*.05,pw*.9,ph-pw*.1,pw*.12);ctx.fill();
+    ctx.fillStyle=`rgba(248,239,233,${glow})`;ctx.fillRect(-pw*.3,-ph*.05,pw*.6,2);ctx.fillRect(-pw*.3,ph*.02,pw*.45,2);ctx.restore();
+    const mx=w*.66,my=h*.36,mr=Math.min(w,h)*.08;ctx.fillStyle="rgba(0,0,0,.35)";ctx.beginPath();ctx.arc(mx+6,my+8,mr,0,6.283);ctx.fill();ctx.fillStyle="#d9c7b8";ctx.beginPath();ctx.arc(mx,my,mr,0,6.283);ctx.fill();ctx.fillStyle="#5a3424";ctx.beginPath();ctx.arc(mx,my,mr*.78,0,6.283);ctx.fill();
+    ctx.strokeStyle="rgba(255,240,225,.18)";ctx.lineWidth=2;for(const s of st.steam){ctx.beginPath();for(let k=0;k<=20;k++){const yy=my-mr*.3-k*mr*.09,xx=mx+(s.dx*w)+Math.sin(k*.5+(reduce?0:t/700)+s.ph)*mr*.18;k?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy)}ctx.stroke()}}};
+let canvases=[];
+function bindScenes(root){root.querySelectorAll("canvas[data-scene]").forEach((c,i)=>{const k=c.dataset.scene;const st=SCENES[k].init(rng(7+i*13+k.length*101));canvases.push({c,ctx:c.getContext("2d"),k,st,p:0})})}
+let last=0;
+function loop(t){requestAnimationFrame(loop);if(t-last<33)return;last=t;
+  for(const o of canvases){const w=o.c.clientWidth,h=o.c.clientHeight;if(!w||!h)continue;const dpr=1.25;if(o.c.width!==Math.round(w*dpr)){o.c.width=Math.round(w*dpr);o.c.height=Math.round(h*dpr)}
+    o.ctx.setTransform(dpr,0,0,dpr,0,0);SCENES[o.k].draw(o.ctx,w,h,t,o.st,o.p)}}
+requestAnimationFrame(loop);
+
+/* ---------- the three directions ---------- */
+const OPT={
+1:{title:"1 · Lamplight",
+  body:"Evening, warm and intimate, built like Extra. The opening is a lamplit room with the phone held at a slight angle, already playing a whole day on its own. Then an entry writes itself as you scroll, line by line, and the Send bar fills until it reads Sealed until Tunde writes. Next the page pins: Write, Wait and Read together light up in turn while the phone beside them changes screen with your scroll. Short honest cards, then the dark close.",
+  list:["Real footage here: a hand holding a phone in lamplight, with the app's screen recording laid over the screen (shots 1 and 2).","Strongest at showing the app in the first second.","Calmest of the three. Closest to how the app itself feels."],
+  refs:[["Extra","https://extra.email","hero video of a hand holding a phone with the app laid over it; the email that types itself; the pinned feature list"],["Opal","https://opalapp.com","a phone that loops through the app's states in the hero"],["Linear","https://linear.app","fade and rise timing"]],
+  html:()=>`${NAV}
+  <section class="o1h"><canvas class="scene" data-scene="lamp"></canvas><div class="grain"></div><div class="vig"></div><span class="tag">Footage stand-in</span>
+   <div class="wrap o1g"><div class="o1c"><p class="eyebrow in">Daily gratitude, for two</p><h1 class="in" style="animation-delay:.1s">Write before you read. <em>Your day opens when you both have.</em></h1><p class="in" style="animation-delay:.22s">Each day you each write one short thing you appreciate about the other. Then you read them together.</p><div class="btns in" style="animation-delay:.34s"><a class="b solid" href="#">Get the app</a><a class="b line" href="#"><svg viewBox="0 0 16 16"><path fill="currentColor" d="M4 2.5v11l9-5.5z"/></svg>Watch a day</a></div></div>
+   <div class="o1p">${phone({cls:"in hero"})}</div></div></section>
+  <section class="o1l" data-pin="letter" style="height:calc(var(--vh)*2.3)"><div class="stick"><div class="memo"><div class="mr"><span class="k">From</span><span class="chip">Amara <i>Lagos · 21:40</i></span></div><div class="mr"><span class="k">About</span><span class="chip">Tunde <i>London · 20:40</i></span></div><div class="mr"><span class="k">Day</span><span class="chip">214 · Saturday</span></div><div class="mrule"></div><p class="mb"></p><div class="send"><div class="f"></div><span class="t">Send</span></div></div></div></section>
+  <section class="o1x" data-pin="steps" style="height:calc(var(--vh)*3.2)"><div class="stick"><div><p class="eyebrow">How it works</p><h2>One small thing a day. Then you read each other.</h2>
+   <div class="stp"><span class="bar"><i></i></span><div><h3>Write</h3><p>One true sentence about them. Thirty seconds is a whole entry.</p></div></div>
+   <div class="stp"><span class="bar"><i></i></span><div><h3>Wait</h3><p>Sealed until they write too. Nobody sees whether the other opened the app.</p></div></div>
+   <div class="stp"><span class="bar"><i></i></span><div><h3>Read together</h3><p>The day opens. Both entries, side by side. Nothing else to do.</p></div></div></div>
+   <div class="film"><canvas class="scene" data-scene="lamp"></canvas><div class="grain"></div>${phone({cls:"pin"})}</div></div></section>
+  <section class="o1t"><div class="wrap tiles"><div class="tile"><div class="strikes"><s>Read receipts</s><s>Last seen</s><s>Followers</s></div><h3>Two people. Nobody else.</h3><p>No feed, no audience, no sign of who opened what.</p></div><div class="tile"><span class="big">0</span><h3>Guilt when you miss a day.</h3><p>Only the streak count resets. Nobody is told.</p></div><div class="tile"><span class="big" style="font-size:64px">ọ</span><h3>Honest about privacy.</h3><p>No ads, words never sold. Not end to end encrypted, and we explain why.</p></div></div></section>
+  ${CLOSE}`},
+2:{title:"2 · Day into night",
+  body:"One day, told by the sky, built like Cleo. The page opens on a golden afternoon over the city with the promise in large type. As you scroll, the phone rises into the middle and the sky turns to dusk, then night, windows lighting up one by one. The phone and the big clock beside it move through the day together: 17:30, nothing written; 21:40, Amara writes; then sealed; then 23:10, the day opens. After that, the promise lights up word by word, and two rounded film cards show Lagos at dusk and London in the rain.",
+  list:["Real footage here: one sky time-lapse from afternoon to night, tied to the scroll (shot 3), plus the Lagos and London clips (shots 4 and 5).","Most cinematic. Tells the whole product as one evening.","The phone stays centred, so it reads well on a phone too."],
+  refs:[["Cleo","https://web.meetcleo.com","a phone rising over full-bleed footage, its screen playing as you scroll; rounded video cards"],["Daylight Computer","https://daylightcomputer.com","light moving across the page as atmosphere"],["Apple iPhone pages","https://www.apple.com/iphone/","video scrubbed by scroll"]],
+  html:()=>`${NAV}
+  <section class="o2" data-pin="sky" style="height:calc(var(--vh)*4.4)"><div class="stick"><canvas class="scene" data-scene="sky" style="animation:none;inset:0;width:100%;height:100%"></canvas><div class="grain"></div><span class="tag">Footage stand-in</span>
+   <div class="o2t"><p class="eyebrow" style="color:rgba(255,255,255,.9)">Daily gratitude, for two</p><h1>Write before you read. <em>Your day opens when you both have.</em></h1><p>One short thing you appreciate about each other, every day.</p></div>
+   <div class="hint"><span>Scroll</span><i></i></div>
+   <div class="o2p">${phone({cls:"sky"})}</div>
+   <div class="o2c"><span class="ct">Lagos</span><span class="tm">17:30</span><p>The day is open for writing. Nothing to chase.</p></div>
+   <div class="o2r"><span>Write</span><span>Wait</span><span>Read together</span></div></div></section>
+  <section class="o2s"><div class="wrap"><p class="st2">Write before you read. <em>Your day opens when you both have.</em></p></div></section>
+  <section><div class="wrap cards2"><div class="fc"><canvas class="scene" data-scene="lagos"></canvas><div class="grain"></div><span class="lbl2">Lagos · 21:40</span><h3>Amara writes before bed.</h3><p>One sentence about Tunde. Sealed until he writes too.</p></div><div class="fc"><canvas class="scene" data-scene="rain"></canvas><div class="grain"></div><span class="lbl2">London · 20:40</span><h3>Tunde, on the bus home.</h3><p>One shared day for both of them, whatever the time zones say.</p></div></div></section>
+  <section class="o1t" style="padding-top:20px"><div class="wrap tiles"><div class="tile"><div class="strikes"><s>Read receipts</s><s>Last seen</s><s>Followers</s></div><h3>Two people. Nobody else.</h3><p>No feed, no audience, no sign of who opened what.</p></div><div class="tile"><span class="big">0</span><h3>Guilt when you miss a day.</h3><p>Only the streak count resets.</p></div><div class="tile"><span class="big" style="font-size:64px">ọ</span><h3>Honest about privacy.</h3><p>No ads, words never sold. Not end to end encrypted, and we explain why.</p></div></div></section>
+  ${CLOSE}`},
+3:{title:"3 · Two cities",
+  body:"The product's idea, shown literally. The screen is split: Lagos at dusk on one side with Amara's phone, London in the rain on the other with Tunde's. As you scroll, Amara writes and her phone seals. Then Tunde writes. Then the two halves close in, the cities go dark, and the two phones become one: Your day is open, with both entries. On a phone the split is top and bottom. Then a calm three-step explainer and the close.",
+  list:["Real footage here: Lagos balcony at dusk and London bus window at night (shots 4 and 5), each with a phone laid in.","Most distinctive. Reciprocity is the whole picture, so nobody could mistake it for another app.","Busiest of the three; the split needs strong footage on both sides."],
+  refs:[["Extra","https://extra.email","app screens laid into real footage"],["Cleo","https://web.meetcleo.com","scroll-driven phone states"],["How We Feel","https://howwefeel.org","an emotional idea carried by one visual system"]],
+  html:()=>`${NAV}
+  <section class="o3" data-pin="cities" style="height:calc(var(--vh)*4.2)"><div class="stick">
+   <div class="panes"><div class="pane la"><canvas class="scene" data-scene="lagos"></canvas><div class="grain"></div><div class="who"><span>Lagos · Amara</span><b class="ta">21:40</b></div><div class="pp">${phone({cls:"pa1",time:"21:40"})}</div></div>
+   <div class="pane lo"><canvas class="scene" data-scene="rain"></canvas><div class="grain"></div><div class="who"><span>London · Tunde</span><b class="tb">20:40</b></div><div class="pp">${phone({cls:"pb1",partner:"Amara",mine:HIS,theirs:MINE,time:"20:40"})}</div></div></div>
+   <div class="seam"></div><div class="night"></div><span class="tag">Footage stand-in</span>
+   <div class="o3cap">Your day is open.</div>
+   <div class="o3m">${phone({cls:"pm1",time:"23:10"})}</div>
+   <div class="o3t"><h1>Write before you read. <em>Your day opens when you both have.</em></h1><p>Daily gratitude, for two. Wherever the two of you are.</p></div>
+  </div></section>
+  <section class="o3h"><div class="wrap"><p class="eyebrow">How it works</p><h2>Three moments a day. Most take under a minute.</h2><div class="three"><div><span class="n">1</span><h3>Write</h3><p>One true sentence about them.</p></div><div><span class="n">2</span><h3>Wait</h3><p>Sealed until they write too.</p></div><div><span class="n">3</span><h3>Read together</h3><p>The day opens for both of you.</p></div></div></div></section>
+  <section class="o1t" style="padding-top:20px"><div class="wrap tiles"><div class="tile"><div class="strikes"><s>Read receipts</s><s>Last seen</s><s>Followers</s></div><h3>Two people. Nobody else.</h3><p>No feed, no audience.</p></div><div class="tile"><span class="big">0</span><h3>Guilt when you miss a day.</h3><p>Only the streak count resets.</p></div><div class="tile"><span class="big" style="font-size:64px">ọ</span><h3>Honest about privacy.</h3><p>Not end to end encrypted, and we explain why.</p></div></div></section>
+  ${CLOSE}`},
+4:{title:"4 · One evening, two cities",
+  body:"Option 2's single evening, with option 3's two cities at its heart. It opens like 2: a golden afternoon sky, the promise in large type, and the phone rising into the middle as the sky turns to dusk while Amara writes. When she sends, the sky splits down the middle (top and bottom on a phone): Lagos on one side with her phone sealed, London in the rain on the other, where Tunde writes an hour behind her. When he sends, the two halves close back into one night sky and a single phone opens the day for both of them. Then one sentence lights up word by word, who it is for, three footage cards on privacy, short answers to the four likely questions, and the close.",
+  list:["Real footage here: the sky time-lapse (shot 3) carries the opening and the ending; the Lagos and London clips (shots 4 and 5) appear only in the split. The three privacy cards reuse the lamplit room (shot 1), the rain (shot 5) and the bedside table (shot 6).","Keeps 2's calm, centred phone and 3's reciprocity picture, without 3's busy opening.","One phone on screen at a time, except in the split, where each city has its own."],
+  refs:[["Cleo","https://web.meetcleo.com","a phone rising over full-bleed footage, its screen playing as you scroll"],["Extra","https://extra.email","app screens laid into real footage"],["Apple iPhone pages","https://www.apple.com/iphone/","video scrubbed by scroll"]],
+  html:()=>`${NAV}
+  <section class="o4" data-pin="both" style="height:calc(var(--vh)*4)"><div class="stick"><canvas class="scene" data-scene="sky" style="animation:none;inset:0;width:100%;height:100%"></canvas><div class="grain"></div>
+   <div class="panes p4"><div class="pane la"><canvas class="scene" data-scene="lagos"></canvas><div class="grain"></div><div class="who"><span>Lagos · Amara</span><b class="ta">21:42</b></div><div class="pp">${phone({cls:"pa1",time:"21:42"})}</div></div>
+   <div class="pane lo"><canvas class="scene" data-scene="rain"></canvas><div class="grain"></div><div class="who"><span>London · Tunde</span><b class="tb">20:42</b></div><div class="pp">${phone({cls:"pb1",partner:"Amara",mine:HIS,theirs:MINE,time:"20:42"})}</div></div></div>
+   <div class="seam"></div><span class="tag">Footage stand-in</span>
+   <div class="o2t"><p class="eyebrow" style="color:rgba(255,255,255,.9)">Daily gratitude, for two</p><h1 class="h4">Write before you read.</h1><p>One short thing about each other, every day.<br>Your day opens when you both have.</p><div class="hstores">${STORES}</div></div>
+   <div class="hint"><span>Scroll</span><i></i></div>
+   <div class="o2p">${phone({cls:"sky"})}</div>
+   <div class="o2c"><span class="ct">Lagos</span><span class="tm">17:30</span><p>The day is open for writing. Nothing to chase.</p></div>
+   <div class="o2r"><span>Amara writes</span><span>Tunde writes</span><span>Read together</span></div>
+   <div class="prog4" aria-hidden="true"><span><i><b></b></i>Amara writes</span><span><i><b></b></i>Tunde writes</span><span><i><b></b></i>Read together</span></div></div></section>
+  <section class="o2s"><div class="wrap"><p class="st2">One sentence a day about someone you love. <em>Kept sealed until they write theirs.</em></p></div></section>
+  <section class="for2"><div class="wrap"><div class="head"><p class="eyebrow">For two</p><h2>Whoever your one person is.</h2></div><div class="row"><div class="w2"><span class="n2">1</span><h3>My partner</h3><p>Across the room, or across the world.</p></div><div class="w2"><span class="n2">2</span><h3>My close friend</h3><p>The one you would call first.</p></div><div class="w2"><span class="n2">3</span><h3>My family</h3><p>A sibling, a parent, a cousin. Both of you 18 or over.</p></div></div><p class="far">Lagos and London, or Lisbon and Los Angeles. Mọyì keeps one shared day for both of you, whatever the time zones say.</p></div></section>
+  <section class="o4v"><div class="wrap"><div class="head"><p class="eyebrow">Private by construction</p><h2>Made for two people, and only two.</h2></div><div class="vcards">
+   <div class="vc wide"><canvas class="scene" data-scene="lamp"></canvas><div class="grain"></div><span class="lbl3">Just the two of you</span><div class="nots" aria-label="Things Mọyì does not have"><s>Read receipts</s><s>Last seen</s><s>Typing dots</s><s>Followers</s><s>A feed</s></div><h3>Two people. Nobody else.</h3><p>No audience, and no sign of who opened the app or when. Leave a bond at any time, with no questions.</p></div>
+   <div class="vc"><canvas class="scene" data-scene="rain"></canvas><div class="grain"></div><span class="lbl3">Kind to missed days</span><div class="days" role="img" aria-label="A week with six days written and one missed"><span><i></i>M</span><span><i></i>T</span><span><i></i>W</span><span><i class="miss"></i>T</span><span><i></i>F</span><span><i></i>S</span><span><i></i>S</span></div><h3>Miss a day. Nothing is lost.</h3><p>Only the streak count resets. Nobody is told, and nobody is waiting on you.</p></div>
+   <div class="vc"><canvas class="scene" data-scene="bed"></canvas><div class="grain"></div><span class="lbl3">Honest about privacy</span><h3>Your words stay yours.</h3><p>No ads, and your words are never sold. Entries are not end to end encrypted, and we explain why in plain words.</p><a href="#">Read the privacy page</a></div>
+  </div></div></section>
+  <section class="faq"><div class="wrap"><div class="head"><p class="eyebrow">Questions</p><h2>Before you download.</h2></div>
+   <details class="qa" open><summary>How does one shared day work across time zones?</summary><p>Each bond keeps one shared day, set by a single time zone for the bond (the creator's own, to begin with). You both write within that day wherever you are, and either of you can propose a different time zone in Bond settings.</p></details>
+   <details class="qa"><summary>What happens if one of us stops writing?</summary><p>Nothing is sent to the other person, and nobody is told they are waiting on you. A missed day only resets the streak count. You can also leave a bond at any time, without explaining.</p></details>
+   <details class="qa"><summary>Can Mọyì read our entries?</summary><p>Entries are not end to end encrypted, so in principle they can be read on our servers. We never sell them or use them for ads, and the privacy page explains exactly who can see them, and when.</p></details>
+   <details class="qa"><summary>How do I delete my account?</summary><p>In the app, go to Settings, then Account, then Delete account. No phone? Email hello@getmoyi.app from your account's address. The delete account page lists what is removed, and when.</p></details>
+  </div></section>
+  ${CLOSE}`}
+};
+
+/* ---------- mounting a direction into a frame ---------- */
+function prog(frame,sec){const H=frame.clientHeight;return clamp((frame.scrollTop-sec.offsetTop)/(sec.offsetHeight-H))}
+const pad=n=>String(n).padStart(2,"0");
+const fmt=m=>`${pad(Math.floor(m/60)%24)}:${pad(Math.round(m)%60)}`;
+function mount(frame,o){
+  frame.innerHTML=`<div class="site">${OPT[o].html()}</div>`;frame.scrollTop=0;
+  const site=frame.firstElementChild;site.style.setProperty("--vh",frame.clientHeight+"px");
+  bindScenes(site);
+  const stops=[];
+  const hero=site.querySelector(".dev.hero .scr");if(hero)stops.push(autoplay(ctl(hero)));
+  let update=()=>{};
+  if(o===1){
+    const letter=site.querySelector('[data-pin="letter"]'),mb=site.querySelector(".mb"),send=site.querySelector(".send"),f=send.querySelector(".f"),tt=send.querySelector(".t");
+    const MEMO="You waited up so I wouldn't walk home alone, and pretended you weren't worried.";
+    const steps=site.querySelector('[data-pin="steps"]'),stp=[...site.querySelectorAll(".stp")],api=ctl(site.querySelector(".dev.pin .scr"));
+    update=()=>{const p=prog(frame,letter);const n=Math.round(clamp(p/.68)*MEMO.length);mb.innerHTML=MEMO.slice(0,n)+(n<MEMO.length?`<span class="car"></span><span class="gh">${MEMO.slice(n)}</span>`:"");
+      const fl=clamp((p-.7)/.18);f.style.transform=`scaleX(${fl})`;send.classList.toggle("full",fl>.55);const sealed=p>.92;send.classList.toggle("sealed",sealed);tt.textContent=sealed?"Sealed until Tunde writes.":(fl>0&&fl<1?"Sending":"Send");
+      const q=prog(frame,steps),seg=q*3,si=Math.min(2,Math.floor(seg)),loc=clamp(seg-si);
+      stp.forEach((s,i)=>{s.classList.toggle("on",i===si);s.querySelector(".bar i").style.transform=`scaleY(${i<si?1:i===si?loc:0})`});
+      scrub(api,si===0?loc*.55:si===1?.56+loc*.18:.75+loc*.25)};
+  }
+  if(o===2){
+    const sec=site.querySelector('[data-pin="sky"]'),sky=canvases.find(c=>c.c.closest(".site")===site&&c.k==="sky"),t=site.querySelector(".o2t"),hint=site.querySelector(".hint"),pw=site.querySelector(".o2p"),dev=pw.querySelector(".dev"),cap=site.querySelector(".o2c"),tm=cap.querySelector(".tm"),cp=cap.querySelector("p"),rail=[...site.querySelectorAll(".o2r span")],rr=site.querySelector(".o2r");
+    const api=ctl(dev.querySelector(".scr"));const words=[...site.querySelectorAll(".st2")];
+    const st2=site.querySelector(".st2");st2.innerHTML=st2.innerHTML.replace(/(<em>)?([^<]+)(<\/em>)?/g,(m,a,x,b)=>(a||"")+x.split(/(\s+)/).map(s=>/\s+/.test(s)||!s?s:`<span class="w">${s}</span>`).join("")+(b||""));const ws=[...st2.querySelectorAll(".w")];
+    const lines=[[0,"Lagos",17*60+30,"The day is open for writing. Nothing to chase."],[.2,"Lagos",21*60+40,"Amara writes one true sentence about Tunde."],[.55,"Lagos",21*60+42,"Sealed. Tunde can't read it yet, and can't see that she wrote."],[.75,"London",23*60+10-60,"Tunde writes on the bus home. The day opens for both."]];
+    update=()=>{const p=prog(frame,sec);if(sky)sky.p=p;
+      const a=clamp(1-p/.16);t.style.opacity=a;t.style.transform=`translateY(${-p*240}px)`;hint.style.opacity=a;
+      const rise=clamp((p-.06)/.2);const H=frame.clientHeight;
+      pw.style.transform=`translate(-50%,-50%) translateY(${(1-rise)*H*.75}px) perspective(1200px) rotateX(${(1-rise)*22}deg) scale(${lerp(.86,1,rise)})`;
+      const k=clamp((p-.26)/.7);scrub(api,k);api.time(fmt(lerp(17*60+30,23*60+10,k)));
+      const show=p>.22;cap.style.opacity=show?1:0;rr.style.opacity=show?1:0;
+      let L=lines[0];for(const l of lines)if(k>=l[0])L=l;cap.querySelector(".ct").textContent=L[1];tm.textContent=fmt(lerp(17*60+30,23*60+10,k));cp.textContent=L[3];
+      const ri=k<.55?0:k<.75?1:2;rail.forEach((r,i)=>r.classList.toggle("on",i===ri));
+      const sr=st2.getBoundingClientRect(),fr=frame.getBoundingClientRect();const sp=clamp((fr.bottom-sr.top)/(fr.height*.9));const lit=Math.round(clamp((sp-.25)/.6)*ws.length);ws.forEach((w,i)=>w.classList.toggle("lit",i<lit))};
+  }
+  if(o===3){
+    const sec=site.querySelector('[data-pin="cities"]'),A=ctl(site.querySelector(".pa1 .scr")),B=ctl(site.querySelector(".pb1 .scr")),M=ctl(site.querySelector(".pm1 .scr"));
+    const ppA=site.querySelector(".pane.la .pp"),ppB=site.querySelector(".pane.lo .pp"),night=site.querySelector(".night"),mg=site.querySelector(".o3m"),title=site.querySelector(".o3t"),cap=site.querySelector(".o3cap"),whos=[...site.querySelectorAll(".pane .who")],seam=site.querySelector(".seam"),ta=site.querySelector(".ta"),tb=site.querySelector(".tb");
+    M.set("reveal");
+    update=()=>{const p=prog(frame,sec);const narrow=frame.clientWidth<700;
+      title.style.opacity=clamp(1-p/.07);const intro=clamp((p-.075)/.07);
+      const ka=clamp((p-.14)/.26),kb=clamp((p-.42)/.28);
+      scrub(A,ka<.98?ka*.55:.6);scrub(B,kb<=0?0:kb<.98?kb*.55:.6);
+      const mins=21*60+40+Math.round(clamp(p/.72)*70);ta.textContent=fmt(mins);tb.textContent=fmt(mins-60);A.time(fmt(mins));B.time(fmt(mins-60));
+      const m=clamp((p-.72)/.16);
+      if(narrow){const H=frame.clientHeight;ppA.style.transform=`translate(-50%,-50%) translateY(${m*H*.22}px) scale(${1-m*.2})`;ppB.style.transform=`translate(-50%,-50%) translateY(${-m*H*.22}px) scale(${1-m*.2})`}
+      else{const W=frame.clientWidth;ppA.style.transform=`translate(-50%,-50%) translateX(${m*W*.25}px) scale(${1-m*.2})`;ppB.style.transform=`translate(-50%,-50%) translateX(${-m*W*.25}px) scale(${1-m*.2})`}
+      ppA.style.opacity=ppB.style.opacity=intro*(1-clamp((m-.6)/.4));ppA.style.marginTop=ppB.style.marginTop=(1-intro)*70+'px';
+      night.style.opacity=m*.92;whos.forEach(w=>w.style.opacity=intro*(1-m));seam.style.opacity=1-m;
+      const r=clamp((p-.84)/.12);mg.style.opacity=r;mg.style.transform=`translate(-50%,-50%) scale(${lerp(.9,1,r)})`;M.cards(clamp((r-.2)/.4),clamp((r-.5)/.4));cap.style.opacity=r};
+  }
+  if(o===4){
+    const sec=site.querySelector('[data-pin="both"]'),sky=canvases.find(c=>c.c.closest(".site")===site&&c.k==="sky"),t=site.querySelector(".o2t"),hint=site.querySelector(".hint"),pw=site.querySelector(".o2p"),api=ctl(pw.querySelector(".scr")),cap=site.querySelector(".o2c"),ct=cap.querySelector(".ct"),tm=cap.querySelector(".tm"),cp=cap.querySelector("p"),rail=[...site.querySelectorAll(".o2r span")],rr=site.querySelector(".o2r"),panes=site.querySelector(".p4"),seam=site.querySelector(".seam"),A=ctl(site.querySelector(".pa1 .scr")),B=ctl(site.querySelector(".pb1 .scr")),pps=[...panes.querySelectorAll(".pp")],whos=[...panes.querySelectorAll(".who")],ta=site.querySelector(".ta"),tb=site.querySelector(".tb"),pg4=site.querySelector(".prog4"),pspans=[...pg4.querySelectorAll("span")],pbars=[...pg4.querySelectorAll("b")];
+    const st2=site.querySelector(".st2");st2.innerHTML=st2.innerHTML.replace(/(<em>)?([^<]+)(<\/em>)?/g,(m,a,x,b)=>(a||"")+x.split(/(\s+)/).map(w=>/\s+/.test(w)||!w?w:`<span class="w">${w}</span>`).join("")+(b||""));const ws=[...st2.querySelectorAll(".w")];
+    A.set("wait");
+    update=()=>{const p=prog(frame,sec),H=frame.clientHeight,narrow=frame.clientWidth<700;
+      if(sky)sky.p=p<.72?clamp(p/.3)*.55:.55+.45*clamp((p-.72)/.14);
+      const a=clamp(1-p/.07);t.style.opacity=a;t.style.transform=`translateY(${-p*300}px)`;hint.style.opacity=a;
+      const rise=clamp((p-.08)/.12);
+      const single=p<.5?rise*(1-clamp((p-.26)/.035)):clamp((p-.82)/.05);
+      pw.style.opacity=single;pw.style.transform=`translate(-50%,-50%) translateY(${(1-rise)*H*.7}px) scale(${lerp(.88,1,rise)})`;
+      const sp=clamp((p-.3)/.07)*(1-clamp((p-.72)/.08));const e=(1-sp)*50;
+      panes.style.clipPath=narrow?`inset(${e}% 0 ${e}% 0)`:`inset(0 ${e}% 0 ${e}%)`;panes.style.visibility=sp>0?"visible":"hidden";seam.style.opacity=sp;
+      const po=clamp((p-.36)/.05)*(1-clamp((p-.68)/.04));pps.forEach(x=>x.style.opacity=po);whos.forEach(w=>w.style.opacity=po);
+      const kb=clamp((p-.44)/.22);scrub(B,kb<.98?kb*.55:.6);
+      const mins=21*60+42+Math.round(clamp((p-.36)/.34)*68);ta.textContent=fmt(mins);tb.textContent=fmt(mins-60);A.time(fmt(mins));B.time(fmt(mins-60));
+      if(p<.5){const k=clamp((p-.13)/.13);scrub(api,k*.55);const hm=fmt(lerp(17*60+30,21*60+40,k));api.time(hm);ct.textContent="Lagos";tm.textContent=hm;cp.textContent=k<.45?"The day is open for writing. Nothing to chase.":"Amara writes one true sentence about Tunde."}
+      else{api.set("reveal");api.time("23:10");const r=clamp((p-.84)/.08);api.cards(clamp(r/.5),clamp((r-.4)/.5));ct.textContent="Lagos 23:10 · London 22:10";tm.textContent="";cp.textContent="Your day is open. Both of you, at the same moment."}
+      cap.style.opacity=((p>.12&&p<.27)||p>.86)?1:0;rr.style.opacity=p>.12?1:0;
+      const ri=p<.36?0:p<.78?1:2;rail.forEach((x,i)=>x.classList.toggle("on",i===ri));pg4.style.opacity=p>.1&&p<.995?1:0;[clamp((p-.12)/.24),clamp((p-.36)/.42),clamp((p-.78)/.16)].forEach((v,i)=>{pbars[i].style.transform=`scaleX(${v})`;pspans[i].classList.toggle("on",i===ri)});
+      const sr=st2.getBoundingClientRect(),fr=frame.getBoundingClientRect();const sq=clamp((fr.bottom-sr.top)/(fr.height*.9));const lit=Math.round(clamp((sq-.25)/.6)*ws.length);ws.forEach((w,i)=>w.classList.toggle("lit",i<lit))};
+  }
+  let tick=false;const on=()=>{if(!tick){tick=true;requestAnimationFrame(()=>{update();tick=false})}};
+  frame.addEventListener("scroll",on,{passive:true});update();
+  return()=>{frame.removeEventListener("scroll",on);stops.forEach(s=>s())};
+}
+
+/* ---------- console wiring ---------- */
+const fd=document.getElementById("fd"),fm=document.getElementById("fm"),dvp=document.getElementById("dvp"),mvp=document.getElementById("mvp");
+function fit(){const dw=dvp.parentElement.clientWidth-2;const s=Math.min(1,dw/1280);fd.style.transform=`scale(${s})`;dvp.style.width=1280*s+"px";dvp.style.height=800*s+"px";
+  const avail=Math.max(420,Math.min(innerHeight-150,900));const sm=Math.min(.86,avail/844,(document.documentElement.clientWidth-60)/390);fm.style.transform=`scale(${sm})`;mvp.style.width=390*sm+"px";mvp.style.height=844*sm+"px"}
+let current=1,unmount=[];
+function show(o){current=o;stopTour();unmount.forEach(u=>u());canvases=[];unmount=[mount(fd,o),mount(fm,o)];
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-pressed",String(+t.dataset.o===o)));
+  const O=OPT[o];document.getElementById("nTitle").textContent=O.title;document.getElementById("nBody").textContent=O.body;
+  document.getElementById("nList").innerHTML=O.list.map(x=>`<li>${x}</li>`).join("");
+  document.getElementById("nRefs").innerHTML=O.refs.map(([n,u,w])=>`<li><a href="${u}" target="_blank" rel="noopener">${n}</a>: ${w}</li>`).join("");
+  try{localStorage.setItem("moyi-dir",String(o))}catch(_){}}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>show(+t.dataset.o)));
+let tourRaf=null;const tourBtn=document.getElementById("tour");
+function stopTour(){if(tourRaf){cancelAnimationFrame(tourRaf);tourRaf=null}tourBtn.textContent="Play the scroll tour"}
+tourBtn.addEventListener("click",()=>{if(tourRaf){stopTour();return}tourBtn.textContent="Stop the tour";fd.scrollTop=0;fm.scrollTop=0;const t0=performance.now(),D=26000;
+  const step=t=>{const k=clamp((t-t0)/D);const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;fd.scrollTop=e*(fd.scrollHeight-fd.clientHeight);fm.scrollTop=e*(fm.scrollHeight-fm.clientHeight);if(k<1)tourRaf=requestAnimationFrame(step);else stopTour()};tourRaf=requestAnimationFrame(step)});
+[fd,fm].forEach(f=>f.addEventListener("wheel",()=>{if(tourRaf)stopTour()},{passive:true}));
+document.getElementById("toTop").addEventListener("click",()=>{stopTour();fd.scrollTop=0;fm.scrollTop=0});
+addEventListener("resize",fit);try{new ResizeObserver(fit).observe(document.querySelector(".devices"))}catch(_){}fit();
+let start=1;try{start=+localStorage.getItem("moyi-dir")||1}catch(_){}
+show(start);
+})();
+</script>
