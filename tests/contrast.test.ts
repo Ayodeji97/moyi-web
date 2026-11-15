@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { PALETTE } from '../src/scripts/evening/palette';
 
 // Gradient stops only: a linear blend between two stops is never lighter than the lighter stop,
 // and the card ::after fade only darkens, so neither can lower the contrast the stops give.
@@ -25,6 +26,8 @@ const stops = [...css.matchAll(/--scene-([a-z-]+-\d):\s*(#[0-9A-Fa-f]{6})\b/g)].
 }));
 const alphaMatch = css.match(/--scrim-alpha:\s*([0-9.]+)\s*;/);
 
+const alpha = Number(alphaMatch?.[1] ?? 0);
+
 describe('scene stand-ins keep text readable', () => {
   it('finds the stops and the scrim alpha', () => {
     expect(stops.length).toBeGreaterThanOrEqual(14);
@@ -34,10 +37,28 @@ describe('scene stand-ins keep text readable', () => {
     expect(a).toBeLessThanOrEqual(1);
   });
 
-  const alpha = Number(alphaMatch?.[1] ?? 0);
   for (const s of stops) {
     it(`${s.name} ${s.hex}: white and quiet text reach 4.5:1 under the scrim`, () => {
       const bg = blend([14, 10, 10], alpha, hex(s.hex));
+      const white: RGB = [255, 255, 255];
+      expect(ratio(white, bg), 'white').toBeGreaterThanOrEqual(4.5);
+      expect(ratio(blend(white, 0.8, bg), bg), 'quiet').toBeGreaterThanOrEqual(4.5);
+    });
+  }
+});
+
+describe('canvas palette keeps text readable', () => {
+  const entries = Object.entries(PALETTE).flatMap(([scene, colors]) =>
+    colors.map((c) => ({ scene, hex: c })),
+  );
+  it('covers all five scenes with at least 30 colours', () => {
+    expect(Object.keys(PALETTE).sort()).toEqual(['bed', 'lagos', 'lamp', 'rain', 'sky']);
+    expect(entries.length).toBeGreaterThanOrEqual(30);
+  });
+  for (const e of entries) {
+    it(`${e.scene} ${e.hex}: white and quiet text reach 4.5:1 under the scrim`, () => {
+      expect(e.hex).toMatch(/^#[0-9A-Fa-f]{6}$/);
+      const bg = blend([14, 10, 10], alpha, hex(e.hex));
       const white: RGB = [255, 255, 255];
       expect(ratio(white, bg), 'white').toBeGreaterThanOrEqual(4.5);
       expect(ratio(blend(white, 0.8, bg), bg), 'quiet').toBeGreaterThanOrEqual(4.5);

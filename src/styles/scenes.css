@@ -25,6 +25,7 @@
 }
 
 .scene { position: absolute; inset: 0; }
+.scene__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .scene--sky-afternoon { background: linear-gradient(180deg, var(--scene-sky-afternoon-1), var(--scene-sky-afternoon-2) 55%, var(--scene-sky-afternoon-3)); }
 .scene--sky-dusk { background: linear-gradient(180deg, var(--scene-sky-dusk-1), var(--scene-sky-dusk-2) 55%, var(--scene-sky-dusk-3)); }
 .scene--sky-night { background: linear-gradient(180deg, var(--scene-sky-night-1), var(--scene-sky-night-2) 55%, var(--scene-sky-night-3)); }
