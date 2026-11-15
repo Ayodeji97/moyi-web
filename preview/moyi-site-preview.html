@@ -1,0 +1,623 @@
+<title>Mọyì Site Preview</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap">
+<style>
+/* Layout: a console (Rosewood dark) with two views: Previews (a browser frame rendering three new
+   animated directions for getmoyi.app) and References (rated sites to study). The frame is a size
+   container, so Phone width is the real narrow layout. */
+:root{
+  --surface:#171313; --raised:#211A1A; --ink:#F8EFE9; --muted:#CDBBB5; --outline:#493737; --outline-strong:#7E6A6A;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sys:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --ease:cubic-bezier(.2,0,0,1); --out:cubic-bezier(.16,1,.3,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--surface);color:var(--ink);font-family:var(--sys);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+
+/* console */
+.console{max-width:1240px;margin:0 auto 18px;display:flex;flex-direction:column;gap:14px}
+.console h1{font-family:var(--serif);font-weight:500;font-size:28px;margin:0}
+.lede{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.5;max-width:76ch}
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl>span{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.seg{display:flex;flex-wrap:wrap;border:1px solid var(--outline);border-radius:10px;padding:3px;gap:2px}
+.seg button,.btn{font:inherit;font-size:13px;color:var(--muted);background:none;border:0;border-radius:7px;padding:7px 11px;cursor:pointer;min-height:34px}
+.seg button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--outline-strong)}
+.seg button:hover,.btn:hover{color:var(--ink)}
+.btn{border:1px solid var(--outline);border-radius:10px;min-height:42px;color:var(--ink)}
+
+/* browser */
+.stage{max-width:1240px;margin:0 auto;display:flex;justify-content:center}
+.browser{width:100%;max-width:1240px;border:1px solid var(--outline);border-radius:14px;overflow:hidden;background:var(--raised);transition:max-width .35s var(--ease)}
+.browser.phone{max-width:390px;border-radius:28px}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--outline)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--outline)}
+.browser.phone .dots{display:none}
+.url{flex:1;min-width:0;font-size:12px;color:var(--muted);background:var(--surface);border-radius:8px;padding:6px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frame{container-type:inline-size;height:min(80vh,840px);overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth}
+
+/* ================= SITE ================= */
+.site{--s:#FFF9F5;--r:#FFFFFF;--i:#2A2020;--m:#695A57;--o:#E9D8D1;--os:#827270;
+  background:var(--s);color:var(--i);font-family:var(--sys);font-size:16px;line-height:1.5;min-height:100%;transition:background .4s var(--ease),color .4s var(--ease)}
+.site[data-mode="dark"]{--s:#171313;--r:#211A1A;--i:#F8EFE9;--m:#CDBBB5;--o:#493737;--os:#7E6A6A}
+.site a{color:var(--i);text-underline-offset:3px;text-decoration-thickness:1px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:48px}
+.label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0}
+.serif{font-family:var(--serif)}
+
+.s-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--serif);font-weight:500;font-size:22px}
+.mark{width:22px;display:block}
+.s-nav{display:flex;gap:28px;font-size:14px}
+.s-nav a{text-decoration:none;color:var(--m)}
+.s-nav a:hover{color:var(--i);text-decoration:underline}
+
+.stores{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.store{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:8px 18px 8px 14px;border-radius:12px;background:var(--i);color:var(--s) !important;text-decoration:none;font-size:15px;line-height:1.15;transition:transform .2s var(--ease)}
+.store:hover{transform:translateY(-2px)}
+.store small{display:block;font-size:11px;opacity:.8}
+.store svg{width:20px;height:20px;flex:none}
+.store.ghost{background:none;color:var(--i) !important;box-shadow:inset 0 0 0 1px var(--os)}
+
+.s-foot{border-top:1px solid var(--o);padding-block:32px 40px;display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;font-size:13px;color:var(--m)}
+.s-foot nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+.s-foot a{color:var(--m)}
+
+/* scroll reveal: visible at rest; JS only hides what is below the fold */
+.rv{transition:opacity .9s var(--out),transform .9s var(--out)}
+.rv.wait{opacity:0;transform:translateY(24px)}
+
+/* line mask reveal */
+.ln{display:block;overflow:hidden;padding-bottom:.08em}
+.ln>span{display:inline-block}
+.play .ln>span{animation:lineUp 1.1s var(--out) both}
+@keyframes lineUp{from{transform:translateY(105%)}to{transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ---------- D · PAPER (classic) ---------- */
+.d-hero{text-align:center;padding-block:56px 40px;display:flex;flex-direction:column;align-items:center;gap:26px}
+.d-rule{width:56px;height:1px;background:var(--os);transform-origin:center}
+.play .d-rule{animation:grow 1s var(--out) .1s both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+.d-title{font-family:var(--serif);font-weight:300;font-size:clamp(52px,8.2cqi,104px);line-height:.98;letter-spacing:-.02em;margin:0}
+.d-title em{font-style:italic;font-weight:300}
+.d-sub{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2.4cqi,26px);color:var(--m);margin:0}
+.play .d-hero .after{animation:fadeUp .9s var(--out) both}
+.d-letters{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:stretch;max-width:880px;margin:24px auto 0;text-align:left}
+.letter{border:1px solid var(--o);background:var(--r);border-radius:4px;padding:28px 28px 24px;display:flex;flex-direction:column;gap:16px;min-height:230px;box-shadow:0 1px 0 var(--o),0 18px 40px -28px rgba(42,32,32,.35)}
+.letter .who{display:flex;justify-content:space-between;gap:12px}
+.letter p.txt{font-family:var(--serif);font-size:23px;line-height:1.4;margin:0;min-height:3em}
+.letter .lines{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+.letter .lines i{height:1px;background:var(--o);display:block}
+.letter .lines i:nth-child(2){width:86%}.letter .lines i:nth-child(3){width:62%}
+.letter .status{font-size:13px;color:var(--m);margin-top:auto;min-height:1.5em}
+.seal{align-self:center;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--m)}
+.seal svg{width:30px;color:var(--i);transition:transform .6s var(--out)}
+.seal .vline{width:1px;height:60px;background:var(--o)}
+.caret{display:inline-block;width:1.5px;height:.95em;background:var(--i);vertical-align:-2px;margin-left:1px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.opened .seal svg{transform:rotate(360deg)}
+.d-sec{padding-block:88px;border-top:1px solid var(--o)}
+.d-head{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:52px}
+.d-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(34px,4.4cqi,52px);line-height:1.1;margin:0;text-wrap:balance;max-width:18ch}
+.d-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;text-align:center}
+.d-steps .num{font-family:var(--serif);font-style:italic;font-size:44px;color:var(--os);line-height:1}
+.d-steps h3{font-family:var(--serif);font-weight:400;font-size:26px;margin:10px 0 8px}
+.d-steps p{margin:0 auto;color:var(--m);max-width:28ch}
+.d-colophon{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 56px;max-width:860px;margin:0 auto}
+.d-colophon div{border-top:1px solid var(--o);padding-block:22px;display:grid;grid-template-columns:110px 1fr;gap:16px}
+.d-colophon dt{font-family:var(--serif);font-style:italic;color:var(--m);font-size:18px}
+.d-colophon dd{margin:0;font-family:var(--serif);font-size:19px;line-height:1.45}
+.d-close{text-align:center;padding-block:110px;display:flex;flex-direction:column;align-items:center;gap:22px;border-top:1px solid var(--o)}
+.d-close h2{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(48px,7cqi,88px);line-height:1;margin:0}
+
+/* ---------- E · DAILY LOOP (app-led) ---------- */
+.e-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:56px;align-items:center;padding-block:40px 72px}
+.e-copy{display:flex;flex-direction:column;gap:26px;min-width:0}
+.e-title{font-family:var(--serif);font-weight:400;font-size:clamp(46px,6cqi,76px);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.e-title .m{color:var(--m)}
+.e-sub{font-size:19px;line-height:1.5;color:var(--m);max-width:36ch;margin:0}
+.play .e-copy>*{animation:fadeUp .9s var(--out) both}
+.play .e-copy>*:nth-child(2){animation-delay:.12s}.play .e-copy>*:nth-child(3){animation-delay:.24s}.play .e-copy>*:nth-child(4){animation-delay:.36s}
+.e-stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:22px;padding:40px 20px 28px;border-radius:28px;background:var(--r);border:1px solid var(--o)}
+.play .e-stage{animation:fadeIn 1s var(--out) .2s both}
+.e-ticker{display:flex;gap:6px;font-size:13px;color:var(--m)}
+.e-ticker span{padding:6px 10px;border-radius:999px;transition:color .3s,background .3s}
+.e-ticker span.on{color:var(--i);background:var(--s);box-shadow:inset 0 0 0 1px var(--o)}
+
+.phone{width:100%;max-width:280px;aspect-ratio:9/19;border-radius:42px;padding:9px;background:#0E0B0B;box-shadow:0 30px 60px -30px rgba(23,19,19,.55)}
+.scr{--s:#171313;--r:#211A1A;--i:#F8EFE9;--m:#CDBBB5;--o:#493737;
+  position:relative;width:100%;height:100%;border-radius:34px;background:var(--s);color:var(--i);overflow:hidden;font-size:11px}
+.view{position:absolute;inset:0;padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(8px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none}
+.view.on{opacity:1;transform:none}
+.sb{display:flex;justify-content:space-between;font-size:11px;font-weight:600;padding-inline:6px}
+.anav{display:flex;justify-content:space-between;align-items:center;color:var(--m)}
+.anav b{color:var(--i);font-weight:600}
+.anav .lk{display:flex;gap:10px}
+.anav u{text-underline-offset:2px}
+.ent{font-family:var(--serif);font-size:17px;line-height:1.4;margin:0}
+.ent.sm{font-size:14px}
+.st{color:var(--m);font-size:11.5px;line-height:1.45;margin:0}
+.g{flex:1}
+.pa{border-radius:12px;background:var(--i);color:var(--s);text-align:center;font-size:12.5px;font-weight:600;padding:11px;transition:opacity .3s}
+.pa.busy{animation:breathe 1.8s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.55}}
+.ecard{border:1px solid var(--o);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;background:var(--r)}
+.v-reveal.on .ecard:nth-of-type(1){animation:fadeUp .7s var(--out) .15s both}
+.v-reveal.on .ecard:nth-of-type(2){animation:fadeUp .7s var(--out) .45s both}
+.lbl{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--m);margin:0}
+
+.e-scrolly{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:56px;padding-block:40px 40px;border-top:1px solid var(--o)}
+.e-steps{display:flex;flex-direction:column}
+.e-step{min-height:420px;display:flex;flex-direction:column;justify-content:center;gap:14px;opacity:.35;transition:opacity .5s var(--ease)}
+.e-step.on{opacity:1}
+.e-step h3{font-family:var(--serif);font-weight:400;font-size:clamp(32px,3.8cqi,46px);line-height:1.1;margin:0}
+.e-step p{margin:0;color:var(--m);font-size:18px;max-width:34ch}
+.e-sticky{position:sticky;top:60px;align-self:start;display:flex;justify-content:center;padding-top:40px}
+.e-band{padding-block:80px;border-top:1px solid var(--o);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.e-band div{display:flex;flex-direction:column;gap:8px}
+.e-band strong{font-family:var(--serif);font-weight:400;font-size:24px}
+.e-band p{margin:0;color:var(--m)}
+.e-close{padding-block:96px;border-top:1px solid var(--o);display:flex;flex-direction:column;gap:24px;align-items:flex-start}
+.e-close h2{font-family:var(--serif);font-weight:400;font-size:clamp(40px,5.4cqi,64px);line-height:1.05;margin:0}
+
+/* ---------- F · KINETIC (typographic) ---------- */
+.f-hero{padding-block:72px 48px;display:flex;flex-direction:column;gap:30px}
+.f-title{font-family:var(--serif);font-weight:300;font-size:clamp(56px,10cqi,132px);line-height:.92;letter-spacing:-.035em;margin:0}
+.f-title .w{display:inline-block;opacity:1}
+.play .f-title .w{animation:wordIn .9s var(--out) both}
+@keyframes wordIn{from{opacity:0;transform:translateY(.35em);filter:none}to{opacity:1;transform:none}}
+.f-title .m{color:var(--m);font-style:italic}
+.f-row{display:flex;flex-wrap:wrap;gap:20px 48px;align-items:flex-end;justify-content:space-between}
+.f-rotor{font-family:var(--serif);font-size:clamp(22px,2.8cqi,32px);line-height:1.3;margin:0;max-width:30ch}
+.f-rotor .slot{display:inline-grid;vertical-align:bottom;overflow:hidden;height:1.3em}
+.f-rotor .slot span{grid-area:1/1;font-style:italic;transition:transform .7s var(--out),opacity .7s var(--out);transform:translateY(110%);opacity:0;white-space:nowrap}
+.f-rotor .slot span.on{transform:none;opacity:1}
+.f-rotor .slot span.out{transform:translateY(-110%);opacity:0}
+.marq{border-block:1px solid var(--o);overflow:hidden;padding-block:22px;display:flex;flex-direction:column;gap:18px;margin-block:24px 0}
+.track{display:flex;gap:56px;width:max-content;animation:drift 60s linear infinite}
+.track.rev{animation-direction:reverse;animation-duration:70s}
+.track span{font-family:var(--serif);font-size:24px;white-space:nowrap;color:var(--i)}
+.track span b{font-family:var(--sys);font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin-right:14px;vertical-align:4px}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marq:hover .track{animation-play-state:paused}
+.f-sec{padding-block:96px}
+.f-sec+.f-sec{border-top:1px solid var(--o)}
+.f-big{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5cqi,64px);line-height:1.08;letter-spacing:-.02em;margin:0 0 40px;max-width:16ch}
+.f-no{list-style:none;padding:0;margin:0;display:flex;flex-direction:column}
+.f-no li{border-top:1px solid var(--o);padding-block:18px;display:flex;justify-content:space-between;gap:24px;align-items:baseline;flex-wrap:wrap}
+.f-no li:last-child{border-bottom:1px solid var(--o)}
+.f-no .x{font-family:var(--serif);font-size:clamp(28px,3.6cqi,44px);position:relative;color:var(--m)}
+.f-no .x::after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:2px;background:var(--i);transform-origin:left;transform:scaleX(1);transition:transform .9s var(--out)}
+.f-no li.wait .x::after{transform:scaleX(0)}
+.f-no .why{color:var(--m);font-size:15px;max-width:38ch}
+.f-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.f-steps div{border-left:1px solid var(--o);padding:8px 28px 8px 24px;display:flex;flex-direction:column;gap:10px}
+.f-steps div:first-child{border-left:0;padding-left:0}
+.f-steps .k{font-family:var(--serif);font-size:72px;font-weight:300;line-height:1;color:var(--os)}
+.f-steps h3{font-family:var(--serif);font-weight:400;font-size:28px;margin:0}
+.f-steps p{margin:0;color:var(--m)}
+.f-close{padding-block:120px;border-top:1px solid var(--o);display:flex;flex-direction:column;gap:28px}
+.f-close h2{font-family:var(--serif);font-weight:300;font-size:clamp(56px,9cqi,120px);line-height:.95;letter-spacing:-.03em;margin:0}
+.f-close .yo{font-family:var(--serif);font-style:italic;color:var(--m);font-size:22px;margin:-10px 0 0}
+
+/* narrow */
+@container (max-width:760px){
+  .wrap{padding-inline:20px}
+  .s-nav{display:none}
+  .d-hero{padding-block:32px 24px}
+  .d-letters{grid-template-columns:1fr;gap:18px}
+  .seal{flex-direction:row}.seal .vline{width:40px;height:1px}
+  .d-steps{grid-template-columns:1fr;gap:44px}
+  .d-colophon{grid-template-columns:1fr}
+  .d-colophon div{grid-template-columns:1fr;gap:4px}
+  .d-sec{padding-block:64px}
+  .stores{flex-direction:column;align-items:stretch;width:100%}
+  .store{justify-content:center}
+  .e-hero{grid-template-columns:1fr;gap:36px;padding-block:24px 48px}
+  .e-scrolly{grid-template-columns:1fr}
+  .e-sticky{display:none}
+  .e-step{min-height:0;opacity:1;padding-block:28px}
+  .e-band{grid-template-columns:1fr}
+  .f-hero{padding-block:36px 24px}
+  .f-steps{grid-template-columns:1fr;gap:28px}
+  .f-steps div{border-left:0;padding-left:0;border-top:1px solid var(--o);padding-top:20px}
+  .f-sec{padding-block:64px}
+  .track span{font-size:19px}
+}
+
+/* references */
+.refs{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.refs h2{font-family:var(--serif);font-weight:500;font-size:22px;margin:0 0 4px}
+.refs .hint{color:var(--muted);font-size:14px;margin:0 0 12px;max-width:76ch;line-height:1.5}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.ref{border:1px solid var(--outline);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;text-decoration:none;background:var(--surface);transition:border-color .2s,background .2s;min-width:0}
+.ref:hover{border-color:var(--outline-strong);background:var(--raised)}
+.ref .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.ref strong{font-family:var(--serif);font-weight:500;font-size:19px}
+.ref .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.ref .aw{font-size:12px;color:var(--muted)}
+.ref p{margin:0;font-size:14px;line-height:1.5;color:var(--ink)}
+.ref .u{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notes{max-width:1240px;margin:22px auto 0;border:1px solid var(--outline);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.notes h2{font-family:var(--serif);font-weight:500;font-size:20px;margin:0}
+.notes p{color:var(--muted);font-size:14px;line-height:1.55;margin:0;max-width:90ch}
+
+@media (prefers-reduced-motion:reduce){
+  .play .ln>span,.play .d-hero .after,.play .e-copy>*,.play .f-title .w,.play .d-rule,.play .e-stage,.v-reveal.on .ecard{animation:fadeIn .2s linear both !important}
+  .track{animation:none}
+  .rv,.view,.f-rotor .slot span,.f-no .x::after{transition-duration:.01s}
+  .caret,.pa.busy{animation:none}
+}
+</style>
+
+<div class="console">
+  <div>
+    <h1>getmoyi.app, round two</h1>
+    <p class="lede">Three new directions, built to move: a classic one, a product-led one and a typographic one. Each animates on load and as you scroll. Open References to go through the rated sites these draw from. Copy is draft.</p>
+  </div>
+  <div class="controls" role="toolbar" aria-label="Preview controls">
+    <div class="ctl"><span id="l-view">View</span>
+      <div class="seg" data-key="view" aria-labelledby="l-view">
+        <button id="v-prev" data-val="previews" aria-pressed="true">Previews</button>
+        <button id="v-refs" data-val="refs" aria-pressed="false">References</button>
+      </div></div>
+    <div class="ctl" data-pv><span id="l-dir">Direction</span>
+      <div class="seg" data-key="dir" aria-labelledby="l-dir">
+        <button id="d-paper" data-val="paper" aria-pressed="true">D · Paper</button>
+        <button id="d-loop" data-val="loop" aria-pressed="false">E · Daily loop</button>
+        <button id="d-kinetic" data-val="kinetic" aria-pressed="false">F · Kinetic</button>
+      </div></div>
+    <div class="ctl" data-pv><span id="l-w">Width</span>
+      <div class="seg" data-key="width" aria-labelledby="l-w">
+        <button id="w-desk" data-val="desktop" aria-pressed="true">Desktop</button>
+        <button id="w-phone" data-val="phone" aria-pressed="false">Phone</button>
+      </div></div>
+    <div class="ctl" data-pv><span id="l-m">Site theme</span>
+      <div class="seg" data-key="mode" aria-labelledby="l-m">
+        <button id="m-light" data-val="light" aria-pressed="true">Light</button>
+        <button id="m-dark" data-val="dark" aria-pressed="false">Dark</button>
+      </div></div>
+    <div class="ctl" data-pv><span>&nbsp;</span><button class="btn" id="replay" type="button">Replay the animation</button></div>
+  </div>
+</div>
+
+<!-- ============ PREVIEWS ============ -->
+<div id="previews">
+<div class="stage">
+  <div class="browser" id="browser">
+    <div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">getmoyi.app</div></div>
+    <div class="frame" id="frame">
+      <div class="site" id="site" data-mode="light">
+        <div class="wrap">
+          <header class="s-head">
+            <a class="brand" href="#top" aria-label="Mọyì home">
+              <svg class="mark" viewBox="0 0 40 52" aria-hidden="true"><circle cx="20" cy="20" r="14.5" fill="none" stroke="currentColor" stroke-width="4.5"/><circle cx="20" cy="46" r="4" fill="currentColor"/></svg>Mọyì</a>
+            <nav class="s-nav" aria-label="Site"><a href="#">How it works</a><a href="#">Privacy</a><a href="#">Support</a></nav>
+          </header>
+        </div>
+
+        <!-- ===== D · PAPER ===== -->
+        <main data-for="paper" id="paper">
+          <div class="wrap">
+            <section class="d-hero" aria-label="Introduction">
+              <p class="label after">Daily gratitude, for two</p>
+              <h1 class="d-title"><span class="ln"><span>Write before</span></span><span class="ln"><span style="animation-delay:.12s"><em>you read.</em></span></span></h1>
+              <span class="d-rule"></span>
+              <p class="d-sub after" style="animation-delay:.5s">Your day opens when you both have.</p>
+              <div class="stores after" data-stores style="animation-delay:.65s;justify-content:center"></div>
+            </section>
+            <div class="d-letters after" id="letters" style="animation-delay:.8s" aria-label="An example day: Amara writes first, her words stay sealed, then the day opens and both entries can be read.">
+              <article class="letter">
+                <div class="who"><p class="label">Amara</p><p class="label">Lagos · 21:40</p></div>
+                <p class="txt" id="d-a"></p>
+                <p class="status" id="d-a-st"></p>
+              </article>
+              <div class="seal" aria-hidden="true"><span class="vline"></span><svg viewBox="0 0 40 52"><circle cx="20" cy="20" r="14.5" fill="none" stroke="currentColor" stroke-width="4.5"/><circle cx="20" cy="46" r="4" fill="currentColor"/></svg><span class="vline"></span></div>
+              <article class="letter">
+                <div class="who"><p class="label">Tunde</p><p class="label">London · 19:55</p></div>
+                <div class="lines" id="d-b-lines"><i></i><i></i><i></i></div>
+                <p class="txt" id="d-b" hidden></p>
+                <p class="status" id="d-b-st">Sealed until you have both written.</p>
+              </article>
+            </div>
+            <p style="text-align:center;margin:20px 0 0"><button class="store ghost" id="d-again" type="button" style="font:inherit;font-size:14px;cursor:pointer">Watch the day again</button></p>
+          </div>
+
+          <div class="wrap">
+            <section class="d-sec" aria-labelledby="d-how">
+              <div class="d-head rv"><p class="label">How it works</p><h2 id="d-how">A small ritual, kept every day.</h2></div>
+              <div class="d-steps">
+                <div class="rv"><span class="num">i.</span><h3>Write</h3><p>One true sentence about them. Thirty seconds on a busy day is enough.</p></div>
+                <div class="rv" style="transition-delay:.1s"><span class="num">ii.</span><h3>Wait</h3><p>Your words stay sealed until they have written too.</p></div>
+                <div class="rv" style="transition-delay:.2s"><span class="num">iii.</span><h3>Read together</h3><p>The day opens, and you read what each of you noticed.</p></div>
+              </div>
+            </section>
+            <section class="d-sec" aria-labelledby="d-priv">
+              <div class="d-head rv"><p class="label">Private by construction</p><h2 id="d-priv">Two people. Nobody else.</h2></div>
+              <dl class="d-colophon">
+                <div class="rv"><dt>Audience</dt><dd>The one person in your bond. No feed, no followers, no profile.</dd></div>
+                <div class="rv"><dt>Presence</dt><dd>No read receipts, no last seen, no typing dots.</dd></div>
+                <div class="rv"><dt>Money</dt><dd>No ads. Your words are never sold or shared.</dd></div>
+                <div class="rv"><dt>Encryption</dt><dd>Not end to end encrypted, and we explain what that means.</dd></div>
+                <div class="rv"><dt>Leaving</dt><dd>Leave a bond or delete your account at any time.</dd></div>
+                <div class="rv"><dt>Missed days</dt><dd>Nothing is lost but the count. Nobody is told.</dd></div>
+              </dl>
+            </section>
+            <section class="d-close" aria-labelledby="d-close">
+              <h2 id="d-close" class="rv">I know your worth.</h2>
+              <p class="d-sub rv" lang="yo">Mo mọ ìyì rẹ.</p>
+              <div class="stores rv" data-stores style="justify-content:center"></div>
+            </section>
+          </div>
+        </main>
+
+        <!-- ===== E · DAILY LOOP ===== -->
+        <main data-for="loop" id="loop" hidden>
+          <div class="wrap">
+            <section class="e-hero" aria-label="Introduction">
+              <div class="e-copy">
+                <p class="label">Daily gratitude, for two</p>
+                <h1 class="e-title">Write before you read. <span class="m">Your day opens when you both have.</span></h1>
+                <p class="e-sub">Each day you each write one short thing you appreciate about the other. Then you read them together.</p>
+                <div><div class="stores" data-stores></div></div>
+              </div>
+              <div class="e-stage">
+                <div class="phone" role="img" aria-label="The app cycling through a day: write, wait, then both entries open.">
+                  <div class="scr" data-phone="hero"></div>
+                </div>
+                <div class="e-ticker" aria-hidden="true"><span data-t="0">Write</span><span data-t="1">Wait</span><span data-t="2">Read together</span></div>
+              </div>
+            </section>
+          </div>
+          <div class="wrap">
+            <section class="e-scrolly" aria-label="How it works">
+              <div class="e-steps">
+                <div class="e-step" data-step="0"><p class="label">1 · Write</p><h3>One true sentence.</h3><p>A prompt helps if you want it. Thirty seconds on a busy day is a whole entry.</p></div>
+                <div class="e-step" data-step="1"><p class="label">2 · Wait</p><h3>Sealed until they write too.</h3><p>Nobody sees whether the other has opened the app. No reminders that someone is waiting.</p></div>
+                <div class="e-step" data-step="2"><p class="label">3 · Read together</p><h3>The day opens.</h3><p>Both entries, side by side. No counts, no next thing to do. Just the words.</p></div>
+              </div>
+              <div class="e-sticky"><div class="phone" aria-hidden="true"><div class="scr" data-phone="sticky"></div></div></div>
+            </section>
+            <section class="e-band" aria-label="Privacy">
+              <div class="rv"><p class="label">Private</p><strong>Two people. Nobody else.</strong><p>No feed, no followers, no read receipts, no ads.</p></div>
+              <div class="rv" style="transition-delay:.1s"><p class="label">Honest</p><strong>Not end to end encrypted.</strong><p>We say so, and explain what that means for your entries.</p></div>
+              <div class="rv" style="transition-delay:.2s"><p class="label">Kind</p><strong>Miss a day, lose nothing.</strong><p>Only the streak count resets. Nobody is told.</p></div>
+            </section>
+            <section class="e-close" aria-labelledby="e-close">
+              <h2 id="e-close" class="rv">I know your worth.</h2>
+              <div class="stores rv" data-stores></div>
+            </section>
+          </div>
+        </main>
+
+        <!-- ===== F · KINETIC ===== -->
+        <main data-for="kinetic" id="kinetic" hidden>
+          <div class="wrap">
+            <section class="f-hero" aria-label="Introduction">
+              <p class="label">Daily gratitude, for two</p>
+              <h1 class="f-title" aria-label="Write before you read. Your day opens when you both have.">
+                <span class="w">Write</span> <span class="w" style="animation-delay:.08s">before</span> <span class="w" style="animation-delay:.16s">you</span> <span class="w" style="animation-delay:.24s">read.</span><br>
+                <span class="w m" style="animation-delay:.5s">Your</span> <span class="w m" style="animation-delay:.56s">day</span> <span class="w m" style="animation-delay:.62s">opens</span> <span class="w m" style="animation-delay:.68s">when</span> <span class="w m" style="animation-delay:.74s">you</span> <span class="w m" style="animation-delay:.8s">both</span> <span class="w m" style="animation-delay:.86s">have.</span>
+              </h1>
+              <div class="f-row">
+                <p class="f-rotor" aria-live="off">Today I noticed you <span class="slot" id="rotor"><span class="on">waited up for me.</span><span>fixed the gate.</span><span>called my mum.</span><span>made me laugh at 2am.</span><span>saved me the last piece.</span></span></p>
+                <div class="stores" data-stores></div>
+              </div>
+            </section>
+          </div>
+          <div class="marq" aria-label="Example entries, drifting">
+            <div class="track" id="trackA"></div>
+            <div class="track rev" id="trackB"></div>
+          </div>
+          <div class="wrap">
+            <section class="f-sec" aria-labelledby="f-how">
+              <p class="f-big rv" id="f-how">Three moments. Most take under a minute.</p>
+              <div class="f-steps">
+                <div class="rv"><span class="k">1</span><h3>Write</h3><p>One true sentence about them.</p></div>
+                <div class="rv" style="transition-delay:.1s"><span class="k">2</span><h3>Wait</h3><p>Sealed until they write too.</p></div>
+                <div class="rv" style="transition-delay:.2s"><span class="k">3</span><h3>Read together</h3><p>The day opens for both of you.</p></div>
+              </div>
+            </section>
+            <section class="f-sec" aria-labelledby="f-no">
+              <p class="f-big rv" id="f-no">What Mọyì doesn't have.</p>
+              <ul class="f-no">
+                <li class="strike"><span class="x">Followers</span><span class="why">Two people. Nobody else is ever in the room.</span></li>
+                <li class="strike"><span class="x">Read receipts</span><span class="why">Nobody sees whether the other has opened the app.</span></li>
+                <li class="strike"><span class="x">Ads</span><span class="why">Your words are never sold or shared.</span></li>
+                <li class="strike"><span class="x">Guilt</span><span class="why">Miss a day and only the count resets.</span></li>
+              </ul>
+              <p style="color:var(--m);margin:22px 0 0">One thing we say plainly: entries are not end to end encrypted. <a href="#">Here is what that means.</a></p>
+            </section>
+            <section class="f-close" aria-labelledby="f-close">
+              <h2 id="f-close" class="rv">I know your worth.</h2>
+              <p class="yo rv" lang="yo">Mo mọ ìyì rẹ.</p>
+              <div class="stores rv" data-stores></div>
+            </section>
+          </div>
+        </main>
+
+        <div class="wrap">
+          <footer class="s-foot">
+            <nav aria-label="Legal and help"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Data processing</a><a href="#">Support</a><a href="#">Delete account</a></nav>
+            <span>hello@getmoyi.app · © 2026 Mọyì</span>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="notes">
+  <h2 id="dirTitle">D · Paper</h2>
+  <p id="dirText"></p>
+</div>
+</div>
+
+<!-- ============ REFERENCES ============ -->
+<div id="refs" class="refs" hidden>
+  <div>
+    <h2>Rated sites to go through</h2>
+    <p class="hint">Each card opens the live site in a new tab. The line under the name says where it was recognised, and the last line says what is worth taking for Mọyì. Tell me the ones you like, even if only for one detail.</p>
+  </div>
+  <div id="refGroups"></div>
+</div>
+
+<script>
+window.MOYI_REFS=[
+{group:"Apps that feel like Mọyì should",name:"Daylight Computer",url:"https://daylightcomputer.com",base:"Warm cream",award:"Awwwards Site of the Day 2024 · Webby 2025, Best Visual Design",take:"Sunlight and leaf shadows drifting over a warm page, and calm copy. The closest in tone to Mọyì."},
+{group:"Apps that feel like Mọyì should",name:"Family",url:"https://family.co",base:"Light",award:"Widely studied by interface designers",take:"Cards and sheets that expand with a gentle spring. A model for two entries meeting."},
+{group:"Apps that feel like Mọyì should",name:"How We Feel",url:"https://howwefeel.org",base:"Dark",award:"Apple Design Award 2024 finalist, Social Impact",take:"Feelings as a calm colour field, and a soft route to today's one moment."},
+{group:"Apps that feel like Mọyì should",name:"Opal",url:"https://opalapp.com",base:"Light",award:"Apple Design Award 2025 finalist (self-reported) · Editors' Choice",take:"A phone in the hero that loops through the app's states. Direction E is built on this."},
+{group:"Apps that feel like Mọyì should",name:"Endel",url:"https://endel.io",base:"Dark",award:"Apple Watch App of the Year 2020",take:"Slow shapes that breathe, and moods that change with the time of day."},
+{group:"Apps that feel like Mọyì should",name:"Cosmos",url:"https://www.cosmos.so",base:"Warm off-white",award:"Awwwards Site of the Day 2023",take:"The interface steps back so the content leads, with a quiet drift as you scroll."},
+{group:"Apps that feel like Mọyì should",name:"Bear",url:"https://bear.app",base:"Light",award:"Apple Design Award 2017",take:"Restraint that makes private writing feel safe."},
+{group:"Apps that feel like Mọyì should",name:"Craft",url:"https://www.craft.do",base:"Light",award:"Mac App of the Year 2021",take:"Polished device mockups revealed step by step as you scroll."},
+{group:"Apps that feel like Mọyì should",name:"(Not Boring)",url:"https://notbor.ing",base:"Bright",award:"Apple Design Award 2022, Delight and Fun",take:"One moment of real delight, such as the reveal when both have written."},
+{group:"Apps that feel like Mọyì should",name:"Granola",url:"https://www.granola.ai",base:"Light",award:"Not verified",take:"A notepad hero that reads as paper and handwriting, not software."},
+{group:"Classic and editorial",name:"Poor Charlie's Almanack",url:"https://www.stripe.press/poor-charlies-almanack",base:"Light",award:"Awwwards Site of the Day 2024",take:"Book typesetting on the web, read chapter by chapter with a print rhythm. Direction D draws on this."},
+{group:"Classic and editorial",name:"Stripe Press",url:"https://press.stripe.com",base:"Light",award:"Widely cited",take:"Objects treated as precious. A year of entries could be shown as a book."},
+{group:"Classic and editorial",name:"Kinfolk",url:"https://www.kinfolk.com",base:"Light sage",award:"D&AD Wood Pencil 2017 (print)",take:"Smooth scroll, serif headlines and a lot of air."},
+{group:"Classic and editorial",name:"Elicyon",url:"https://www.elicyon.com",base:"Light",award:"Awwwards Honorable Mention 2025",take:"Large headings revealed in a stagger, with a mix of capitals and small words."},
+{group:"Classic and editorial",name:"'kin",url:"https://by-kin.com",base:"Light",award:"Awwwards Site of the Day 2024",take:"Full-bleed slides with a numbered counter. A day counter could work like this."},
+{group:"Classic and editorial",name:"ViV MGMT",url:"https://vivmgmt.com",base:"Soft blue-grey",award:"Awwwards Site of the Day, 6 Nov 2026",take:"A narrow classic serif against a neutral sans. Very current."},
+{group:"Motion craft (study the movement, not the look)",name:"Rauno Freiberg",url:"https://rauno.me",base:"Near white",award:"Widely cited for interaction craft",take:"Small, exact micro-interactions that stay polite."},
+{group:"Motion craft (study the movement, not the look)",name:"Linear",url:"https://linear.app",base:"Dark",award:"Widely cited",take:"Fade-and-rise reveals and strict timing. Take the timing, not the tech look."},
+{group:"Motion craft (study the movement, not the look)",name:"MONOLOG",url:"https://bymonolog.com",base:"Light",award:"Awwwards Site of the Day 2026",take:"Scroll choreography and display type. Direction F draws on this."},
+{group:"Motion craft (study the movement, not the look)",name:"Seasoned",url:"https://seasoned.koto.studio",base:"Light grey",award:"Awwwards Site of the Day 2025",take:"Warm, human playfulness, layered mockups and a marquee strip."},
+{group:"Motion craft (study the movement, not the look)",name:"Sakazuki",url:"https://sakazuki.io",base:"Light and black",award:"Awwwards Site of the Day 2026",take:"Headings split across lines with numbered sections. Take the type only."},
+{group:"Galleries to keep browsing",name:"Awwwards: Minimal",url:"https://www.awwwards.com/websites/minimal/",base:"Gallery",award:"Rated by a jury",take:"The newest minimal winners, updated daily."},
+{group:"Galleries to keep browsing",name:"Awwwards: Typography",url:"https://www.awwwards.com/websites/winner_category_typography/",base:"Gallery",award:"Rated by a jury",take:"Sites that won Typography Honors."},
+{group:"Galleries to keep browsing",name:"Lapa Ninja: Minimal",url:"https://www.lapa.ninja/category/minimal",base:"Gallery",award:"Curated",take:"Thousands of minimal landing pages with full screenshots."}
+];
+</script>
+<script>
+(function(){
+  const S={view:"previews",dir:"paper",width:"desktop",mode:"light"};
+  const defaults={paper:"light",loop:"light",kinetic:"dark"};
+  const site=document.getElementById("site"),frame=document.getElementById("frame"),browser=document.getElementById("browser");
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const timers=[];const later=(f,ms)=>{const t=setTimeout(f,ms);timers.push(t);return t};
+  const clearAll=()=>{while(timers.length)clearTimeout(timers.pop());clearInterval(loopTimer);clearInterval(rotTimer)};
+  const dirCopy={
+    paper:["D · Paper","Classic and quiet, like the title page of a book on warm paper. The headline rises line by line, then an example day plays out between two letters: Amara's words write themselves, Tunde's stay sealed under the ọ, and the day opens. Below, a colophon states the privacy rules. Studies Aesop, Kinfolk and Stripe Press."],
+    loop:["E · Daily loop","Product first. A real-looking phone in the hero runs the whole day on a loop: write, sending, waiting, then both entries open. In How it works the phone sticks beside the text and changes screen as you scroll each step. Studies Family, Opal and Linear."],
+    kinetic:["F · Kinetic","Type is the picture. The promise arrives word by word at poster size, a line under it keeps finishing the sentence 'Today I noticed you…', and example entries drift past in two rows going opposite ways, one for each person. Privacy is a list of things Mọyì doesn't have, struck through as you scroll. Studies Mat Voyce, MONOLOG and Not Boring."]
+  };
+  const storeHTML='<a class="store" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8C6.9 7.3 5.4 8.2 4.6 9.7c-1.7 2.9-.4 7.2 1.2 9.6.8 1.2 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.8-1-2.8-4.1zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg><span><small>Download on the</small>App Store</span></a><a class="store" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 2.8v18.4c0 .4.4.6.7.4l10.5-9.2c.2-.2.2-.6 0-.8L4.7 2.4c-.3-.2-.7 0-.7.4zm12.6 8.4L6.7 2.6l11.4 6.5-1.5 2.1zm0 1.6l1.5 2.1-11.4 6.5 9.9-8.6zm2.8-2.9l2.2 1.3c.4.2.4.8 0 1.1l-2.2 1.3-1.7-1.8 1.7-1.9z"/></svg><span><small>Get it on</small>Google Play</span></a>';
+  document.querySelectorAll("[data-stores]").forEach(e=>e.innerHTML=storeHTML);
+
+  /* ---- phone screens (E) ---- */
+  const phoneHTML=`
+   <div class="view v-today"><div class="sb"><span>9:41</span><span>●●●</span></div><div class="anav"><b>Sat 15 Nov</b><span class="lk"><u>Archive</u><u>Bond</u></span></div><div class="g"></div><p class="lbl">Today</p><p class="ent">Not yet written for today.</p><p class="st">One true sentence is enough.</p><div class="g"></div><div class="pa">Write</div></div>
+   <div class="view v-write"><div class="sb"><span>9:41</span><span>●●●</span></div><div class="anav"><span>Cancel</span><b>Write</b><span></span></div><p class="st">Something small they did this week.</p><p class="ent sm"><span class="typed"></span><span class="caret"></span></p><div class="g"></div><div class="pa">Send</div></div>
+   <div class="view v-wait"><div class="sb"><span>9:41</span><span>●●●</span></div><div class="anav"><b>Sat 15 Nov</b><span class="lk"><u>Archive</u><u>Bond</u></span></div><div class="g"></div><p class="ent sm">You waited up so I wouldn't walk home alone.</p><p class="st">Written. You'll see Tunde's when it's ready.</p><div class="g"></div></div>
+   <div class="view v-reveal"><div class="sb"><span>9:41</span><span>●●●</span></div><p class="st" style="margin-top:8px">Your day is open.</p><div class="ecard"><p class="lbl">Tunde</p><p class="ent sm">You called my mum on her birthday before I remembered.</p></div><div class="ecard"><p class="lbl">You</p><p class="ent sm">You waited up so I wouldn't walk home alone.</p></div><div class="g"></div></div>`;
+  document.querySelectorAll("[data-phone]").forEach(p=>p.innerHTML=phoneHTML);
+  const ENTRY="You waited up so I wouldn't walk home alone.";
+  function show(scr,name){scr.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.classList.contains("v-"+name)))}
+  function typeInto(el,text,speed,done){el.textContent="";if(reduce){el.textContent=text;done&&later(done,300);return}let i=0;const step=()=>{el.textContent=text.slice(0,++i);if(i<text.length)later(step,speed);else done&&later(done,350)};later(step,speed)}
+  let loopTimer,rotTimer;
+  function runHeroLoop(){
+    const scr=document.querySelector('[data-phone="hero"]');const tick=[...document.querySelectorAll(".e-ticker span")];
+    const setT=i=>tick.forEach((t,j)=>t.classList.toggle("on",i===j));
+    const cycle=()=>{
+      show(scr,"today");setT(0);
+      later(()=>{show(scr,"write");typeInto(scr.querySelector(".typed"),ENTRY,45,()=>{
+        const pa=scr.querySelector(".v-write .pa");pa.textContent="Sending";pa.classList.add("busy");
+        later(()=>{pa.textContent="Send";pa.classList.remove("busy");show(scr,"wait");setT(1);
+          later(()=>{show(scr,"reveal");setT(2);later(cycle,4200)},2600)},1300)})},1500);
+    };cycle();
+  }
+  function stickySetup(){
+    const scr=document.querySelector('[data-phone="sticky"]');scr.querySelector(".typed").textContent=ENTRY;
+    const map=["write","wait","reveal"];show(scr,"write");
+    const steps=[...document.querySelectorAll(".e-step")];
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=+e.target.dataset.step;steps.forEach(s=>s.classList.toggle("on",s===e.target));show(scr,map[i])}}),{root:frame,rootMargin:"-45% 0px -45% 0px"});
+    steps.forEach(s=>io.observe(s));steps[0].classList.add("on");
+  }
+
+  /* ---- D: the letters ---- */
+  function runLetters(){
+    const a=document.getElementById("d-a"),ast=document.getElementById("d-a-st"),b=document.getElementById("d-b"),bl=document.getElementById("d-b-lines"),bst=document.getElementById("d-b-st"),wrap=document.getElementById("letters");
+    a.innerHTML="";ast.textContent="";b.hidden=true;bl.hidden=false;bst.textContent="Sealed until you have both written.";wrap.classList.remove("opened");
+    later(()=>{const span=document.createElement("span");const c=document.createElement("span");c.className="caret";a.append(span,c);
+      typeInto(span,"You made the jollof taste like your mother's, and never told me it took three tries.",38,()=>{c.remove();ast.textContent="Written. You'll see Tunde's when it's ready.";
+        later(()=>{wrap.classList.add("opened");bl.hidden=true;b.hidden=false;b.textContent="You called my mum on her birthday before I remembered.";b.animate([{opacity:0,transform:"translateY(8px)"},{opacity:1,transform:"none"}],{duration:reduce?200:900,easing:"cubic-bezier(.16,1,.3,1)"});
+          bst.textContent="";ast.textContent="Your day is open.";},2200)})},reduce?0:1800);
+  }
+
+  /* ---- F: rotor and marquee ---- */
+  const lines=[["Amara","You fixed the gate before I even asked."],["Tunde","You called my mum on her birthday."],["Amara","You saved me the last piece of chin chin."],["Tunde","You waited up so I wouldn't walk home alone."],["Amara","You remembered the name of my old teacher."],["Tunde","You made me laugh at 2am when I couldn't sleep."]];
+  function fillTracks(){
+    const mk=(arr)=>{const h=arr.map(([w,t])=>`<span><b>${w}</b>${t}</span>`).join("");return h+h};
+    document.getElementById("trackA").innerHTML=mk(lines.filter((_,i)=>i%2===0).concat(lines.filter((_,i)=>i%2===0)));
+    document.getElementById("trackB").innerHTML=mk(lines.filter((_,i)=>i%2===1).concat(lines.filter((_,i)=>i%2===1)));
+  }
+  function runRotor(){
+    const spans=[...document.querySelectorAll("#rotor span")];let i=0;spans.forEach((s,j)=>{s.className=j===0?"on":""});
+    if(reduce)return;
+    rotTimer=setInterval(()=>{const cur=spans[i];i=(i+1)%spans.length;const nx=spans[i];cur.className="out";nx.className="";void nx.offsetWidth;nx.className="on";later(()=>{if(cur.className==="out")cur.className=""},800)},2400);
+  }
+
+  /* ---- scroll reveals (inside the frame) ---- */
+  let rio;
+  function armReveals(){
+    if(rio)rio.disconnect();
+    const scope=document.querySelector(`main[data-for="${S.dir}"]`);
+    const fr=frame.getBoundingClientRect();
+    rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove("wait");rio.unobserve(e.target)}}),{root:frame,threshold:.15});
+    scope.querySelectorAll(".rv,.strike").forEach(el=>{
+      if(reduce)return;
+      const r=el.getBoundingClientRect();
+      if(r.top>fr.bottom-20){el.classList.add("wait");rio.observe(el)}else el.classList.remove("wait");
+    });
+  }
+
+  function play(){
+    clearAll();
+    const main=document.querySelector(`main[data-for="${S.dir}"]`);
+    main.classList.remove("play");void main.offsetWidth;main.classList.add("play");
+    if(S.dir==="paper")runLetters();
+    if(S.dir==="loop"){runHeroLoop();stickySetup()}
+    if(S.dir==="kinetic"){fillTracks();runRotor()}
+    requestAnimationFrame(armReveals);
+  }
+  function render(){
+    document.getElementById("previews").hidden=S.view!=="previews";
+    document.getElementById("refs").hidden=S.view!=="refs";
+    document.querySelectorAll("[data-pv]").forEach(e=>e.hidden=S.view!=="previews");
+    site.dataset.mode=S.mode;browser.classList.toggle("phone",S.width==="phone");
+    document.querySelectorAll("main[data-for]").forEach(m=>m.hidden=m.dataset.for!==S.dir);
+    document.querySelectorAll(".seg").forEach(seg=>{const k=seg.dataset.key;seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.val===S[k])))});
+    document.getElementById("dirTitle").textContent=dirCopy[S.dir][0];
+    document.getElementById("dirText").textContent=dirCopy[S.dir][1];
+  }
+  document.querySelectorAll(".seg").forEach(seg=>seg.addEventListener("click",e=>{
+    const b=e.target.closest("button");if(!b)return;const k=seg.dataset.key;if(S[k]===b.dataset.val)return;S[k]=b.dataset.val;
+    if(k==="dir"){S.mode=defaults[S.dir];frame.scrollTop=0}
+    render();
+    if(k==="dir"||k==="width")play();
+    try{localStorage.setItem("moyi-preview-2",JSON.stringify(S))}catch(_){}
+  }));
+  document.getElementById("replay").addEventListener("click",()=>{frame.scrollTop=0;play()});
+  document.getElementById("d-again").addEventListener("click",()=>{clearAll();runLetters()});
+  site.addEventListener("click",e=>{if(e.target.closest("a"))e.preventDefault()});
+
+  /* references */
+  const REFS=window.MOYI_REFS||[];
+  const groups=document.getElementById("refGroups");
+  const order=[...new Set(REFS.map(r=>r.group))];
+  groups.innerHTML=order.map(g=>`<section style="margin-bottom:24px"><h2>${g}</h2><div class="rgrid">${REFS.filter(r=>r.group===g).map(r=>`<a class="ref" href="${r.url}" target="_blank" rel="noopener"><span class="top"><strong>${r.name}</strong><span class="tag">${r.base}</span></span><span class="aw">${r.award}</span><p>${r.take}</p><span class="u">${r.url.replace(/^https?:\/\//,"")}</span></a>`).join("")}</div></section>`).join("");
+
+  try{const s=JSON.parse(localStorage.getItem("moyi-preview-2")||"null");if(s)Object.assign(S,s)}catch(_){}
+  render();play();
+})();
+</script>
