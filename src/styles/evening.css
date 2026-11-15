@@ -1,0 +1,56 @@
+/* The evening as four still frames (spec 6.6): the permanent version for
+   reduced motion and for no JavaScript. Ported from preview option 4.
+   Frames flow (flex/grid); nothing is absolutely placed over a phone. */
+.evening { background: var(--surface); }
+.frame { position: relative; min-height: 100svh; overflow: hidden; color: #fff; }
+.frame .soon { color: #fff; }
+.evening .eyebrow { color: rgba(255, 255, 255, .8); }
+
+/* Frame 1: the hero (.o2t, h1.h4) */
+.frame--hero { display: flex; align-items: center; justify-content: center; padding: 112px 24px 72px; }
+.evening__hero { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+.evening__hero h1 { font-size: clamp(64px, 8.4vw, 118px); line-height: .98; letter-spacing: -.03em; max-width: 11ch; color: #fff; text-shadow: 0 2px 40px rgba(60, 30, 20, .35); }
+.evening__lede { margin: 0; font-size: 18px; line-height: 1.55; color: rgba(255, 255, 255, .8); text-shadow: 0 1px 20px rgba(60, 30, 20, .4); }
+
+/* Frames 2 and 4: caption, phone, step label.
+   Stacked by default (also the phone layout); three columns from 900px. */
+.frame--solo { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 124px 24px 56px; }
+.evening__phone { position: relative; z-index: 2; display: flex; justify-content: center; order: 1; }
+.evening__caption { position: relative; z-index: 2; order: 2; display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: 360px; text-align: center; }
+.evening__step { position: relative; z-index: 2; order: 0; margin: 0; align-self: flex-start; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #fff; }
+.evening__step::before { content: ""; width: 22px; height: 1px; background: currentColor; }
+.evening__caption .ct { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .8); }
+.evening__caption .tm { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 400; font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; color: #fff; }
+.evening__caption p { margin: 0; font-family: "Newsreader", ui-serif, Georgia, serif; font-size: 17px; line-height: 1.35; color: #fff; }
+
+/* Frame 3: the split (.panes, .pane, .who, .seam) */
+.frame--split { display: flex; flex-direction: column; }
+.evening__panes { position: relative; flex: 1; display: grid; grid-template-columns: 1fr 1fr; }
+.evening__pane { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 96px 16px 48px; }
+.evening__who { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.evening__who b { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 400; font-size: 46px; line-height: 1; font-variant-numeric: tabular-nums; }
+.evening__who span { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .8); }
+.evening__seam { position: absolute; z-index: 3; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(255, 255, 255, .25); }
+.frame--split .evening__step { order: -1; align-self: flex-end; padding: 22px 24px 0; background: var(--surface); width: 100%; justify-content: flex-end; padding-bottom: 14px; }
+
+@media (min-width: 900px) {
+  .frame--solo { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; padding: 96px 56px; }
+  .frame--solo .evening__caption { grid-column: 1; order: 0; align-items: flex-start; text-align: left; max-width: 300px; }
+  .frame--solo .evening__phone { grid-column: 2; }
+  .frame--solo .evening__step { grid-column: 3; justify-self: end; align-self: center; order: 0; }
+  .frame--solo .evening__caption .tm { font-size: 72px; }
+  .frame--solo .evening__caption p { font-size: 22px; }
+}
+
+@media (min-width: 1100px) {
+  .frame--split .evening__step { position: absolute; top: 96px; right: 32px; width: auto; padding: 0; background: none; z-index: 4; }
+}
+
+@media (max-width: 699px) {
+  .evening__hero h1 { font-size: 56px; }
+  .evening__lede { font-size: 15px; }
+  .evening__panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .evening__seam { left: 0; right: 0; top: 50%; bottom: auto; width: auto; height: 1px; }
+  .evening__pane { min-height: 50svh; gap: 14px; padding: 24px 16px; }
+  .evening__who b { font-size: 28px; }
+}

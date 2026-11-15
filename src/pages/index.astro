@@ -1,29 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
-import Brand from '../components/Brand.astro';
 import TopBar from '../components/TopBar.astro';
+import Evening from '../components/Evening.astro';
 import Footer from '../components/Footer.astro';
 import StoreButtons from '../components/StoreButtons.astro';
 import '../styles/home.css';
 ---
-<Base title="Mọyì" fonts>
+<Base title="Mọyì: daily gratitude, for two" description="Write before you read. One short thing about each other, every day. Your day opens when you both have." fonts>
   <TopBar />
   <main>
-    <Brand />
-    <h1>A private gratitude journal for two.</h1>
-    <p>Each of you writes one thing a day. Neither reads the other's until both have written.</p>
-    <p>Not open to the public yet.</p>
-    <StoreButtons />
+    <Evening />
   </main>
   <StoreButtons id="get" />
   <Footer />
 </Base>
-
-<style>
-  h1 {
-    font-family: "Newsreader", ui-serif, Georgia, serif;
-    font-weight: 400;
-    font-size: var(--fs-title);
-    line-height: 1.25;
-  }
-</style>
