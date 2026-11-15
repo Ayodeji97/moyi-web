@@ -15,12 +15,6 @@ body {
   line-height: 1.55;
 }
 
-main {
-  max-width: 34rem;
-  margin: 0 auto;
-  padding: 3rem max(16px, env(safe-area-inset-left));
-}
-
 :focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 2px;

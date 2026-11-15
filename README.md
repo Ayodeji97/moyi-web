@@ -26,3 +26,15 @@ Node 22.23.5 (see `.node-version`). `npm run check` type-checks the site and the
 ## Design tokens
 
 `design/tokens.md` is a copy of the design system's tokens from the Gratitude planning corpus. It is re-copied by hand when the corpus changes, and `tests/tokens.test.ts` checks that `src/styles/tokens.css` still matches it.
+
+## Home page
+
+The evening is told as four still frames. They are the fallback for visitors who prefer reduced motion and for visitors with no JavaScript, so the page reads in full without any script.
+
+To make a store live, set `live` and `url` for that store in `src/config/stores.ts`, and add the official badge file under `public/badges/` at the path named in its `badge` field. Until then the page shows the coming-soon line for that store.
+
+The FAQ answers are approved copy (2026-11-15). A change to them needs Daniel's approval again.
+
+`scripts/make-icons.sh` regenerates the icons.
+
+`npm test` also checks that the home page, its stylesheets, any scripts and both fonts total under 150 KB.

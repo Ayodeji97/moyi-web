@@ -1,0 +1,35 @@
+/* CSS stand-ins for the footage (imagery, spec 6.10). Hues come from the
+   preview's canvas scenes, darkened until tests/contrast.test.ts passes with
+   white and quiet text over the lightest stop under the scrim. The parent
+   positions .scene and .scrim with position: absolute; inset: 0. */
+:root {
+  --scene-sky-afternoon-1: #3A4D63;
+  --scene-sky-afternoon-2: #5E4047;
+  --scene-sky-afternoon-3: #6B3F24;
+  --scene-sky-dusk-1: #2A2B4D;
+  --scene-sky-dusk-2: #4E2A42;
+  --scene-sky-dusk-3: #5A2E1C;
+  --scene-sky-night-1: #0D0B14;
+  --scene-sky-night-2: #1C1424;
+  --scene-sky-night-3: #2A1A1A;
+  --scene-lagos-1: #2A1C30;
+  --scene-lagos-2: #5E2F2D;
+  --scene-lagos-3: #6B3A1E;
+  --scene-rain-1: #161C27;
+  --scene-rain-2: #25202B;
+  --scene-lamp-1: #3A2418;
+  --scene-lamp-2: #0F0B0A;
+  --scene-bed-1: #4A2F1F;
+  --scene-bed-2: #1A100B;
+  --scrim-alpha: 0.5;
+}
+
+.scene { position: absolute; inset: 0; }
+.scene--sky-afternoon { background: linear-gradient(180deg, var(--scene-sky-afternoon-1), var(--scene-sky-afternoon-2) 55%, var(--scene-sky-afternoon-3)); }
+.scene--sky-dusk { background: linear-gradient(180deg, var(--scene-sky-dusk-1), var(--scene-sky-dusk-2) 55%, var(--scene-sky-dusk-3)); }
+.scene--sky-night { background: linear-gradient(180deg, var(--scene-sky-night-1), var(--scene-sky-night-2) 55%, var(--scene-sky-night-3)); }
+.scene--lagos { background: linear-gradient(180deg, var(--scene-lagos-1), var(--scene-lagos-2) 45%, var(--scene-lagos-3)); }
+.scene--rain { background: linear-gradient(180deg, var(--scene-rain-1), var(--scene-rain-2)); }
+.scene--lamp { background: linear-gradient(180deg, var(--scene-lamp-1), var(--scene-lamp-2)); }
+.scene--bed { background: linear-gradient(135deg, var(--scene-bed-1), var(--scene-bed-2)); }
+.scrim { position: absolute; inset: 0; background: rgba(14, 10, 10, var(--scrim-alpha)); }

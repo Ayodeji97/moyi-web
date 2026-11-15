@@ -1,0 +1,70 @@
+---
+import '../styles/phone.css';
+
+interface Props {
+  view: 'today' | 'write' | 'wait' | 'reveal';
+  time?: string;
+  date?: string;
+  partner?: string;
+  mine?: string;
+  theirs?: string;
+  size?: 'centre' | 'pane';
+}
+
+const {
+  view,
+  time = '9:41',
+  date = 'Sat 15 Nov',
+  partner = 'Tunde',
+  mine = "You waited up so I wouldn't walk home alone.",
+  theirs = 'You called my mum on her birthday before I remembered.',
+  size = 'centre',
+} = Astro.props;
+
+const labels = {
+  today: 'Today: not yet written.',
+  write: `Writing: ${mine}`,
+  wait: `Written, waiting for ${partner}.`,
+  reveal: `Your day is open. ${partner}: ${theirs} You: ${mine}`,
+};
+const label = `The Mọyì app. ${labels[view]}`;
+const hide = (name: string) => (name === view ? undefined : true);
+---
+
+<div class={`dev dev--${size}`} role="img" aria-label={label}>
+  <div class="scr">
+    <div class="isl"></div>
+    <div class="sb"><span class="clock">{time}</span><span>●●●</span></div>
+    <div class="glass"></div>
+    <div class="v" data-view="today" hidden={hide('today')}>
+      <div class="an"><b>{date}</b><span><u>Archive</u><u>Bond</u></span></div>
+      <div class="gr"></div>
+      <p class="lb">Today</p>
+      <p class="en">Not yet written for today.</p>
+      <p class="st">One true sentence is enough.</p>
+      <div class="gr"></div>
+      <div class="pa">Write</div>
+    </div>
+    <div class="v" data-view="write" hidden={hide('write')}>
+      <div class="an"><span>Cancel</span><b>Write</b><span class="sp"></span></div>
+      <p class="st">Something small they did this week.</p>
+      <p class="en s">{mine}</p>
+      <div class="gr"></div>
+      <div class="pa">Send</div>
+    </div>
+    <div class="v" data-view="wait" hidden={hide('wait')}>
+      <div class="an"><b>{date}</b><span><u>Archive</u><u>Bond</u></span></div>
+      <div class="gr"></div>
+      <p class="lb">Today</p>
+      <p class="en s">{mine}</p>
+      <p class="st">Written. You'll see {partner}'s when it's ready.</p>
+      <div class="gr"></div>
+    </div>
+    <div class="v" data-view="reveal" hidden={hide('reveal')}>
+      <p class="st top">Your day is open.</p>
+      <div class="ec"><p class="lb">{partner}</p><p class="en s">{theirs}</p></div>
+      <div class="ec"><p class="lb">You</p><p class="en s">{mine}</p></div>
+      <div class="gr"></div>
+    </div>
+  </div>
+</div>
