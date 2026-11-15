@@ -143,7 +143,7 @@ The home page needs a script, video and fonts, so it gets the current policy plu
 ### 6.8 Fonts and the policy per page
 - **Home, legal, support and delete-account pages:** they get `font-src 'self'`, so Newsreader loads from our own origin. That adds no third party and costs no privacy.
 - **The functional pages (`/verify`, `/reset-password`, `/invite`, `/404`):** they keep today's policy exactly, with no fonts. They use the system font only, with headings in the system serif stack. ADR-0018's "fetch nothing" stays literally true there.
-- **On Cloudflare Pages:** when two `_headers` rules match a route, both policies are sent and the browser enforces the stricter one. So each route group sets its own policy, and the `/*` rule carries the other headers but no policy.
+- **On Cloudflare Pages:** when two `_headers` rules match a route, both policies are sent and the browser enforces the stricter one. So each route group sets its own policy, and the `/*` rule carries the other headers and the strict policy, and each content route detaches it (`! Content-Security-Policy`) and sets its own. Unknown paths therefore keep the strict policy and can never go out without one.
 - **The shared layout must look right without Newsreader.** A test checks that the policy header on each route matches this table.
 
 ### 6.9 Legal versions and the backend's consent records

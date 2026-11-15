@@ -1,0 +1,28 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+interface Props {
+  title: string;
+  noindex?: boolean;
+  fonts?: boolean;
+  description?: string;
+  bodyAttrs?: Record<string, string>;
+}
+
+const { title, noindex = false, fonts = false, description, bodyAttrs = {} } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    {fonts && <link rel="stylesheet" href="/fonts/fonts.css" />}
+  </head>
+  <body {...bodyAttrs}>
+    <slot />
+  </body>
+</html>
