@@ -7,9 +7,10 @@ interface Props {
   noindex?: boolean;
   fonts?: boolean;
   description?: string;
+  bodyAttrs?: Record<string, string>;
 }
 
-const { title, noindex = false, fonts = false, description } = Astro.props;
+const { title, noindex = false, fonts = false, description, bodyAttrs = {} } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -21,7 +22,7 @@ const { title, noindex = false, fonts = false, description } = Astro.props;
     {noindex && <meta name="robots" content="noindex" />}
     {fonts && <link rel="stylesheet" href="/fonts/fonts.css" />}
   </head>
-  <body>
+  <body {...bodyAttrs}>
     <slot />
   </body>
 </html>

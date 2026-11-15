@@ -1,0 +1,70 @@
+h1 {
+  font-family: ui-serif, Georgia, serif;
+  font-weight: 400;
+  font-size: var(--fs-title);
+  line-height: 1.25;
+  margin: 0 0 0.75rem;
+}
+
+p {
+  margin: 0 0 1rem;
+  color: var(--ink-muted);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: ui-serif, Georgia, serif;
+  font-size: 18px;
+  color: var(--ink);
+  margin: 0 0 2rem;
+}
+
+.card {
+  background: var(--surface-raised);
+  border: 1px solid var(--outline);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 1.25rem 0;
+}
+
+.label {
+  font-size: var(--fs-small);
+  margin: 0 0 0.4rem;
+}
+
+.note {
+  font-size: var(--fs-small);
+}
+
+code {
+  display: block;
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font: 0.95rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+  user-select: all;
+  margin: 0 0 0.6rem;
+}
+
+code.inline {
+  display: inline;
+  padding: 0.1rem 0.3rem;
+  margin: 0;
+  font-size: 0.9em;
+  user-select: auto;
+}
+
+button {
+  font: inherit;
+  min-height: 48px;
+  padding: 0 1.25rem;
+  border: 1px solid var(--outline-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
