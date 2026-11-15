@@ -31,7 +31,17 @@ const label = `The Mọyì app. ${labels[view]}`;
 const hide = (name: string) => (name === view ? undefined : true);
 ---
 
-<div class={`dev dev--${size}`} role="img" aria-label={label}>
+<div
+  class={`dev dev--${size}`}
+  role="img"
+  aria-label={label}
+  data-phone
+  data-mine={mine}
+  data-label-today={`The Mọyì app. ${labels.today}`}
+  data-label-write={`The Mọyì app. ${labels.write}`}
+  data-label-wait={`The Mọyì app. ${labels.wait}`}
+  data-label-reveal={`The Mọyì app. ${labels.reveal}`}
+>
   <div class="scr">
     <div class="isl"></div>
     <div class="sb"><span class="clock">{time}</span><span>●●●</span></div>
@@ -48,9 +58,9 @@ const hide = (name: string) => (name === view ? undefined : true);
     <div class="v" data-view="write" hidden={hide('write')}>
       <div class="an"><span>Cancel</span><b>Write</b><span class="sp"></span></div>
       <p class="st">Something small they did this week.</p>
-      <p class="en s">{mine}</p>
+      <p class="en s" data-typed>{mine}</p>
       <div class="gr"></div>
-      <div class="pa">Send</div>
+      <div class="pa" data-send>Send</div>
     </div>
     <div class="v" data-view="wait" hidden={hide('wait')}>
       <div class="an"><b>{date}</b><span><u>Archive</u><u>Bond</u></span></div>
@@ -62,8 +72,8 @@ const hide = (name: string) => (name === view ? undefined : true);
     </div>
     <div class="v" data-view="reveal" hidden={hide('reveal')}>
       <p class="st top">Your day is open.</p>
-      <div class="ec"><p class="lb">{partner}</p><p class="en s">{theirs}</p></div>
-      <div class="ec"><p class="lb">You</p><p class="en s">{mine}</p></div>
+      <div class="ec" data-card="0"><p class="lb">{partner}</p><p class="en s">{theirs}</p></div>
+      <div class="ec" data-card="1"><p class="lb">You</p><p class="en s">{mine}</p></div>
       <div class="gr"></div>
     </div>
   </div>
