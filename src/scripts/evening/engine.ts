@@ -32,6 +32,7 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
     tunde: one('[data-role="tunde"] [data-phone]'),
   };
   const hero = one('[data-role="hero"]');
+  const stores = hero?.querySelector<HTMLElement>('.stores') ?? null;
   const city = one('[data-role="caption"] [data-city]');
   const time = one('[data-role="caption"] [data-time]');
   const text = one('[data-role="caption"] [data-text]');
@@ -57,6 +58,8 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
   const props = new Map<string, string>();
   const texts = new Map<HTMLElement, string>(originals);
   let cards = '';
+  let centreView: View | undefined;
+  let tundeView: View | undefined;
   let step: number | undefined;
   let heroGone: boolean | undefined;
   let sky: string | undefined;
@@ -85,7 +88,11 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
       s.bars.forEach((b, i) => prop(`--bar-${i}`, b));
 
       if (centre) {
-        centre.set(s.centre.view);
+        // Only on a change: set() mid-swap settles at once, which would cut every fade short.
+        if (s.centre.view !== centreView) {
+          centre.set(s.centre.view);
+          centreView = s.centre.view;
+        }
         centre.typed(s.centre.typed);
         centre.busy(s.centre.busy);
         centre.time(s.centre.time);
@@ -97,7 +104,10 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
       }
       amara?.time(s.amara.time);
       if (tunde) {
-        tunde.set(s.tunde.view);
+        if (s.tunde.view !== tundeView) {
+          tunde.set(s.tunde.view);
+          tundeView = s.tunde.view;
+        }
         tunde.typed(s.tunde.typed);
         tunde.busy(s.tunde.busy);
         tunde.time(s.tunde.time);
@@ -114,10 +124,12 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
         step = s.step;
       }
 
-      // Once the headline has faded, its store links leave the tab order and stop taking clicks.
+      // Once the headline has faded, its store links leave the tab order and the hero stops
+      // taking clicks. The h1 itself stays in the accessibility tree.
       const gone = s.hero === 0;
       if (hero && gone !== heroGone) {
-        hero.toggleAttribute('inert', gone);
+        hero.toggleAttribute('data-gone', gone);
+        stores?.toggleAttribute('inert', gone);
         heroGone = gone;
       }
 
@@ -133,7 +145,8 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
       props.clear();
       if (stage.getAttribute('style') === '') stage.removeAttribute('style');
       for (const li of rail) li.removeAttribute('aria-current');
-      hero?.removeAttribute('inert');
+      hero?.removeAttribute('data-gone');
+      stores?.removeAttribute('inert');
       for (const [c, v] of initial) c.set(v);
       for (const [el, t] of originals) if (el.textContent !== t) el.textContent = t;
       for (const el of cardEls) {
@@ -143,6 +156,8 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
       }
       texts.clear();
       cards = '';
+      centreView = undefined;
+      tundeView = undefined;
       step = undefined;
       heroGone = undefined;
       sky = undefined;

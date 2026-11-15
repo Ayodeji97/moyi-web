@@ -67,11 +67,15 @@
 }
 .evening[data-live] .frame { position: absolute; inset: 0; min-height: 0; }
 
-/* Layers: the sky under everything, then the split, then the centre phone. */
+/* Layers: the sky under everything, then the split, then the centre phone.
+   Frame 4 is never seen in live mode: the centre phone plays the reveal. Only its
+   children are hidden, so its step label stays readable by screen readers. The frame
+   itself keeps whatever display .frame--solo gives it; nothing competes on that. */
 .evening[data-live] [data-frame="1"] { z-index: 0; }
+.evening[data-live] [data-frame="4"] { z-index: 0; pointer-events: none; }
+.evening[data-live] [data-frame="4"] > :not(.evening__step) { display: none; }
 .evening[data-live] [data-frame="3"] { z-index: 1; pointer-events: none; }
 .evening[data-live] [data-frame="2"] { z-index: 2; pointer-events: none; }
-.evening[data-live] [data-frame="4"] { display: none; }
 .evening[data-live] [data-frame="2"] > .scene,
 .evening[data-live] [data-frame="2"] > .scrim { display: none; }
 
@@ -86,6 +90,7 @@
   opacity: var(--hero);
   transform: translateY(calc((1 - var(--hero)) * -40px));
 }
+.evening[data-live] [data-gone] { pointer-events: none; }
 
 /* Frame 2: the centre phone rises, the caption sits to its left (stacked above it when narrow). */
 .evening[data-live] .frame--solo { display: block; padding: 0; }
@@ -97,7 +102,8 @@
 }
 .evening[data-live] [data-role="caption"] {
   position: absolute; left: 56px; top: 50%; transform: translateY(-50%);
-  max-width: 300px; align-items: flex-start; text-align: left; gap: 10px;
+  /* Clear of the centred phone (at most 300px wide) with 24px to spare: 56 + w + 24 <= 50vw - 150. */
+  max-width: min(300px, calc(50vw - 150px - 80px)); align-items: flex-start; text-align: left; gap: 10px;
   opacity: var(--caption); transition: opacity .4s var(--ease, ease);
 }
 .evening[data-live] [data-role="caption"] .tm { font-size: 72px; }
@@ -111,7 +117,7 @@
 .evening[data-live] .evening__seam { opacity: var(--split); }
 
 /* The rail (900px and wider) and the progress line (narrower). */
-.evening__rail, .evening__progress, .evening__hint { z-index: 5; }
+.evening[data-live] .evening__rail, .evening[data-live] .evening__progress, .evening[data-live] .evening__hint { z-index: 5; }
 .evening[data-live] .evening__rail {
   position: absolute; right: 56px; top: 50%; transform: translateY(-50%);
   display: none; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none;
@@ -147,7 +153,14 @@
 }
 
 @media (max-width: 899px) {
-  .evening[data-live] [data-role="centre"] { top: 62%; }
+  /* The phone hangs from the bottom and is sized by height, so it always clears the
+     caption, which ends near 245px: phone height = pw * 19.4 / 9, and
+     pw <= (100svh - 300px) * .464 keeps its top at or below 100svh - 300px + ~24px. */
+  .evening[data-live] [data-role="centre"] {
+    top: auto; bottom: max(24px, 4svh);
+    transform: translateX(-50%) translateY(calc((1 - var(--rise)) * 70svh)) scale(calc(.88 + .12 * var(--rise)));
+  }
+  .evening[data-live] [data-role="centre"] .dev { --pw: min(300px, 34svh, calc((100svh - 300px) * .464)); }
   .evening[data-live] [data-role="caption"] {
     left: 0; right: 0; top: 124px; transform: none; max-width: none;
     align-items: center; text-align: center; gap: 4px; padding-inline: 24px;
@@ -157,6 +170,7 @@
 }
 
 @media (max-width: 699px) {
+  .evening[data-live] [data-role="centre"] .dev { --pw: min(210px, 26svh, calc((100svh - 300px) * .464)); }
   .evening[data-live] .evening__panes { clip-path: inset(calc((1 - var(--split)) * 50%) 0); }
   /* The preview's narrow panes: the clock beside the phone, clear of the progress line. */
   .evening[data-live] .evening__pane { min-height: 0; }

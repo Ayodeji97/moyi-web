@@ -132,6 +132,38 @@ describe('bind', () => {
     mo.disconnect();
   });
 
+  it('lets a swap fade: re-applying the same view mid-swap does not settle it', () => {
+    const b = bind(section());
+    const centre = role('centre').querySelector('[data-phone]')!;
+    const view = (v: string) => centre.querySelector<HTMLElement>(`.v[data-view="${v}"]`)!;
+    b.apply(evening(0.1)); // centre: write -> today
+    vi.advanceTimersByTime(SWAP_MS / 2);
+    b.apply(evening(0.1));
+    b.apply(evening(0.105));
+    expect(view('write').classList.contains('is-out')).toBe(true);
+    expect(view('write').hasAttribute('hidden')).toBe(false);
+    expect(view('today').hasAttribute('hidden')).toBe(true);
+    vi.advanceTimersByTime(SWAP_MS);
+    expect(view('write').hasAttribute('hidden')).toBe(true);
+    expect(view('today').hasAttribute('hidden')).toBe(false);
+  });
+
+  it('takes the faded hero out of the way but keeps its heading', () => {
+    const b = bind(section());
+    const hero = role('hero');
+    const stores = hero.querySelector('.stores')!;
+    b.apply(evening(0));
+    expect(hero.hasAttribute('data-gone')).toBe(false);
+    expect(stores.hasAttribute('inert')).toBe(false);
+    b.apply(evening(0.55));
+    expect(hero.hasAttribute('data-gone')).toBe(true);
+    expect(stores.hasAttribute('inert')).toBe(true);
+    expect(hero.querySelector('h1')!.closest('[inert]')).toBeNull();
+    b.restore();
+    expect(hero.hasAttribute('data-gone')).toBe(false);
+    expect(stores.hasAttribute('inert')).toBe(false);
+  });
+
   it('writes the caption and the pane clocks', () => {
     const b = bind(section());
     b.apply(evening(0.9));

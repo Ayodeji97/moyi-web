@@ -6,6 +6,13 @@ import { evening } from './timeline';
 
 const noop = () => {};
 
+type Change = (e: { matches: boolean }) => void;
+// Safari before 14 has only the deprecated addListener/removeListener on MediaQueryList.
+const listen = (mq: MediaQueryList, fn: Change) =>
+  typeof mq.addEventListener === 'function' ? mq.addEventListener('change', fn) : mq.addListener(fn);
+const unlisten = (mq: MediaQueryList, fn: Change) =>
+  typeof mq.removeEventListener === 'function' ? mq.removeEventListener('change', fn) : mq.removeListener(fn);
+
 export function start(doc: Document, win: Window): () => void {
   const section = doc.getElementById('how');
   if (!section || typeof win.matchMedia !== 'function') return noop;
@@ -40,7 +47,7 @@ export function start(doc: Document, win: Window): () => void {
     done = true;
     win.removeEventListener('scroll', schedule);
     win.removeEventListener('resize', schedule);
-    reduce.removeEventListener('change', onChange);
+    unlisten(reduce, onChange);
     if (queued) win.cancelAnimationFrame(frameId);
     queued = false;
     scenes.stop();
@@ -54,7 +61,7 @@ export function start(doc: Document, win: Window): () => void {
 
   win.addEventListener('scroll', schedule, { passive: true });
   win.addEventListener('resize', schedule);
-  reduce.addEventListener('change', onChange);
+  listen(reduce, onChange);
   tick();
   return teardown;
 }
