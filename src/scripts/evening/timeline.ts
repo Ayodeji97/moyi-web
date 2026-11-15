@@ -5,6 +5,7 @@ export type View = 'today' | 'write' | 'wait' | 'reveal';
 
 const clamp01 = (n: number): number => Math.min(1, Math.max(0, n));
 
+// NaN in gives NaN out; evening() clamps p first.
 export const ramp = (p: number, a: number, b: number): number => clamp01((p - a) / (b - a));
 
 const pad = (n: number): string => String(n).padStart(2, '0');
