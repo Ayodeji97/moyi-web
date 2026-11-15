@@ -104,6 +104,31 @@ describe('built pages', () => {
   });
 });
 
+describe('home layout', () => {
+  it('no stylesheet linked from the home page has a main rule with max-width', () => {
+    const html = readFileSync('dist/index.html', 'utf8');
+    const hrefs = [...html.matchAll(/<link\b[^>]*\brel="stylesheet"[^>]*>/g)].map((m) => /\bhref="([^"]+)"/.exec(m[0])?.[1]);
+    expect(hrefs.length).toBeGreaterThan(0);
+    for (const h of hrefs) {
+      const css = readFileSync(resolve('dist', (h as string).replace(/^\//, '')), 'utf8');
+      for (const m of css.matchAll(/(^|[},\s])main\s*\{([^}]*)\}/g)) {
+        expect(m[2], `${h}: main rule`).not.toMatch(/max-width/);
+      }
+    }
+  });
+
+  it('the functional pages still get the narrow main', () => {
+    for (const n of ['verify', 'reset-password', 'invite', '404']) {
+      const html = readFileSync(`dist/${n}.html`, 'utf8');
+      const css = [...html.matchAll(/<link\b[^>]*\brel="stylesheet"[^>]*>/g)]
+        .map((m) => /\bhref="([^"]+)"/.exec(m[0])?.[1] as string)
+        .map((h) => readFileSync(resolve('dist', h.replace(/^\//, '')), 'utf8'))
+        .join('\n');
+      expect(css, n).toMatch(/main\s*\{[^}]*max-width:\s*34rem/);
+    }
+  });
+});
+
 describe('home page weight', () => {
   it('html, stylesheets, scripts and fonts total under 150 KB', () => {
     const html = readFileSync('dist/index.html', 'utf8');
@@ -112,13 +137,17 @@ describe('home page weight', () => {
       ...[...html.matchAll(/<link\b[^>]*\brel="stylesheet"[^>]*>/g)].map((m) => /\bhref="([^"]+)"/.exec(m[0])?.[1]),
       ...[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)].map((m) => m[1]),
     ];
+    expect(refs.length, 'asset references found').toBeGreaterThan(0);
     for (const ref of refs) {
       expect(ref, 'asset reference').toBeDefined();
       const file = resolve('dist', (ref as string).replace(/^\//, ''));
       sizes.set(file, statSync(file).size);
     }
-    for (const w of ['400', '500']) {
-      const f = resolve(`dist/fonts/newsreader-${w}.woff2`);
+    const fontsCss = readFileSync('dist/fonts/fonts.css', 'utf8');
+    const fontUrls = [...fontsCss.matchAll(/url\(["']?([^"')]+)["']?\)/g)].map((m) => m[1]);
+    expect(fontUrls.length, 'font urls in fonts.css').toBeGreaterThan(0);
+    for (const u of fontUrls) {
+      const f = resolve('dist', u.replace(/^\//, ''));
       sizes.set(f, statSync(f).size);
     }
     const total = [...sizes.values()].reduce((a, b) => a + b, 0);

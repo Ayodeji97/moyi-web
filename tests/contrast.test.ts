@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
+// Gradient stops only: a linear blend between two stops is never lighter than the lighter stop,
+// and the card ::after fade only darkens, so neither can lower the contrast the stops give.
 const css = readFileSync('src/styles/scenes.css', 'utf8');
 type RGB = [number, number, number];
 

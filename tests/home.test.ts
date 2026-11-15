@@ -95,7 +95,10 @@ describe('home page, the rest', () => {
   it('puts the stores in the close, with #get', () => {
     const close = doc.querySelector('[data-section="close"]')!;
     expect(close.querySelector('#get')).not.toBeNull();
-    expect(close.querySelector('footer')).not.toBeNull();
+    expect(close.querySelector('footer')).toBeNull();
+    const foot = doc.querySelector('footer')!;
+    expect(foot.closest('main')).toBeNull();
+    expect(foot.parentElement).toBe(doc.body);
     expect(close.querySelector('p.yo')!.getAttribute('lang')).toBe('yo');
   });
 

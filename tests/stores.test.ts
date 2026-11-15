@@ -33,9 +33,16 @@ describe('store config', () => {
 describe('built home page', () => {
   const html = readFileSync('dist/index.html', 'utf8');
 
-  it('shows the coming soon line in the hero and the close', () => {
-    const line = 'Coming soon to the App Store and Google Play.';
-    expect(html.split(line).length - 1).toBe(2);
+  it('shows the coming soon line, or the live store links, in the hero and the close', () => {
+    const line = comingSoonLine(STORES.apple.live, STORES.google.live);
+    if (line !== null) {
+      expect(html.split(line).length - 1).toBe(2);
+    } else {
+      expect(html).not.toContain('Coming soon');
+    }
+    const live = Object.values(STORES).filter((s) => s.live).length;
+    const links = (html.match(/<a\b[^>]*\bclass="[^"]*\bstore\b[^"]*"/g) ?? []).length;
+    expect(links).toBe(live * 2);
   });
 
   it('keeps the get anchor', () => {

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
@@ -47,5 +48,14 @@ describe('Phone', () => {
     const doc = await render({ view: 'today', size: 'pane' });
     expect(doc.querySelector('.dev')!.classList.contains('dev--pane')).toBe(true);
     expect(doc.querySelector('[style]')).toBeNull();
+  });
+});
+
+describe('phone view switching hook', () => {
+  it('hides a hidden view with display none (slice 3 depends on it)', () => {
+    const css = readFileSync('src/styles/phone.css', 'utf8');
+    const m = /\.v\[hidden\]\s*\{([^}]*)\}/.exec(css);
+    expect(m, '.v[hidden] rule').not.toBeNull();
+    expect(m![1]).toMatch(/display:\s*none/);
   });
 });
