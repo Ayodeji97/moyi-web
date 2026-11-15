@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 describe('built fonts', () => {
@@ -101,5 +101,28 @@ describe('built pages', () => {
     expect(sha('dist/.well-known/assetlinks.json')).toBe('e84e7845c7d70232d1803ff854243a621b66c9fa36ab5fae285383b88cd437aa');
     expect(sha('dist/.well-known/apple-app-site-association')).toBe('66ab7a51dc292075aab0e5067e6767fcc643477df65d450a5f8869aeb6191e68');
     expect(sha('dist/_redirects')).toBe('cc3fb993ff7a6e195e1f6a40139801ceab4f979ee634ad2f81fe384cda8b6af7');
+  });
+});
+
+describe('home page weight', () => {
+  it('html, stylesheets, scripts and fonts total under 150 KB', () => {
+    const html = readFileSync('dist/index.html', 'utf8');
+    const sizes = new Map<string, number>([['dist/index.html', statSync('dist/index.html').size]]);
+    const refs = [
+      ...[...html.matchAll(/<link\b[^>]*\brel="stylesheet"[^>]*>/g)].map((m) => /\bhref="([^"]+)"/.exec(m[0])?.[1]),
+      ...[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)].map((m) => m[1]),
+    ];
+    for (const ref of refs) {
+      expect(ref, 'asset reference').toBeDefined();
+      const file = resolve('dist', (ref as string).replace(/^\//, ''));
+      sizes.set(file, statSync(file).size);
+    }
+    for (const w of ['400', '500']) {
+      const f = resolve(`dist/fonts/newsreader-${w}.woff2`);
+      sizes.set(f, statSync(f).size);
+    }
+    const total = [...sizes.values()].reduce((a, b) => a + b, 0);
+    const breakdown = [...sizes].map(([f, n]) => `${f}: ${n}`).join('\n');
+    expect(total, `total ${total} bytes\n${breakdown}`).toBeLessThan(150 * 1024);
   });
 });
