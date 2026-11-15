@@ -31,22 +31,19 @@
 .evening__who b { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 400; font-size: 46px; line-height: 1; font-variant-numeric: tabular-nums; }
 .evening__who span { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .8); }
 .evening__seam { position: absolute; z-index: 3; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(255, 255, 255, .25); }
-.frame--split .evening__step { order: -1; align-self: flex-end; padding: 22px 24px 0; background: var(--surface); width: 100%; justify-content: flex-end; padding-bottom: 14px; }
+.frame--split .evening__step { order: -1; align-self: flex-end; padding: 22px 24px 14px; background: var(--surface); width: 100%; justify-content: flex-end; }
 
 @media (min-width: 900px) {
   .frame--solo { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; padding: 96px 56px; }
-  .frame--solo .evening__caption { grid-column: 1; order: 0; align-items: flex-start; text-align: left; max-width: 300px; }
-  .frame--solo .evening__phone { grid-column: 2; }
-  .frame--solo .evening__step { grid-column: 3; justify-self: end; align-self: center; order: 0; }
+  .frame--solo .evening__caption { grid-column: 1; grid-row: 1; align-self: center; order: 0; align-items: flex-start; text-align: left; max-width: 300px; }
+  .frame--solo .evening__phone { grid-column: 2; grid-row: 1; align-self: center; order: 0; }
+  .frame--solo .evening__step { grid-column: 3; grid-row: 1; justify-self: end; align-self: center; order: 0; }
   .frame--solo .evening__caption .tm { font-size: 72px; }
   .frame--solo .evening__caption p { font-size: 22px; }
 }
 
-@media (min-width: 1100px) {
-  .frame--split .evening__step { position: absolute; top: 96px; right: 32px; width: auto; padding: 0; background: none; z-index: 4; }
-}
-
 @media (max-width: 699px) {
+  .frame--hero { padding-top: calc(max(20px, env(safe-area-inset-top)) + 48px + 16px); }
   .evening__hero h1 { font-size: 56px; }
   .evening__lede { font-size: 15px; }
   .evening__panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }

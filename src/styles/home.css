@@ -23,7 +23,7 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
 
 @media (max-width: 699px) {
   .wrap { padding-inline: 22px; }
-  .topbar { padding: 58px 20px 0; }
+  .topbar { padding: max(20px, env(safe-area-inset-top)) 20px 0; }
   .topbar nav { display: none; }
   .topbar .get { padding: 0 14px; font-size: 13px; }
   .foot { padding: 22px 22px 0; margin-top: 60px; }

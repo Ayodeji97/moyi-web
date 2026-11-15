@@ -1,3 +1,9 @@
+main {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 3rem max(16px, env(safe-area-inset-left));
+}
+
 h1 {
   font-family: ui-serif, Georgia, serif;
   font-weight: 400;
