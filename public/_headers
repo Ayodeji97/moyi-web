@@ -1,0 +1,61 @@
+# default-src 'none' is what makes these pages fetch nothing: no request to the
+# API, no font, no analytics. A token or code leaves the page only by being
+# copied (ADR-0018; link.js).
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Referrer-Policy: no-referrer
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+
+# The home page and the content pages need the self-hosted font; the home page
+# also plays its own footage. Every matching rule applies, so each of these
+# detaches the strict policy set by /* and sets its own: a page never carries
+# two policies, and an unknown address keeps the strict one.
+/
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/privacy
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/privacy/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/terms
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/terms/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/data-processing
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/data-processing/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/support
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/delete-account
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+
+
+# The pages that carry a token or code are never cached, by the browser or by
+# Cloudflare.
+/verify
+  Cache-Control: no-store
+/reset-password
+  Cache-Control: no-store
+/i/*
+  Cache-Control: no-store
+/invite
+  Cache-Control: no-store
+
+# The app-link files (README.md, "App links"). Android and Apple read them as
+# JSON; the Apple one has no extension, so without this it would go out as
+# application/octet-stream. Neither is a page, so neither is ever redirected:
+# _redirects has no rule for /.well-known/*.
+/.well-known/assetlinks.json
+  Content-Type: application/json
+/.well-known/apple-app-site-association
+  Content-Type: application/json

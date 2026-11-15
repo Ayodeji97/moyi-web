@@ -6,7 +6,8 @@
     "test": "astro build && vitest run",
     "dev": "astro dev",
     "build": "astro build",
-    "check": "astro check"
+    "check": "astro check",
+    "test:headers": "npm run build && node scripts/run-header-check.mjs"
   },
   "type": "module",
   "private": true,

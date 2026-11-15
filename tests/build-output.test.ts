@@ -84,4 +84,11 @@ describe('built pages', () => {
       expect(html, n).toContain('<script src="/link.js"></script>');
     }
   });
+
+  it("well-known files are the backend's byte for byte", () => {
+    const sha = (f: string) => createHash('sha256').update(readFileSync(f)).digest('hex');
+    expect(sha('dist/.well-known/assetlinks.json')).toBe('e84e7845c7d70232d1803ff854243a621b66c9fa36ab5fae285383b88cd437aa');
+    expect(sha('dist/.well-known/apple-app-site-association')).toBe('66ab7a51dc292075aab0e5067e6767fcc643477df65d450a5f8869aeb6191e68');
+    expect(sha('dist/_redirects')).toBe('cc3fb993ff7a6e195e1f6a40139801ceab4f979ee634ad2f81fe384cda8b6af7');
+  });
 });
