@@ -68,10 +68,12 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
   .foot { padding: 56px 0 40px; }
   .foot__top, .foot__bar { width: calc(100% - 44px); }
   /* On phones only the brand centres: the mark, with its line beneath it. The links keep two
-     columns and the bar keeps its row. */
+     columns, centred as a block, and the bar keeps its row. */
   .foot__top { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .foot__brand { flex-direction: column; justify-content: center; row-gap: 4px; text-align: center; }
-  .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+  /* The two columns size to their links and sit centred as one block, so the space left of the
+     links equals the space right of them. */
+  .foot__cols { grid-template-columns: repeat(2, auto); justify-content: center; gap: 0 48px; }
   .foot__col { display: contents; }
   .foot__h { display: none; }
   .foot__col a { min-height: 44px; font-size: 15px; }
