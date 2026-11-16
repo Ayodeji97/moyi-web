@@ -60,6 +60,7 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
   let cards = '';
   let centreView: View | undefined;
   let tundeView: View | undefined;
+  let amaraView: View | undefined;
   let step: number | undefined;
   let heroGone: boolean | undefined;
   let sky: string | undefined;
@@ -83,6 +84,7 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
       prop('--centre', s.centre.opacity);
       prop('--split', s.split);
       prop('--panes', s.panes);
+      prop('--pane-on', s.paneOn);
       prop('--caption', s.caption.opacity);
       prop('--rail', s.rail);
       s.bars.forEach((b, i) => prop(`--bar-${i}`, b));
@@ -102,7 +104,13 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
           cards = `${a},${b}`;
         }
       }
-      amara?.time(s.amara.time);
+      if (amara) {
+        if (s.amara.view !== amaraView) {
+          amara.set(s.amara.view);
+          amaraView = s.amara.view;
+        }
+        amara.time(s.amara.time);
+      }
       if (tunde) {
         if (s.tunde.view !== tundeView) {
           tunde.set(s.tunde.view);
@@ -158,6 +166,7 @@ export function bind(section: HTMLElement, scenes?: { setSky(p: number): void })
       cards = '';
       centreView = undefined;
       tundeView = undefined;
+      amaraView = undefined;
       step = undefined;
       heroGone = undefined;
       sky = undefined;

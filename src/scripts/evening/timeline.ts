@@ -19,7 +19,9 @@ export interface EveningState {
   hero: number;
   sky: number;
   centre: {
+    /** 0 or 1, never between: the device is never see-through over the scenery. */
     opacity: number;
+    /** 1 when the phone is in place; it rises in from below the stage and sinks back out. */
     rise: number;
     view: View;
     typed: number;
@@ -28,8 +30,11 @@ export interface EveningState {
     cards: [number, number];
   };
   split: number;
+  /** The pane labels fade with this; the pane phones slide in and out with it. */
   panes: number;
-  amara: { time: string };
+  /** 0 or 1: the pane phones are shown, opaque, whenever they are on the stage at all. */
+  paneOn: number;
+  amara: { view: View; time: string };
   tunde: { view: View; typed: number; busy: boolean; time: string };
   caption: { opacity: number; city: string; time: string; text: string };
   step: 0 | 1 | 2;
@@ -39,11 +44,14 @@ export interface EveningState {
 
 const writingView = (k: number): View => (k < 0.12 ? 'today' : k < 0.55 ? 'write' : 'wait');
 
+// Smoothstep: the phone eases into place and out again rather than sliding at a constant rate.
+const ease = (t: number): number => t * t * (3 - 2 * t);
+
 export function evening(input: number): EveningState {
   const p = Number.isNaN(input) ? 0 : clamp01(input);
   const before = p < 0.5;
 
-  const rise = ramp(p, 0.08, 0.2);
+  const rise = before ? ease(ramp(p, 0.08, 0.2)) * (1 - ease(ramp(p, 0.26, 0.295))) : ease(ramp(p, 0.82, 0.87));
   const dayRamp = ramp(p, 0.13, 0.26);
   const k = 0.55 * dayRamp;
   const centreView: View = before ? writingView(k) : 'reveal';
@@ -52,7 +60,10 @@ export function evening(input: number): EveningState {
 
   const kb = ramp(p, 0.44, 0.66);
   const k2 = kb < 0.98 ? kb * 0.55 : 0.6;
-  const tundeView = writingView(k2);
+  // The day opens as soon as both have written: when Tunde sends, both panes show it.
+  const sent = kb >= 0.98;
+  const tundeView: View = sent ? 'reveal' : writingView(k2);
+  const panes = ramp(p, 0.36, 0.41) * (1 - ramp(p, 0.68, 0.72));
 
   const m = 21 * 60 + 42 + Math.round(ramp(p, 0.36, 0.7) * 68);
 
@@ -60,7 +71,7 @@ export function evening(input: number): EveningState {
     hero: 1 - ramp(p, 0, 0.07),
     sky: p < 0.72 ? ramp(p, 0, 0.3) * 0.55 : 0.55 + 0.45 * ramp(p, 0.72, 0.86),
     centre: {
-      opacity: before ? rise * (1 - ramp(p, 0.26, 0.295)) : ramp(p, 0.82, 0.87),
+      opacity: rise > 0 ? 1 : 0,
       rise,
       view: centreView,
       typed: before ? ramp(k, 0.14, 0.47) : 0,
@@ -69,8 +80,9 @@ export function evening(input: number): EveningState {
       cards: before ? [0, 0] : [ramp(r, 0, 0.5), ramp(r, 0.4, 0.9)],
     },
     split: ramp(p, 0.3, 0.37) * (1 - ramp(p, 0.72, 0.8)),
-    panes: ramp(p, 0.36, 0.41) * (1 - ramp(p, 0.68, 0.72)),
-    amara: { time: clock(m) },
+    panes,
+    paneOn: panes > 0 ? 1 : 0,
+    amara: { view: sent ? 'reveal' : 'wait', time: clock(m) },
     tunde: {
       view: tundeView,
       typed: ramp(k2, 0.14, 0.47),

@@ -61,7 +61,7 @@
    ------------------------------------------------------------------ */
 .evening[data-live] { height: 400svh; }
 .evening[data-live] .evening__stage {
-  --hero: 1; --rise: 0; --centre: 0; --split: 0; --panes: 0; --caption: 0; --rail: 0;
+  --hero: 1; --rise: 0; --centre: 0; --split: 0; --panes: 0; --pane-on: 0; --caption: 0; --rail: 0;
   --bar-0: 0; --bar-1: 0; --bar-2: 0;
   position: sticky; top: 0; height: 100svh; overflow: hidden;
 }
@@ -92,13 +92,18 @@
 }
 .evening[data-live] [data-gone] { pointer-events: none; }
 
-/* Frame 2: the centre phone rises, the caption sits to its left (stacked above it when narrow). */
+/* Frame 2: the centre phone rises, the caption sits to its left (stacked above it when narrow).
+   The phone is never see-through over the scenery: --centre is 0 or 1 (timeline.ts), and the
+   phone travels in from below the stage, tilted, and settles flat. */
 .evening[data-live] .frame--solo { display: block; padding: 0; }
 .evening[data-live] [data-role="centre"] {
   position: absolute; left: 50%; top: 50%;
   opacity: var(--centre);
-  transform: translate(-50%, -50%) translateY(calc((1 - var(--rise)) * 70svh)) scale(calc(.88 + .12 * var(--rise)));
-  will-change: transform, opacity;
+  transform: translate(-50%, -50%) translateY(calc((1 - var(--rise)) * 100svh)) scale(calc(.9 + .1 * var(--rise)));
+  perspective: 1800px;
+}
+.evening[data-live] [data-role="centre"] .dev {
+  transform: rotateX(calc((1 - var(--rise)) * 14deg)) rotateY(calc((1 - var(--rise)) * -16deg)) rotateZ(calc((1 - var(--rise)) * 2deg));
 }
 .evening[data-live] [data-role="caption"] {
   position: absolute; left: 56px; top: 50%; transform: translateY(-50%);
@@ -110,10 +115,14 @@
 .evening[data-live] [data-role="caption"] p { font-size: 22px; }
 .evening[data-live] [data-role="caption"] .tm:empty { display: none; }
 
-/* Frame 3: the split opens from the middle; labels and pane phones fade in. */
+/* Frame 3: the split opens from the middle; the labels fade in and the pane phones rise
+   into their panes (which clip them). The phones are opaque or absent, never between. */
 .evening[data-live] .evening__panes { clip-path: inset(0 calc((1 - var(--split)) * 50%)); }
-.evening[data-live] .evening__who,
-.evening[data-live] .evening__pane .evening__phone { opacity: var(--panes); }
+.evening[data-live] .evening__who { opacity: var(--panes); }
+.evening[data-live] .evening__pane .evening__phone {
+  opacity: var(--pane-on);
+  transform: translateY(calc((1 - var(--panes)) * 80svh));
+}
 .evening[data-live] .evening__seam { opacity: var(--split); }
 
 /* The rail (900px and wider) and the progress line (narrower). */
@@ -161,9 +170,10 @@
      pw <= (100svh - 300px) * .464 keeps its top at or below 100svh - 300px + ~24px. */
   .evening[data-live] [data-role="centre"] {
     top: auto; bottom: max(24px, 4svh);
-    transform: translateX(-50%) translateY(calc((1 - var(--rise)) * 70svh)) scale(calc(.88 + .12 * var(--rise)));
+    transform: translateX(-50%) translateY(calc((1 - var(--rise)) * 100svh)) scale(calc(.9 + .1 * var(--rise)));
   }
-  .evening[data-live] [data-role="centre"] .dev { --pw: min(300px, 34svh, calc((100svh - 300px) * .464)); }
+  /* Device height is 2.255 x --sw; this keeps its top clear of the caption. */
+  .evening[data-live] [data-role="centre"] .dev { --sw: min(276px, 31.5svh, calc((100svh - 300px) * .4435)); }
   .evening[data-live] [data-role="caption"] {
     left: 0; right: 0; top: 124px; transform: none; max-width: none;
     align-items: center; text-align: center; gap: 4px; padding-inline: 24px;
@@ -173,12 +183,12 @@
 }
 
 @media (max-width: 699px) {
-  .evening[data-live] [data-role="centre"] .dev { --pw: min(210px, 26svh, calc((100svh - 300px) * .464)); }
+  .evening[data-live] [data-role="centre"] .dev { --sw: min(194px, 24svh, calc((100svh - 300px) * .4435)); }
   .evening[data-live] .evening__panes { clip-path: inset(calc((1 - var(--split)) * 50%) 0); }
   /* The preview's narrow panes: the clock beside the phone, clear of the progress line. */
   .evening[data-live] .evening__pane { min-height: 0; }
   .evening[data-live] .evening__who { position: absolute; top: 16px; right: 18px; align-items: flex-end; text-align: right; }
   .evening[data-live] .evening__pane:first-child .evening__who { top: 140px; }
-  .evening[data-live] .evening__pane .evening__phone { position: absolute; left: 34%; top: 56%; transform: translate(-50%, -50%); }
+  .evening[data-live] .evening__pane .evening__phone { position: absolute; left: 34%; top: 56%; transform: translate(-50%, -50%) translateY(calc((1 - var(--panes)) * 60svh)); }
   .evening[data-live] .evening__pane:first-child .evening__phone { top: 64%; }
 }
