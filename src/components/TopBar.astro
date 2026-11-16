@@ -1,4 +1,7 @@
 ---
+// `home` is false on every page but /, where the anchors live; elsewhere they point back to /.
+const { home = true } = Astro.props as { home?: boolean };
+const base = home ? '' : '/';
 // The mark's geometry is copied in TopBar.astro, Brand.astro and scripts/make-icons.sh; keep the three in sync.
 ---
 <header class="topbar">
@@ -10,9 +13,10 @@
     Mọyì
   </a>
   <nav aria-label="Main">
-    <a href="#how">How it works</a>
+    <a href={`${base}#how`}>How it works</a>
     <a href="/privacy">Privacy</a>
+    <a href="/faq">FAQs</a>
     <a href="/support">Support</a>
   </nav>
-  <a class="get" href="#get">Get the app</a>
+  <a class="get" href={`${base}#get`}>Get the app</a>
 </header>

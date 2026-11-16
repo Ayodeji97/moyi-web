@@ -61,18 +61,11 @@ describe('home page, the evening', () => {
   });
 });
 
-const FAQ: [string, string][] = [
-  ['How does one shared day work across time zones?', "Each bond keeps one shared day, set by a single time zone for the bond (the creator's own, to begin with). You both write within that day wherever you are, and either of you can propose a different time zone in Bond settings."],
-  ['What happens if one of us stops writing?', 'Nothing is sent to the other person, and nobody is told they are waiting on you. A missed day only resets the streak count. You can also leave a bond at any time, without explaining.'],
-  ['Can Mọyì read our entries?', 'Entries are not end to end encrypted, so in principle they can be read on our servers. We never sell them or use them for ads, and the privacy page explains exactly who can see them, and when.'],
-  ['How do I delete my account?', "In the app, go to Settings, then Account, then Delete account. No phone? Email hello@getmoyi.app from your account's address. The delete account page lists what is removed, and when."],
-];
-
 describe('home page, the rest', () => {
   it('orders the sections after #how inside main', () => {
     const main = doc.querySelector('main')!;
     const kids = [...main.children].map((c) => c.id || c.getAttribute('data-section'));
-    expect(kids).toEqual(['how', 'statement', 'private', 'questions', 'close']);
+    expect(kids).toEqual(['how', 'statement', 'private', 'close']);
   });
 
   it('carries every approved string', () => {
@@ -84,18 +77,8 @@ describe('home page, the rest', () => {
       'Kind to missed days', 'Miss a day. Nothing is lost.',
       'Only the streak count resets. Nobody is told, and nobody is waiting on you.',
       'Honest about privacy', 'Your words stay yours.', 'Encryption', 'Not end to end',
-      'Read the privacy page', 'Before you download.', 'I know your worth.', 'Mo mọ ìyì rẹ.',
+      'Read the privacy page', 'I know your worth.', 'Mo mọ ìyì rẹ.',
     ]) expect(text, s).toContain(s);
-  });
-
-  it('pins the four questions and answers word for word', () => {
-    const qas = [...doc.querySelectorAll('details.qa')];
-    expect(qas).toHaveLength(4);
-    qas.forEach((d, i) => {
-      expect(d.querySelector('summary')!.textContent!.trim()).toBe(FAQ[i]![0]);
-      expect(d.querySelector('p')!.textContent!.trim()).toBe(FAQ[i]![1]);
-    });
-    expect(qas.map((d) => d.hasAttribute('open'))).toEqual([true, false, false, false]);
   });
 
   it('lists the things Mọyì does not have, and the week of dots', () => {
@@ -117,7 +100,7 @@ describe('home page, the rest', () => {
   });
 
   it('only links to allowed hrefs', () => {
-    const ok = ['/', '#how', '#get', '#questions', '/privacy', '/terms', '/data-processing', '/support', '/delete-account', 'mailto:hello@getmoyi.app'];
+    const ok = ['/', '#how', '#get', '/faq', '/privacy', '/terms', '/data-processing', '/support', '/delete-account', 'mailto:hello@getmoyi.app'];
     for (const a of doc.querySelectorAll('a[href]')) {
       const h = a.getAttribute('href')!;
       expect(ok.includes(h) || h.startsWith('https://apps.apple.com/') || h.startsWith('https://play.google.com/'), h).toBe(true);

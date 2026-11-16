@@ -1,4 +1,6 @@
 ---
+const { home = true } = Astro.props as { home?: boolean };
+const base = home ? '' : '/';
 // The site's close: brand, three short link columns, a bottom bar, and the wordmark set very
 // large and fading out, cut off by the page's end. The wordmark is decoration (aria-hidden).
 // The mark's geometry matches TopBar.astro, Brand.astro and scripts/make-icons.sh.
@@ -18,8 +20,8 @@
     <nav class="foot__cols" aria-label="Footer">
       <div class="foot__col">
         <p class="foot__h">Mọyì</p>
-        <a href="#how">How it works</a>
-        <a href="#questions">Questions</a>
+        <a href={`${base}#how`}>How it works</a>
+        <a href="/faq">FAQs</a>
       </div>
       <div class="foot__col">
         <p class="foot__h">Help</p>

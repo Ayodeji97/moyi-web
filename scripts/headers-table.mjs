@@ -12,6 +12,7 @@ export const COMMON = {
 /** @type {Array<{ path: string; csp: string; noStore: boolean; json?: boolean }>} */
 export const ROUTES = [
   { path: '/', csp: HOME, noStore: false },
+  { path: '/faq', csp: CONTENT, noStore: false },
   { path: '/privacy', csp: CONTENT, noStore: false },
   { path: '/terms', csp: CONTENT, noStore: false },
   { path: '/terms/2026-12-01', csp: CONTENT, noStore: false },
