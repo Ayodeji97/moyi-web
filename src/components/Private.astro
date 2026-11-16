@@ -1,27 +1,43 @@
 ---
 import '../styles/sections.css';
-// No cards. The things Mọyì leaves out, set large and struck through, then the payoff line, then
-// two short facts. The FAQ carries the detail (encryption, leaving a bond).
+// Same shape as For two: centred heading and one line, three equal cards (a title, a line, then
+// three plain rows of fact), and one button. Every row restates approved copy; nothing new is
+// promised. Encryption detail lives in the FAQ and on the privacy page.
 ---
-<section class="o4v" data-section="private" aria-labelledby="private-h">
+<section class="o4v" data-section="private">
   <div class="wrap">
-    <ul class="nots" aria-label="Things Mọyì does not have">
-      <li><s>Read receipts</s></li><li><s>Last seen</s></li><li><s>Typing dots</s></li><li><s>Followers</s></li><li><s>A feed</s></li>
-    </ul>
-    <h2 class="o4v__h" id="private-h">Just the two of you.</h2>
-    <div class="o4v__pair">
-      <div class="o4v__item">
+    <div class="shead">
+      <h2>Made for two people, and only two.</h2>
+      <p>No ads, and your words are never sold.</p>
+    </div>
+    <div class="cards3">
+      <div class="card">
+        <h3>Just the two of you</h3>
+        <p class="card__sub">No audience, and no sign of who opened the app or when.</p>
+        <ul class="rows" aria-label="Things Mọyì does not have">
+          <li><s>Read receipts</s><span>None</span></li>
+          <li><s>Last seen</s><span>None</span></li>
+          <li><s>Typing dots</s><span>None</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Kind to missed days</h3>
+        <p class="card__sub">Miss a day. Nothing is lost.</p>
         <div class="days" role="img" aria-label="A week with six days written and one missed">
           <span><i></i>M</span><span><i></i>T</span><span><i></i>W</span><span><i class="miss"></i>T</span><span><i></i>F</span><span><i></i>S</span><span><i></i>S</span>
         </div>
-        <h3>Miss a day. Nothing is lost.</h3>
-        <p>Nobody is told, and nobody is waiting on you.</p>
+        <p class="card__note">Only the streak count resets. Nobody is told, and nobody is waiting on you.</p>
       </div>
-      <div class="o4v__item">
-        <h3>Your words stay yours.</h3>
-        <p>No ads. Never sold.</p>
-        <a href="/privacy">Read the privacy page</a>
+      <div class="card">
+        <h3>Honest about privacy</h3>
+        <p class="card__sub">Your words stay yours.</p>
+        <ul class="rows" aria-label="What Mọyì promises">
+          <li><span>Ads</span><span>None</span></li>
+          <li><span>Your words sold</span><span>Never</span></li>
+          <li><span>Encryption</span><span>Not end to end</span></li>
+        </ul>
       </div>
     </div>
+    <p class="cta"><a class="btn" href="/privacy">Read the privacy page<span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" focusable="false"><path d="M9 6l6 6-6 6"></path></svg></span></a></p>
   </div>
 </section>

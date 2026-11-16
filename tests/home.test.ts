@@ -79,12 +79,15 @@ describe('home page, the rest', () => {
     const text = (doc.body.textContent ?? '').replace(/\s+/g, ' ');
     for (const s of [
       'One sentence a day about someone you love.', 'Kept sealed until they write theirs.',
-      'Whoever your one person is.',
-      'Both of you 18 or over.',
-      'Read receipts', 'Last seen', 'Typing dots', 'Followers', 'A feed',
-      'Just the two of you.',
-      'Miss a day. Nothing is lost.', 'Nobody is told, and nobody is waiting on you.',
-      'Your words stay yours.', 'No ads. Never sold.',
+      'Whoever your one person is.', 'A partner, a close friend, or family. Both of you 18 or over.',
+      'My partner', 'Across the room, or across the world.',
+      'My close friend', 'The one you would call first.',
+      'My family', 'A sibling, a parent, a cousin.',
+      'Made for two people, and only two.', 'No ads, and your words are never sold.',
+      'Just the two of you', 'No audience, and no sign of who opened the app or when.',
+      'Kind to missed days', 'Miss a day. Nothing is lost.',
+      'Only the streak count resets. Nobody is told, and nobody is waiting on you.',
+      'Honest about privacy', 'Your words stay yours.', 'Encryption', 'Not end to end',
       'Read the privacy page', 'Before you download.', 'I know your worth.', 'Mo mọ ìyì rẹ.',
     ]) expect(text, s).toContain(s);
   });
@@ -101,23 +104,25 @@ describe('home page, the rest', () => {
 
   it('lists the things Mọyì does not have, and the week of dots', () => {
     const ul = doc.querySelector('ul[aria-label="Things Mọyì does not have"]')!;
-    expect([...ul.querySelectorAll('li > s')].map((e) => e.textContent)).toEqual(['Read receipts', 'Last seen', 'Typing dots', 'Followers', 'A feed']);
+    expect([...ul.querySelectorAll('li > s')].map((e) => e.textContent)).toEqual(['Read receipts', 'Last seen', 'Typing dots']);
     const days = doc.querySelector('[role="img"][aria-label="A week with six days written and one missed"]')!;
     expect(days.querySelectorAll('i')).toHaveLength(7);
     expect(days.querySelectorAll('i.miss')).toHaveLength(1);
   });
 
-  it('shows each kind of bond by one entry, with who wrote it, and no numbers', () => {
+  it('shows each kind of bond as a card with one entry, and no step numbers', () => {
     const section = doc.querySelector('[data-section="for-two"]')!;
     const bonds = [...section.querySelectorAll('ul.bonds > li.bond')];
     expect(bonds.map((b) => [
+      b.querySelector('h3')!.textContent!.trim(),
+      b.querySelector('.card__sub')!.textContent!.trim(),
       b.querySelector('figure.ent > figcaption.ent__from')!.textContent!.trim(),
       b.querySelector('figure.ent blockquote.ent__text')!.textContent!.trim(),
       b.querySelector('[data-media]')?.getAttribute('data-media') ?? null,
     ])).toEqual([
-      ['From Tunde, my partner', 'You stayed on the phone until I fell asleep.', null],
-      ['From Ellie, my close friend', 'You remembered my interview and had dinner waiting after.', 'photo'],
-      ['From Mum, my family', "You still ask if I've eaten, every call.", 'voice'],
+      ['My partner', 'Across the room, or across the world.', 'From Tunde', 'You stayed on the phone until I fell asleep.', null],
+      ['My close friend', 'The one you would call first.', 'From Ellie', 'You remembered my interview and had dinner waiting after.', 'photo'],
+      ['My family', 'A sibling, a parent, a cousin.', 'From Mum', "You still ask if I've eaten, every call.", 'voice'],
     ]);
     // No step numbers. The only figures are the age rule and the voice clock, which stays inside
     // the app's real cap (one voice note per entry, at most 1:00).
