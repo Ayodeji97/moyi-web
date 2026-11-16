@@ -9,22 +9,30 @@ export const COMMON = {
   'x-frame-options': 'DENY',
 };
 
-/** @type {Array<{ path: string; csp: string; noStore: boolean; json?: boolean }>} */
+/**
+ * `status` is what the route must answer. Only a route expected to 404 may carry the platform's own
+ * no-store on its 404 (check-headers.mjs), so a page that goes missing can no longer pass.
+ * @type {Array<{ path: string; csp: string; noStore: boolean; status: number; json?: boolean }>}
+ */
 export const ROUTES = [
-  { path: '/', csp: HOME, noStore: false },
-  { path: '/faq', csp: CONTENT, noStore: false },
-  { path: '/privacy', csp: CONTENT, noStore: false },
-  { path: '/terms', csp: CONTENT, noStore: false },
-  { path: '/terms/2026-12-01', csp: CONTENT, noStore: false },
-  { path: '/data-processing', csp: CONTENT, noStore: false },
-  { path: '/support', csp: CONTENT, noStore: false },
-  { path: '/delete-account', csp: CONTENT, noStore: false },
-  { path: '/verify?token=a', csp: STRICT, noStore: true },
-  { path: '/reset-password?token=a', csp: STRICT, noStore: true },
-  { path: '/invite', csp: STRICT, noStore: true },
-  { path: '/i/ABC123', csp: STRICT, noStore: true },
-  { path: '/i/abc/', csp: STRICT, noStore: true },
-  { path: '/no-such-page', csp: STRICT, noStore: false },
-  { path: '/.well-known/assetlinks.json', csp: STRICT, noStore: false, json: true },
-  { path: '/.well-known/apple-app-site-association', csp: STRICT, noStore: false, json: true },
+  { path: '/', csp: HOME, noStore: false, status: 200 },
+  { path: '/faq', csp: CONTENT, noStore: false, status: 200 },
+  { path: '/privacy', csp: CONTENT, noStore: false, status: 200 },
+  { path: '/terms', csp: CONTENT, noStore: false, status: 200 },
+  // The dated copy is published when the owner approves the text (spec 6.9); until then it 404s.
+  { path: '/terms/2026-12-01', csp: CONTENT, noStore: false, status: 404 },
+  { path: '/data-processing', csp: CONTENT, noStore: false, status: 200 },
+  { path: '/support', csp: CONTENT, noStore: false, status: 200 },
+  { path: '/delete-account', csp: CONTENT, noStore: false, status: 200 },
+  { path: '/verify?token=a', csp: STRICT, noStore: true, status: 200 },
+  { path: '/reset-password?token=a', csp: STRICT, noStore: true, status: 200 },
+  { path: '/invite', csp: STRICT, noStore: true, status: 200 },
+  { path: '/i/ABC123', csp: STRICT, noStore: true, status: 200 },
+  { path: '/i/abc/', csp: STRICT, noStore: true, status: 404 },
+  { path: '/no-such-page', csp: STRICT, noStore: false, status: 404 },
+  { path: '/sitemap.xml', csp: STRICT, noStore: false, status: 200 },
+  { path: '/robots.txt', csp: STRICT, noStore: false, status: 200 },
+  { path: '/og.png', csp: STRICT, noStore: false, status: 200 },
+  { path: '/.well-known/assetlinks.json', csp: STRICT, noStore: false, status: 200, json: true },
+  { path: '/.well-known/apple-app-site-association', csp: STRICT, noStore: false, status: 200, json: true },
 ];

@@ -28,21 +28,20 @@ for (const r of ROUTES) {
       if (got !== v) problems.push(`${k} is ${JSON.stringify(got)}, expected ${JSON.stringify(v)}`);
     }
     const hasNoStore = (res.headers.get('cache-control') ?? '').includes('no-store');
+    if (res.status !== r.status) problems.push(`status ${res.status}, expected ${r.status}`);
     // wrangler pages dev (and Pages itself) mark the platform's own 404 response
-    // no-store; that is not from _headers, so on a 404 only a missing no-store
-    // on a noStore route is a failure.
-    const platform404 = res.status === 404 && !r.noStore;
+    // no-store; that is not from _headers, so on a route that is meant to 404,
+    // only a missing no-store on a noStore route is a failure.
+    const platform404 = r.status === 404 && res.status === 404 && !r.noStore;
     if (hasNoStore !== r.noStore && !platform404) {
       problems.push(`cache-control ${JSON.stringify(res.headers.get('cache-control'))}: no-store ${hasNoStore}, expected ${r.noStore}`);
     }
     if (r.json) {
-      if (res.status !== 200) problems.push(`status ${res.status}, expected 200`);
       const ct = res.headers.get('content-type') ?? '';
       if (!ct.startsWith('application/json')) problems.push(`content-type ${JSON.stringify(ct)}, expected application/json`);
       if (res.headers.has('location')) problems.push(`unexpected location ${res.headers.get('location')}`);
     }
     if (r.path === '/i/ABC123') {
-      if (res.status !== 200) problems.push(`status ${res.status}, expected 200`);
       if (!body.includes('data-link="invite"')) problems.push('body lacks data-link="invite"');
     }
   }
