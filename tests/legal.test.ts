@@ -46,7 +46,7 @@ describe('legal and help pages', () => {
   it('privacy and the summary name the same processors', () => {
     const names = (p: string) => [...doc(p).querySelectorAll('main table')][0]!.querySelectorAll('tbody tr td:first-child');
     const list = (p: string) => [...names(p)].map((td) => td.textContent!.trim());
-    expect(list('privacy')).toEqual(['Hetzner Online', 'Cloudflare', 'Resend', 'Google Firebase Cloud Messaging', 'Apple Push Notification service']);
+    expect(list('privacy')).toEqual(['Hetzner Online', 'Cloudflare', 'Resend', 'Google Firebase Cloud Messaging', 'Apple Push Notification service', 'Amazon Web Services']);
     expect(list('data-processing')).toEqual(list('privacy'));
   });
 
@@ -83,6 +83,13 @@ describe('legal and help pages', () => {
     expect(text('privacy')).toContain('the CNPD');
   });
 
+  it('photo checks are disclosed as on from 1 December 2026 (owner ruling), voice notes as unchecked', () => {
+    const t = text('privacy');
+    expect(t).toContain('Amazon Rekognition, in Frankfurt');
+    expect(t).toContain('held back until a person has looked at it');
+    expect(t).toContain('Voice notes are not checked automatically');
+  });
+
   it('terms cover the age floor and the governing law', () => {
     expect(text('terms')).toContain('18 or over');
     expect(text('terms')).toContain('law of Portugal');
@@ -95,11 +102,11 @@ describe('legal and help pages', () => {
     expect(t).toContain('Delete my account');
   });
 
-  it('nothing promises what is not built: no "close the box", no automatic photo checks named', () => {
+  it('nothing promises what is not built: no "close the box", no services that are not used', () => {
     for (const p of [...LEGAL, ...HELP]) {
       const t = text(p);
       expect(t).not.toMatch(/close the box/i);
-      expect(t).not.toMatch(/Rekognition|Amazon|Sentry|Grafana|OpenAI|Voyage/);
+      expect(t).not.toMatch(/Sentry|Grafana|OpenAI|Voyage/);
     }
   });
 

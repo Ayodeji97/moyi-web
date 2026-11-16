@@ -21,6 +21,7 @@ This page summarises the [Privacy Policy](/privacy). The policy is what you agre
 | Resend | Account emails | Email address, your name, email content | United States |
 | Google Firebase Cloud Messaging | Notifications | Push token, notification type and id | United States |
 | Apple Push Notification service | Notifications on iPhone | Push token, notification type and id | United States |
+| Amazon Web Services | Automatic photo checks | A smaller copy of each photo | Frankfurt, Germany |
 
 We keep this list current. When a company is added, it appears here first.
 
