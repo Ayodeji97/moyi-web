@@ -30,8 +30,8 @@ describe('the floating "Get the app" pill', () => {
     expect(pill).toMatch(/min-height:\s*48px/);
     expect(pill).not.toMatch(/transform/);
     expect(pill).not.toMatch(/backdrop-filter/);
-    // The only blur on the page is the docked glass bar (owner, 2026-11-16), and it has a near-solid
-    // fallback where backdrop-filter is unsupported.
+    // The only blur on the page is the docked glass bar (owner, 2026-11-16), with a near-solid
+    // fallback where backdrop-filter is unsupported. The phone menu's panel is solid.
     const css = homeCss.replace(/\/\*[\s\S]*?\*\//g, '');
     const blurs = [...css.matchAll(/([^{}]+)\{[^{}]*backdrop-filter\s*:[^{}]*\}/g)].map((m) => m[1].trim());
     expect(blurs).toEqual(['.topbar[data-docked]']);
