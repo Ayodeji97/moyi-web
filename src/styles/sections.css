@@ -17,7 +17,7 @@
 
 .o4v { padding: 20px 0 30px; }
 .vcards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.vc { position: relative; isolation: isolate; border-radius: 30px; overflow: hidden; min-height: 440px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 34px; color: #fff; }
+.vc { position: relative; isolation: isolate; border: 1px solid var(--outline); border-radius: 30px; overflow: hidden; background: var(--surface-raised); min-height: 440px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 34px; color: #fff; }
 .vc.wide { grid-column: 1 / -1; min-height: 480px; }
 .vc::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(14, 10, 10, .9) 0%, rgba(14, 10, 10, .55) 38%, rgba(14, 10, 10, 0) 70%); }
 .vc > :where(:not(.scene):not(.scrim)) { position: relative; z-index: 2; }
