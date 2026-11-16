@@ -79,21 +79,13 @@ describe('home page, the rest', () => {
     const text = (doc.body.textContent ?? '').replace(/\s+/g, ' ');
     for (const s of [
       'One sentence a day about someone you love.', 'Kept sealed until they write theirs.',
-      'For two', 'Whoever your one person is.',
-      'My partner', 'Across the room, or across the world.',
-      'My close friend', 'The one you would call first.',
-      'My family', 'A sibling, a parent, a cousin.',
+      'Whoever your one person is.',
       'Both of you 18 or over.',
-      'Private by construction', 'Made for two people, and only two.',
-      'Just the two of you', 'Read receipts', 'Last seen', 'Typing dots', 'Followers', 'A feed',
-      'Two people. Nobody else.',
-      'No audience, and no sign of who opened the app or when. Leave a bond at any time, with no questions.',
-      'Kind to missed days', 'Miss a day. Nothing is lost.',
-      'Only the streak count resets. Nobody is told, and nobody is waiting on you.',
-      'Honest about privacy', 'Your words stay yours.',
-      'No ads, and your words are never sold. Entries are not end to end encrypted, and we explain why in plain words.',
-      'No ads', 'Never sold', 'Explained in plain words',
-      'Read the privacy page', 'Questions', 'Before you download.', 'I know your worth.', 'Mo mọ ìyì rẹ.',
+      'Read receipts', 'Last seen', 'Typing dots', 'Followers', 'A feed',
+      'Just the two of you.',
+      'Miss a day. Nothing is lost.', 'Nobody is told, and nobody is waiting on you.',
+      'Your words stay yours.', 'No ads. Never sold.',
+      'Read the privacy page', 'Before you download.', 'I know your worth.', 'Mo mọ ìyì rẹ.',
     ]) expect(text, s).toContain(s);
   });
 
@@ -115,19 +107,17 @@ describe('home page, the rest', () => {
     expect(days.querySelectorAll('i.miss')).toHaveLength(1);
   });
 
-  it('shows each kind of bond by one entry, in the app\'s entry-card shape, with no numbers', () => {
+  it('shows each kind of bond by one entry, with who wrote it, and no numbers', () => {
     const section = doc.querySelector('[data-section="for-two"]')!;
     const bonds = [...section.querySelectorAll('ul.bonds > li.bond')];
     expect(bonds.map((b) => [
-      b.querySelector('h3')!.textContent!.trim(),
-      b.querySelector('.bond__sub')!.textContent!.trim(),
       b.querySelector('figure.ent > figcaption.ent__from')!.textContent!.trim(),
       b.querySelector('figure.ent blockquote.ent__text')!.textContent!.trim(),
       b.querySelector('[data-media]')?.getAttribute('data-media') ?? null,
     ])).toEqual([
-      ['My partner', 'Across the room, or across the world.', 'From Tunde', 'You stayed on the phone until I fell asleep.', null],
-      ['My close friend', 'The one you would call first.', 'From Ellie', 'You remembered my interview and had dinner waiting after.', 'photo'],
-      ['My family', 'A sibling, a parent, a cousin.', 'From Mum', "You still ask if I've eaten, every call.", 'voice'],
+      ['From Tunde, my partner', 'You stayed on the phone until I fell asleep.', null],
+      ['From Ellie, my close friend', 'You remembered my interview and had dinner waiting after.', 'photo'],
+      ['From Mum, my family', "You still ask if I've eaten, every call.", 'voice'],
     ]);
     // No step numbers. The only figures are the age rule and the voice clock, which stays inside
     // the app's real cap (one voice note per entry, at most 1:00).

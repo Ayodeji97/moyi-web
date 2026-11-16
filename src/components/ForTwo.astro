@@ -1,37 +1,30 @@
 ---
 import '../styles/sections.css';
-// Three bonds, each shown by what writing to that person looks like: one entry in the app's own
-// entry-card style (src/styles/phone.css .ec / .lb / .en, at site scale). Fictional names only.
+// Three bonds, each shown by one entry: no cards, just the sentence set large, staggered down the
+// page like notes left on a table, with who wrote it underneath. Fictional names only.
 // The photo and voice note follow the app's real look (docs/web-screens 6-photo, 7-voice):
 // one photo and one voice note per entry at most, a voice note at most 1:00, so 0:24 is honest.
 // Photo: Unsplash PyL-lApI1F8 by Mounish Raja, Unsplash License (free, no attribution required).
 ---
 <section class="for2" data-section="for-two">
   <div class="wrap">
-    <div class="head"><p class="eyebrow">For two</p><h2>Whoever your one person is.</h2></div>
+    <h2 class="for2__h">Whoever your one person is.</h2>
     <ul class="bonds">
-      <li class="bond">
-        <h3>My partner</h3>
-        <p class="bond__sub">Across the room, or across the world.</p>
+      <li class="bond bond--a">
         <figure class="ent">
-          <figcaption class="ent__from">From Tunde</figcaption>
           <blockquote class="ent__text"><p>You stayed on the phone until I fell asleep.</p></blockquote>
+          <figcaption class="ent__from">From Tunde, <span>my partner</span></figcaption>
         </figure>
       </li>
-      <li class="bond">
-        <h3>My close friend</h3>
-        <p class="bond__sub">The one you would call first.</p>
+      <li class="bond bond--b">
         <figure class="ent">
-          <figcaption class="ent__from">From Ellie</figcaption>
           <blockquote class="ent__text"><p>You remembered my interview and had dinner waiting after.</p></blockquote>
-          <img class="ent__media ent__photo" data-media="photo" src="/media/table-640.webp" srcset="/media/table-640.webp 640w, /media/table-960.webp 960w" sizes="(max-width: 699px) calc(100vw - 82px), 300px" width="640" height="480" alt="A dinner table laid with candles, flowers and food." loading="lazy" decoding="async" />
+          <img class="ent__media ent__photo" data-media="photo" src="/media/table-640.webp" srcset="/media/table-640.webp 640w, /media/table-960.webp 960w" sizes="(max-width: 699px) 260px, 280px" width="640" height="480" alt="A dinner table laid with candles, flowers and food." loading="lazy" decoding="async" />
+          <figcaption class="ent__from">From Ellie, <span>my close friend</span></figcaption>
         </figure>
       </li>
-      <li class="bond">
-        <h3>My family</h3>
-        <p class="bond__sub">A sibling, a parent, a cousin.</p>
+      <li class="bond bond--c">
         <figure class="ent">
-          <figcaption class="ent__from">From Mum</figcaption>
           <blockquote class="ent__text"><p>You still ask if I've eaten, every call.</p></blockquote>
           <div class="ent__media ent__voice" data-media="voice" role="img" aria-label="A voice note, 24 seconds, sent with the entry">
             <span class="ent__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="M8.5 6.5v11l9-5.5z"></path></svg></span>
@@ -41,6 +34,7 @@ import '../styles/sections.css';
             <span class="ent__clock" aria-hidden="true">0:00 of 0:24</span>
             <span class="ent__speed" aria-hidden="true">1×</span>
           </div>
+          <figcaption class="ent__from">From Mum, <span>my family</span></figcaption>
         </figure>
       </li>
     </ul>

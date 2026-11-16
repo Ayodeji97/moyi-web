@@ -1,37 +1,25 @@
 ---
-import Scene from './Scene.astro';
 import '../styles/sections.css';
+// No cards. The things Mọyì leaves out, set large and struck through, then the payoff line, then
+// two short facts. The FAQ carries the detail (encryption, leaving a bond).
 ---
-<section class="o4v" data-section="private">
+<section class="o4v" data-section="private" aria-labelledby="private-h">
   <div class="wrap">
-    <div class="head"><p class="eyebrow">Private by construction</p><h2>Made for two people, and only two.</h2></div>
-    <div class="vcards">
-      <div class="vc wide">
-        <Scene name="lamp" />
-        <span class="lbl3">Just the two of you</span>
-        <ul class="nots" aria-label="Things Mọyì does not have">
-          <li><s>Read receipts</s></li><li><s>Last seen</s></li><li><s>Typing dots</s></li><li><s>Followers</s></li><li><s>A feed</s></li>
-        </ul>
-        <h3>Two people. Nobody else.</h3>
-        <p>No audience, and no sign of who opened the app or when. Leave a bond at any time, with no questions.</p>
-      </div>
-      <div class="vc">
-        <Scene name="rain" />
-        <span class="lbl3">Kind to missed days</span>
+    <ul class="nots" aria-label="Things Mọyì does not have">
+      <li><s>Read receipts</s></li><li><s>Last seen</s></li><li><s>Typing dots</s></li><li><s>Followers</s></li><li><s>A feed</s></li>
+    </ul>
+    <h2 class="o4v__h" id="private-h">Just the two of you.</h2>
+    <div class="o4v__pair">
+      <div class="o4v__item">
         <div class="days" role="img" aria-label="A week with six days written and one missed">
           <span><i></i>M</span><span><i></i>T</span><span><i></i>W</span><span><i class="miss"></i>T</span><span><i></i>F</span><span><i></i>S</span><span><i></i>S</span>
         </div>
         <h3>Miss a day. Nothing is lost.</h3>
-        <p>Only the streak count resets. Nobody is told, and nobody is waiting on you.</p>
+        <p>Nobody is told, and nobody is waiting on you.</p>
       </div>
-      <div class="vc">
-        <Scene name="bed" />
-        <span class="lbl3">Honest about privacy</span>
-        <ul class="yes" aria-label="What Mọyì promises">
-          <li>No ads</li><li>Never sold</li><li>Explained in plain words</li>
-        </ul>
+      <div class="o4v__item">
         <h3>Your words stay yours.</h3>
-        <p>No ads, and your words are never sold. Entries are not end to end encrypted, and we explain why in plain words.</p>
+        <p>No ads. Never sold.</p>
         <a href="/privacy">Read the privacy page</a>
       </div>
     </div>
