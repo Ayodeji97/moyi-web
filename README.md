@@ -17,6 +17,11 @@ Node 22.23.5 (see `.node-version`). `npm run check` type-checks the site and the
 
 `scripts/subset-fonts.sh` needs Python 3 and the sibling `../moyi-app` checkout.
 
+## Email links and app links
+
+How `/verify`, `/reset-password`, `/i/<code>`, `open.getmoyi.app` and the
+`.well-known` files work, and how to check them: [docs/link-pages.md](docs/link-pages.md).
+
 ## Checks
 
 - `npm test` builds the site and runs the vitest suite.
