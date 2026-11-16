@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { clock, evening, ramp } from '../src/scripts/evening/timeline';
 
@@ -15,6 +16,10 @@ describe('evening timeline invariants', () => {
     for (let i = 0; i <= 1000; i++) {
       const p = i / 1000;
       const s = evening(p);
+      expect([0, 1], `p=${p}: the centre phone is opaque or absent, never see-through`).toContain(s.centre.opacity);
+      expect([0, 1], `p=${p}: the pane phones are opaque or absent, never see-through`).toContain(s.paneOn);
+      expect(s.centre.opacity, `p=${p}: the centre phone shows exactly while it is on the stage`).toBe(s.centre.rise > 0 ? 1 : 0);
+      expect(s.paneOn, `p=${p}: the pane phones show exactly while they are on the stage`).toBe(s.panes > 0 ? 1 : 0);
       if (s.centre.opacity > 0) expect(s.hero, `p=${p}: headline must be gone before the phone shows`).toBe(0);
       if (s.split > 0) expect(s.centre.opacity, `p=${p}: one phone at a time`).toBe(0);
       if (s.panes > 0) expect(s.split, `p=${p}: panes need the split open`).toBeGreaterThan(0.8);
@@ -90,7 +95,15 @@ describe('evening timeline exact values', () => {
     expect(evening(0.26).centre.view).toBe('wait');
     expect(evening(0.26).centre.busy).toBe(false);
     expect(evening(0.5).tunde.view).toBe('write');
-    expect(evening(0.66).tunde.view).toBe('wait');
+    // The day opens as soon as both have written: Tunde's send opens it on both phones.
+    expect(evening(0.66).tunde.view).toBe('reveal');
+    expect(evening(0.66).amara.view).toBe('reveal');
+    expect(evening(0.6).amara.view).toBe('wait');
+    for (let i = 0; i <= 1000; i++) {
+      const s = evening(i / 1000);
+      expect(s.tunde.view, `p=${i / 1000}: Tunde never waits for Amara, who has written`).not.toBe('wait');
+      expect(s.amara.view === 'reveal', `p=${i / 1000}: both open together`).toBe(s.tunde.view === 'reveal');
+    }
   });
   it('caption', () => {
     expect(evening(0.1).caption.opacity).toBe(0);
@@ -117,9 +130,36 @@ describe('evening timeline exact values', () => {
     expect(evening(0.36).step).toBe(1);
     expect(evening(0.78).step).toBe(2);
   });
+  it('rise: in from below, out again, in for the reveal', () => {
+    expect(evening(0.08).centre.rise).toBe(0);
+    expect(evening(0.2).centre.rise).toBe(1);
+    expect(evening(0.26).centre.rise).toBe(1);
+    expect(evening(0.295).centre.rise).toBe(0);
+    expect(evening(0.82).centre.rise).toBe(0);
+    expect(evening(0.87).centre.rise).toBe(1);
+    expect(evening(0.14).centre.rise).toBeCloseTo(0.5, 6);
+  });
   it('cards', () => {
     const c = evening(0.88).centre.cards;
     expect(c[0]).toBeCloseTo(1, 6);
     expect(c[1]).toBeCloseTo(0.2, 6);
+  });
+});
+
+describe('no see-through phone over the scenery', () => {
+  const css = readFileSync('src/styles/evening.css', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1]!.trim(), body: m[2]! }));
+  it('takes a phone opacity only from a 0-or-1 property', () => {
+    const phoneRules = rules.filter((r) => /data-role="(centre|amara|tunde)"\]|evening__phone/.test(r.sel) && /opacity/.test(r.body));
+    expect(phoneRules.length).toBeGreaterThan(0);
+    for (const r of phoneRules) {
+      const m = /opacity:\s*([^;]+);/.exec(r.body)!;
+      expect(m[1]!.trim(), r.sel).toMatch(/^var\(--(centre|pane-on)\)$/);
+    }
+  });
+  it('the engine writes those properties from the binary fields', () => {
+    const engine = readFileSync('src/scripts/evening/engine.ts', 'utf8');
+    expect(engine).toContain("prop('--centre', s.centre.opacity)");
+    expect(engine).toContain("prop('--pane-on', s.paneOn)");
   });
 });
