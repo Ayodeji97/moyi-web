@@ -6,13 +6,13 @@ lede: What Mọyì keeps about you, why, where, and for how long.
 ## The short version
 
 - What you write is for one person: the other member of your bond. Nobody else is meant to read it.
-- There are no ads and no analytics, and your data is never sold.
-- Entries are **not end to end encrypted**. They are kept on our server in Germany. We look at content only when it has been reported to us.
+- There are no ads, and your data is never sold.
+- Entries are **not end to end encrypted**. They are kept on our server in Germany. We look at content only when it has been reported to us, or when the law requires it.
 - You can export everything, and delete your account, from inside the app.
 
 ## Who is responsible
 
-Mọyì is run by one person, [controller's full name], who is the data controller for everything on this page. Write to [hello@getmoyi.app](mailto:hello@getmoyi.app) about any of it.
+Mọyì is run by one person, [controller's full name, postal address], who is the data controller for everything on this page. Write to [hello@getmoyi.app](mailto:hello@getmoyi.app) about any of it.
 
 ## What we keep
 
@@ -20,24 +20,28 @@ Mọyì is run by one person, [controller's full name], who is the data controll
 - **Your bond:** its relationship type and name, its time zone and reveal time, your reminder and notification settings, and the nickname you use for the other person.
 - **What you write:** your entries, photos, voice notes and reactions, your favourites (which only you can see) and your streak. Location and camera details are removed from photos when you upload them.
 - **Your devices:** platform, app version, system version and a push token, so notifications reach you.
-- **Safety and support:** reports you make, blocks, and messages you send to support.
-- **Security:** we never store your IP address. To stop abuse we keep a one-way keyed hash of it, briefly for rate limits, and with each consent record.
+- **Safety and support:** reports you make, blocks, any suspension of your account, and messages you send to support.
+- **Security:** we never store your IP address. To stop abuse we keep a one-way keyed hash of it, briefly for rate limits. Each consent record also keeps a keyed hash of your IP address and of your app's user agent.
 
-We do not collect your date of birth, contacts, location or advertising ID, and the app has no analytics or crash reporting.
+We do not collect your date of birth, contacts, location or advertising ID, and the app has no crash reporting.
+
+Today the app has no analytics. If we add them, they will be opt in, you will be asked first, and this page will say so before they start.
+
+You need an email address and a password to have an account. Everything else is up to you. We make no automated decisions about you.
 
 ## Why we use it
 
 - **To give you the service you signed up for** (contract): your account, your bond, what you write, notifications and account emails.
-- **To keep Mọyì safe and working** (legitimate interests): rate limits, security records, reports and moderation, and backups.
-- **To meet legal duties** (legal obligation): consent records, and answering lawful requests.
+- **To keep Mọyì safe and working** (legitimate interests): rate limits, security records, a record of what you agreed to, reports and moderation, and backups.
+- **To meet legal duties** (legal obligation): answering lawful requests.
 
-What you write may touch on health, beliefs or other sensitive matters. We never ask for that, and we use it only to show it to the other member of your bond.
+What you write may touch on health, beliefs or other sensitive matters. We never ask for that. If you choose to write about them, we rely on your explicit choice to share them with the other member of your bond, use them only to show them to that person, and you can delete them at any time.
 
 ## Who can see what
 
-- **The other member of your bond** sees your entry once you have both written that day.
-- **Notifications and emails** never contain what you wrote, your names or your bond's name.
-- **Us:** Mọyì is not end to end encrypted, so the person who runs it could technically reach the database. Our rule is that we look at content only when it has been reported, and only what the report is about. Support sees only what you send to support.
+- **The other member of your bond** sees your entry when the day opens: when you have both written, or at your reveal time if you set one. If only you wrote, they see it when the day ends. Their archive export includes your entries that were revealed to them.
+- **Notifications** never contain what you wrote or anyone's name. Account emails greet you by your name, and never contain what you wrote.
+- **Us:** Mọyì is not end to end encrypted, so the person who runs it could technically reach the database. Our rule is that we look at content only when it has been reported, and only what the report is about, or when the law requires it. Support sees only what you send to support.
 - **Nobody else.** We do not sell or share your data. The companies below process it only on our instructions.
 
 ## Where it is kept, and who helps
@@ -46,11 +50,11 @@ What you write may touch on health, beliefs or other sensitive matters. We never
 |---|---|---|
 | Hetzner Online | Runs our server and database | Nuremberg, Germany |
 | Cloudflare | Stores photos, voice notes, exports and encrypted backups; hosts this website | EU |
-| Resend | Sends account emails, such as confirming your address | Ireland (a US company) |
+| Resend | Sends account emails, such as confirming your address | United States |
 | Google Firebase Cloud Messaging | Delivers notifications | United States |
 | Apple Push Notification service | Delivers notifications to iPhones | United States |
 
-Google and Apple receive a push token and a notification's type, never what you wrote. Transfers outside the European Economic Area rely on each provider's standard contractual clauses.
+Google and Apple receive a push token and a notification's type and id, never what you wrote. Transfers outside the European Economic Area rely on each provider's standard contractual clauses.
 
 Photos and voice notes are not checked automatically today. If we turn on automatic checks for photos, we will name the provider here first.
 
@@ -60,15 +64,15 @@ Photos and voice notes are not checked automatically today. If we turn on automa
 - **Full size photos:** 90 days, then a smaller copy is kept.
 - **Archive exports:** 24 hours.
 - **Support messages:** until your request is closed.
-- **Backups:** encrypted, and kept for up to 35 days. Anything you delete leaves our backups within that time.
+- **Backups:** our encrypted backups are kept for up to 35 days, and our hosting provider's whole server backups for 7 days. Anything you delete leaves every backup within 35 days.
 - **Records without content** (that a report, block or notification happened) are kept by account number after deletion, to keep Mọyì safe.
 
 ## Your rights
 
 You can ask to see, correct, export or delete your data, and to restrict or object to how we use it.
 
-- **See and export:** in the app, open Bond settings, then Account, then Export your archive. You get a zip with your data, a readable file and your media.
-- **Correct:** change your name and settings in the app.
+- **See and export:** in the app, open Bond settings, then Account, then Export your archive. You get a zip with a JSON file of your data, a README, and your photos and voice notes.
+- **Correct:** change your settings in the app, or write to us to correct your name or email.
 - **Delete:** see [Delete your account](/delete-account).
 - **Anything else:** write to [hello@getmoyi.app](mailto:hello@getmoyi.app). We answer within one month.
 
@@ -80,11 +84,11 @@ Mọyì is for people 18 or over. If we learn an account belongs to someone youn
 
 ## Cookies
 
-The app and this website use no cookies, analytics or trackers. This website loads nothing from any other company.
+The app and this website use no cookies or trackers. This website loads nothing from any other company. Cloudflare, which hosts it, processes your IP address to deliver its pages.
 
 ## Security
 
-Connections are encrypted with TLS. Passwords are hashed with Argon2id. Backups are encrypted with a key kept offline. Sign in is rate limited.
+Connections are encrypted with TLS. Passwords are hashed with Argon2id. Our backups are encrypted, and the key to read them is kept off the server. Sign in is rate limited.
 
 ## Changes
 

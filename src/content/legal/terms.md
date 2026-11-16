@@ -12,7 +12,7 @@ lede: The agreement between you and Mọyì, in plain words.
 
 ## Who we are
 
-Mọyì is run by one person, [controller's full name]. Contact: [hello@getmoyi.app](mailto:hello@getmoyi.app).
+Mọyì is run by one person, [controller's full name, postal address]. Contact: [hello@getmoyi.app](mailto:hello@getmoyi.app).
 
 ## Agreeing to these terms
 
@@ -20,7 +20,7 @@ By creating an account you agree to these Terms and confirm you are 18 or over. 
 
 ## What Mọyì is
 
-Mọyì lets two people write one entry a day about each other. Each day's entries open once you have both written. You can be in up to three bonds. Mọyì is free and has no ads. We may change features, and if we ever stop the service we will tell you in advance and give you time to export your archive.
+Mọyì lets two people write one entry a day about each other. A day's entries open together when you have both written, or at your reveal time if you set one. An entry written alone opens when the day ends. You can be in up to three bonds. Mọyì is free and has no ads. We may change features, and if we ever stop the service we will tell you in advance and give you time to export your archive.
 
 ## Your account
 
@@ -43,7 +43,7 @@ What the other person writes is theirs. Treat it as private.
 
 ## Reports and what we do
 
-You can report a person or an entry in the app. When something breaks these Terms we may remove it, end a bond, or suspend or close an account. We look at content only when it has been reported.
+You can report a person or an entry in the app. When something breaks these Terms we may remove it, end a bond, or suspend or close an account. We look at content only when it has been reported, or when the law requires it.
 
 ## Leaving
 

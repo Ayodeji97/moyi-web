@@ -60,6 +60,17 @@ describe('legal and help pages', () => {
     }
   });
 
+  it('the reveal rule is stated as built: both written, a reveal time, or the day ending', () => {
+    for (const p of ['privacy', 'terms']) {
+      expect(text(p), p).toContain('at your reveal time if you set one');
+      expect(text(p), p).toContain('when the day ends');
+    }
+  });
+
+  it('staff access names the legal exception wherever it is stated', () => {
+    for (const p of ['privacy', 'terms', 'data-processing']) expect(text(p), p).toContain('or when the law requires it');
+  });
+
   it('terms cover the age floor and the governing law', () => {
     expect(text('terms')).toContain('18 or over');
     expect(text('terms')).toContain('law of Portugal');
@@ -68,7 +79,7 @@ describe('legal and help pages', () => {
   it('deletion: 14 days in the app, the exact button words, and an email route', () => {
     const t = text('delete-account');
     expect(t).toContain('14 days later');
-    for (const w of ['Delete your account', 'Delete my account', 'Keep my account', 'Export your archive']) expect(t).toContain(w);
+    for (const w of ['Delete your account', 'Delete my account', 'Keep my account', 'Export your archive first']) expect(t).toContain(w);
     expect(t).toContain('Delete my account');
   });
 
