@@ -5,7 +5,7 @@ import { lightStatement, litCount } from '../src/scripts/evening/statement';
 
 const built = readFileSync('dist/index.html', 'utf8');
 const builtBody = /<body[^>]*>([\s\S]*)<\/body>/.exec(built)![1]!;
-const TEXT = 'One sentence a day about someone you love. Kept sealed until they write theirs.';
+const TEXT = 'One line a day for someone you love. Sealed until they write theirs.';
 
 describe('litCount', () => {
   it('is 0 below the fold and all words once scrolled well past', () => {
@@ -49,7 +49,7 @@ describe('lightStatement', () => {
     const s = lightStatement(p);
     expect(p.textContent).toBe(TEXT);
     expect(p.querySelector('.quiet')).not.toBeNull();
-    expect(p.querySelectorAll('.quiet .w').length).toBe(6);
+    expect(p.querySelectorAll('.quiet .w').length).toBe(5);
     expect(p.querySelectorAll('.w').length).toBe(TEXT.split(/\s+/).length);
     expect(p.closest('section')!.hasAttribute('data-live')).toBe(true);
     s.stop();
@@ -62,8 +62,8 @@ describe('lightStatement', () => {
       return p.querySelectorAll('.w.lit').length;
     };
     expect(at(1000)).toBe(0);
-    expect(at(-2000)).toBe(14);
-    expect(at(505)).toBe(7); // sq .55 gives frac .5, 14 words
+    expect(at(-2000)).toBe(13);
+    expect(at(505)).toBe(7); // sq .55 gives frac .5, 13 words: 6.5 rounds to 7
     expect(at(1000)).toBe(0);
     s.stop();
   });
@@ -83,8 +83,8 @@ describe('lightStatement', () => {
     const at = (top: number) => {
       s.update(top, 1000);
     };
-    // 14 words: top 640 lights 4; find tops for 5 and 7 from the formula.
-    const topFor = (n: number) => 1000 - 900 * (0.25 + 0.6 * (n / 14));
+    // 13 words: find tops for 5 and 7 from the formula.
+    const topFor = (n: number) => 1000 - 900 * (0.25 + 0.6 * (n / 13));
     at(topFor(5));
     expect(p.querySelectorAll('.w.lit').length).toBe(5);
     spies.forEach((sp) => sp.mockClear());

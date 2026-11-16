@@ -226,7 +226,7 @@ describe('reduced motion switched on while live', () => {
     window.dispatchEvent(new Event('scroll'));
     vi.advanceTimersByTime(SWAP_MS * 4);
     expect(shownViews()[0]).toBe('reveal');
-    expect(document.querySelectorAll('.st2 .w').length).toBe(14);
+    expect(document.querySelectorAll('.st2 .w').length).toBe(13);
     expect(document.querySelector('[data-section="statement"]')!.hasAttribute('data-live')).toBe(true);
 
     q.fire(true);
