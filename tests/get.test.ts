@@ -23,13 +23,19 @@ describe('the floating "Get the app" pill', () => {
     expect(doc.getElementById('get')?.closest('[data-section="close"]')).not.toBeNull();
   });
 
-  it('floats on a solid token surface, never a blur, and does not slide under reduced motion', () => {
+  it('floats on a solid token surface, never a blur of its own, and does not slide under reduced motion', () => {
     const pill = rule(homeCss, '.topbar .get');
     expect(pill).toMatch(/position:\s*fixed/);
     expect(pill).toMatch(/background:\s*var\(--surface-raised\)/);
     expect(pill).toMatch(/min-height:\s*48px/);
     expect(pill).not.toMatch(/transform/);
-    expect(homeCss).not.toMatch(/backdrop-filter\s*:/);
+    expect(pill).not.toMatch(/backdrop-filter/);
+    // The only blur on the page is the docked glass bar (owner, 2026-11-16), and it has a near-solid
+    // fallback where backdrop-filter is unsupported.
+    const css = homeCss.replace(/\/\*[\s\S]*?\*\//g, '');
+    const blurs = [...css.matchAll(/([^{}]+)\{[^{}]*backdrop-filter\s*:[^{}]*\}/g)].map((m) => m[1].trim());
+    expect(blurs).toEqual(['.topbar[data-docked]']);
+    expect(homeCss).toMatch(/@supports not \(\(backdrop-filter: blur\(1px\)\) or \(-webkit-backdrop-filter: blur\(1px\)\)\) \{ \.topbar\[data-docked\] \{ background: rgb\(23 19 19 \/ \.96\); \} \}/);
     expect(rule(homeCss, '.topbar .get[data-away]')).toMatch(/visibility:\s*hidden/);
     expect(homeCss).toMatch(/@media \(prefers-reduced-motion: reduce\) \{ \.topbar \.get \{ transition: none; \} \}/);
   });
@@ -147,6 +153,18 @@ describe('floatGet on phones: tucks while scrolling down, back on scrolling up',
     expect(pill.hasAttribute('data-tucked')).toBe(true);
     to(200);
     expect(pill.hasAttribute('data-tucked'), 'back at the top').toBe(false);
+  });
+
+  it('never tucks while the top bar is docked as the glass bar', () => {
+    vi.stubGlobal('IntersectionObserver', undefined);
+    const { pill, to } = setup();
+    document.querySelector('.topbar')!.setAttribute('data-docked', '');
+    to(1200);
+    to(2400);
+    expect(pill.hasAttribute('data-tucked')).toBe(false);
+    document.querySelector('.topbar')!.removeAttribute('data-docked');
+    to(3600);
+    expect(pill.hasAttribute('data-tucked')).toBe(true);
   });
 
   it('stays while the evening scene is pinned', () => {

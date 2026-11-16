@@ -92,7 +92,7 @@ Dark throughout. Section by section, in order:
 4. **For two.** Removed (owner, 2026-11-16); its photo files were deleted.
 5. **Private.** Centred "Made for only two people." (owner, 2026-11-16) with "No ads, and your words are never sold." (the age line was removed by the owner, 2026-11-16; the 18+ rule belongs on Terms) Three equal cards, each a title, a line, then rows of plain fact on hairlines: Just the two of you (Read receipts, Last seen, Typing dots, each struck and "None"); Kind to missed days ("Miss a day. Nothing is lost.", the week of dots, "Only the streak count resets. Nobody is told, and nobody is waiting on you."); Honest about privacy ("Your words stay yours.", Ads None, Your words sold Never, Encryption Not end to end). One centred button: "Read the privacy page".
 6. **Questions.** Moved off the home page to its own page, `/faq` (owner, 2026-11-16): h1 "FAQs", line "Before you download.", the same four questions and answers, **all closed** on load. Linked from the top bar and the footer ("FAQs"). On `/faq` the top bar and footer send `#how` and `#get` back to `/`. Content CSP (fonts, no media).
-7. **Close.** "I know your worth." with "Mo mọ ìyì rẹ." under it, the two store badges, and then the footer: the mark and "Daily gratitude, for two."; three columns (Mọyì: How it works, Questions. Help: Support, Delete account, hello@getmoyi.app. Legal: Privacy, Terms, Data processing); a bar with "© 2026 Mọyì" and "No ads. Never sold." The brand and its line share one row. No wordmark (owner, 2026-11-16). On the home page the footer rises in once as it enters view (brand, links, bar, 120 ms apart; none under reduced motion or without JS). There is no second "Get the app" link: the floating pill is the only one.
+7. **Close.** "I know your worth." with "Mo mọ ìyì rẹ." under it, the two store badges, and then the footer: the mark and "Daily gratitude, for two."; three columns (Mọyì: How it works, Questions. Help: Support, Delete account, hello@getmoyi.app. Legal: Privacy, Terms, Data processing); a bar with "© 2026 Mọyì" and "No ads. Never sold." The brand and its line share one row. No wordmark (owner, 2026-11-16). On the home page the footer rises in once as it enters view (brand, links, bar, 120 ms apart; none under reduced motion or without JS). There is no second "Get the app" link: the floating pill is the only one. On phones the footer centres: the mark with its line beneath, the links as one wrapped row with an even gap, the bar stacked.
 
 **Before launch, one config flag** swaps both sets of store badges for the text "Coming soon to the App Store and Google Play." The flag can be per store, since the two stores may approve on different days.
 
@@ -229,3 +229,11 @@ The builder check asked four questions. Each is settled above as my call, for Da
 - Approval of the FAQ answers and the draft legal text, or the lawyer's version of it.
 - The footage: filmed, licensed or generated within §6.4's rule.
 - Creating the GitHub repo and the Cloudflare Pages project at cutover.
+
+**Glass bar (owner, 2026-11-16).** From the statement down, the top bar docks: fixed, frosted
+(translucent surface + an 18px backdrop blur, near-solid where blur is unsupported), sliding down
+as the statement passes 60% of the viewport and back up if the reader returns to the evening
+scene. Above the statement it stays on the page as before. The pill keeps its spot in the bar and
+never tucks while docked. Reduced motion: it appears and goes without a slide. This is the one
+place the site uses a blur; the pill itself stays solid.
+

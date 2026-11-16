@@ -5,7 +5,7 @@
 //
 // On phones (the site's 699px breakpoint) it also tucks away (data-tucked) while the reader
 // scrolls down through the page's text, where its top-right spot sits over body copy, and comes
-// back as soon as they scroll up. It always shows near the top, and for as long as the evening
+// back as soon as they scroll up. While the top bar is docked as the glass bar it never tucks. It always shows near the top, and for as long as the evening
 // scene is pinned (it shares the top row with that scene's progress line, measured clear of the
 // phone and captions). It shows whenever it has keyboard focus: a tucked pill stays focusable.
 //
@@ -57,7 +57,9 @@ function tuckOnScroll(doc: Document, win: Window, pill: HTMLElement): () => void
     const vh = win.innerHeight;
     const pinned = evening !== null && evening.hasAttribute('data-live') && evening.getBoundingClientRect().bottom > vh;
     const focused = doc.activeElement === pill;
-    if (y < vh / 2 || pinned || focused) {
+    // Docked in the glass bar (scripts/dock.ts), the pill has a backing and sits over no text.
+    const docked = pill.closest('.topbar')?.hasAttribute('data-docked') === true;
+    if (y < vh / 2 || pinned || focused || docked) {
       last = y;
       return show();
     }
