@@ -15,7 +15,7 @@ async function render(props: Record<string, unknown>) {
 // The app's own strings, from docs/web-screens (the dark iPhone captures).
 const PROMPT = 'What do they do that you have stopped noticing, and are glad of?';
 const MINE = "You waited up so I wouldn't walk home alone.";
-const THEIRS = 'You made tea before I asked.';
+const THEIRS = 'You called my mum on her birthday before I remembered.';
 const WAITING = "Yours is saved. When Tunde writes theirs, you'll both see each other's.";
 const labels: Record<View, string> = {
   today: `The Mọyì app. Today, not yet written. ${PROMPT}`,
