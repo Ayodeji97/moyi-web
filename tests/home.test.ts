@@ -125,7 +125,7 @@ describe('home page, the rest', () => {
       b.querySelector('[data-media]')?.getAttribute('data-media') ?? null,
     ])).toEqual([
       ['My partner', 'Across the room, or across the world.', 'From Tunde', 'You stayed on the phone until I fell asleep.', null],
-      ['My close friend', 'The one you would call first.', 'From Dayo', 'You remembered my interview and had dinner waiting after.', 'photo'],
+      ['My close friend', 'The one you would call first.', 'From Ellie', 'You remembered my interview and had dinner waiting after.', 'photo'],
       ['My family', 'A sibling, a parent, a cousin.', 'From Mum', "You still ask if I've eaten, every call.", 'voice'],
     ]);
     // No step numbers. The only figures are the age rule and the voice clock, which stays inside
