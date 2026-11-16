@@ -23,7 +23,8 @@
   .doc__body { font-size: 16px; }
   .doc__body h2 { margin-top: 44px; font-size: 24px; }
   /* Tables become stacked rows on phones: each cell on its own line, the first as the row's name. */
-  .doc__body thead { display: none; }
+  /* The header row is hidden visually only, so screen readers keep the column names. */
+  .doc__body thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .doc__body tr { display: block; padding: 14px 0; border-top: 1px solid var(--outline); }
   .doc__body td { display: block; padding: 2px 0; border: 0; }
 }

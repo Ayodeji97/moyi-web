@@ -90,4 +90,10 @@ describe('legal and help pages', () => {
       expect(t).not.toMatch(/Rekognition|Amazon|Sentry|Grafana|OpenAI|Voyage/);
     }
   });
+
+  it('on phones the table headers stay readable to screen readers (hidden visually, never display: none)', () => {
+    const css = readFileSync('src/styles/doc.css', 'utf8');
+    expect(css).not.toMatch(/thead \{ display: none/);
+    expect(css).toMatch(/\.doc__body thead \{ position: absolute;[^}]*clip-path: inset\(50%\)/);
+  });
 });
