@@ -11,11 +11,27 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
 .topbar nav a { display: inline-flex; align-items: center; min-height: 48px; color: var(--ink-muted); text-decoration: none; }
 /* "Get the app" floats: fixed at the spot it starts in, so it never jumps. A solid token surface
    keeps it legible over the sky, the footage and the plain sections alike (no backdrop-filter).
-   It steps aside (data-away, src/scripts/get.ts) while the closing store links are on screen. */
+   It steps aside (data-away, src/scripts/get.ts) while the closing store links are on screen.
+   On phones it also tucks up out of the way (data-tucked) while the reader scrolls down through
+   text, and returns on any scroll up. Tucked, it stays focusable (no visibility: hidden), and
+   focus brings it back. Under reduced motion it only appears and disappears, with no slide. */
 :root { --get-top: 22px; --get-right: 32px; --get-w: 128px; }
-.topbar .get { position: fixed; top: var(--get-top); right: var(--get-right); z-index: 7; display: inline-flex; align-items: center; justify-content: center; min-width: var(--get-w); min-height: 48px; font-size: 14px; padding: 0 18px; border-radius: 999px; background: var(--surface-raised); box-shadow: inset 0 0 0 1px var(--outline-strong), 0 4px 18px rgba(0, 0, 0, .3); color: var(--ink); text-decoration: none; transition: opacity .2s ease, visibility .2s; }
+.topbar .get { position: fixed; top: var(--get-top); right: var(--get-right); z-index: 7; display: inline-flex; align-items: center; justify-content: center; min-width: var(--get-w); min-height: 48px; font-size: 14px; padding: 0 18px; border-radius: 999px; background: var(--surface-raised); box-shadow: inset 0 0 0 1px var(--outline-strong), 0 4px 18px rgba(0, 0, 0, .3); color: var(--ink); text-decoration: none; transition: opacity .2s ease, visibility .2s, translate .25s ease; }
 .topbar .get[data-away] { opacity: 0; visibility: hidden; }
+.topbar .get[data-tucked]:not(:focus) { opacity: 0; translate: 0 calc(-100% - var(--get-top)); pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .topbar .get { transition: none; } }
+
+/* The glass bar (scripts/dock.ts): from the statement down, the top bar is fixed and frosted,
+   sliding down as it docks and up as it leaves. The surface is translucent rosewood with a blur
+   behind it; where backdrop-filter is unsupported it falls back to a near-solid surface, so the
+   links stay legible over anything. The pill keeps its own fixed spot, which lines up with the bar. */
+.topbar[data-docked] { position: fixed; background: rgb(23 19 19 / .62); -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%); box-shadow: inset 0 -1px 0 rgb(248 239 233 / .08); animation: dock-in .45s cubic-bezier(.2, .7, .2, 1) both; }
+.topbar[data-docked][data-leaving] { animation: dock-out .3s ease-in both; }
+.topbar[data-docked] nav a:hover, .topbar[data-docked] nav a:focus-visible { color: var(--ink); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .topbar[data-docked] { background: rgb(23 19 19 / .96); } }
+@keyframes dock-in { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes dock-out { from { transform: none; opacity: 1; } to { transform: translateY(-100%); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .topbar[data-docked], .topbar[data-docked][data-leaving] { animation: none; } }
 
 .stores { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; }
 .store { display: inline-flex; align-items: center; min-height: 48px; border-radius: 14px; text-decoration: none; }
@@ -23,17 +39,51 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
 .soon { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; color: var(--ink); }
 
 /* The rule spans the content column (.wrap: 1180px less 56px each side), not the padding. */
-.foot { margin: 90px auto 0; width: min(1068px, calc(100% - 112px)); padding: 24px 0 40px; border-top: 1px solid var(--outline); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; font-size: 13px; color: var(--ink-muted); }
-.foot nav { display: flex; gap: 18px; flex-wrap: wrap; }
-.foot a { display: inline-flex; align-items: center; min-height: 48px; color: var(--ink-muted); }
-.foot span { display: inline-flex; align-items: center; gap: 6px; }
 
 @media (max-width: 699px) {
   .wrap { padding-inline: 22px; }
   .topbar { padding: max(20px, env(safe-area-inset-top)) 20px 0; }
+  .topbar[data-docked] { padding-bottom: 12px; }
   .topbar nav { display: none; }
   :root { --get-top: max(20px, env(safe-area-inset-top)); --get-right: max(20px, env(safe-area-inset-right)); --get-w: 108px; }
   .topbar .get { padding: 0 14px; font-size: 13px; }
-  .foot { width: calc(100% - 44px); padding: 22px 0 40px; margin-top: 60px; }
-  .foot nav { row-gap: 0; }
 }
+
+/* Footer: the brand and its line on one row, three link columns, a bottom bar. */
+.foot { position: relative; overflow: hidden; margin-top: 0; padding: 88px 0 48px; border-top: 1px solid var(--outline); background: var(--surface); }
+.foot__top, .foot__bar { width: min(1068px, calc(100% - 112px)); margin-inline: auto; }
+.foot__top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; }
+.foot__logo { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 500; font-size: 28px; color: var(--ink); text-decoration: none; }
+.foot__logo svg { width: 20px; height: auto; }
+.foot__brand { display: flex; flex-wrap: wrap; align-items: center; column-gap: 16px; row-gap: 2px; align-self: start; }
+.foot__tag { margin: 0; color: var(--ink-muted); font-size: 15px; }
+.foot__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.foot__col { display: flex; flex-direction: column; align-items: flex-start; }
+.foot__h { margin: 0 0 6px; font-size: 13px; color: var(--ink-muted); }
+.foot__col a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; color: var(--ink); text-decoration: none; }
+.foot__col a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.foot__bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 72px; padding-top: 22px; border-top: 1px solid var(--outline); font-size: 13px; color: var(--ink-muted); }
+
+@media (max-width: 699px) {
+  .foot { padding: 56px 0 40px; }
+  .foot__top, .foot__bar { width: calc(100% - 44px); }
+  /* On phones only the brand centres: the mark, with its line beneath it. The links keep two
+     columns, centred as a block, and the bar keeps its row. */
+  .foot__top { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .foot__brand { flex-direction: column; justify-content: center; row-gap: 4px; text-align: center; }
+  /* The two columns size to their links and sit centred as one block, so the space left of the
+     links equals the space right of them. */
+  .foot__cols { grid-template-columns: repeat(2, auto); justify-content: center; gap: 0 48px; }
+  .foot__col { display: contents; }
+  .foot__h { display: none; }
+  .foot__col a { min-height: 44px; font-size: 15px; }
+  .foot__bar { margin-top: 48px; }
+  }
+
+/* The entrance (scripts/foot.ts sets data-reveal, then data-in once in view). */
+.foot[data-reveal] :is(.foot__brand, .foot__cols, .foot__bar) { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s cubic-bezier(.2, .7, .2, 1); }
+.foot[data-reveal][data-in] :is(.foot__brand, .foot__cols, .foot__bar) { opacity: 1; transform: none; }
+.foot[data-in] .foot__cols { transition-delay: .12s; }
+.foot[data-in] .foot__bar { transition-delay: .24s; }
+@media (prefers-reduced-motion: reduce) { .foot[data-reveal] :is(.foot__brand, .foot__cols, .foot__bar) { opacity: 1; transform: none; transition: none; } }
+

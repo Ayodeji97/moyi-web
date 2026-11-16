@@ -21,8 +21,8 @@
 .dev--centre { --sw: min(276px, 31.5svh); }
 .dev--pane { --sw: min(230px, 26svh); }
 @media (max-width: 699px) {
-  .dev--centre { --sw: min(194px, 24svh); }
-  .dev--pane { --sw: min(130px, 15svh); }
+  .dev--centre { --sw: min(260px, 30svh); }
+  .dev--pane { --sw: min(196px, calc(50vw - 40px), calc((100svh - 220px) / 2.3)); }
 }
 
 /* The back of the frame, a few px behind the front: under a tilt it shows as the edge. */
@@ -98,7 +98,7 @@
 .dev .ic { display: flex; gap: calc(26 * var(--u)); margin-right: calc(12 * var(--u)); }
 .dev svg { display: block; }
 .dev .ic svg, .dev .md svg, .dev .x { width: calc(24 * var(--u)); height: calc(24 * var(--u)); fill: none; stroke: var(--ink); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
-.dev .cn { font-size: calc(17 * var(--u)); }
+.dev .cn { font-size: calc(17 * var(--u)); text-decoration: underline; text-decoration-color: rgba(248, 239, 233, .45); text-underline-offset: calc(4 * var(--u)); text-decoration-thickness: max(1px, calc(1 * var(--u))); }
 
 /* Entry text: Newsreader 34 / 1.40, the app's entry style. */
 .dev .en { font-family: "Newsreader", ui-serif, Georgia, serif; font-size: calc(34 * var(--u)); line-height: calc(47.6 * var(--u)); letter-spacing: -.005em; }

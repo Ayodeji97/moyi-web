@@ -88,14 +88,11 @@ Dark throughout. Section by section, in order:
    | 0.82 to 0.94 | One phone returns: "Your day is open", Tunde's entry then Amara's appearing in turn. Caption: "Lagos 23:10 · London 22:10. Your day is open. Both of you, at the same moment." |
 
    On desktop, a step list on the right (Amara writes · Tunde writes · Read together) marks the current step. On phones, a thin three-part progress line under the top bar does the same job.
-3. **Statement.** "One sentence a day about someone you love. Kept sealed until they write theirs." The words light up one by one as it scrolls into view; the second sentence sits in the muted colour.
-4. **For two.** "Whoever your one person is." Three plain cards, matching onboarding screen 4: My partner ("Across the room, or across the world."), My close friend ("The one you would call first."), My family ("A sibling, a parent, a cousin. Both of you 18 or over."). Then the line "Lagos and London, or Lisbon and Los Angeles. Mọyì keeps one shared day for both of you, whatever the time zones say."
-5. **Private by construction.** "Made for two people, and only two." Three footage cards:
-   - one wide, lamplit room: "Two people. Nobody else.", with struck-through pills for read receipts, last seen, typing dots, followers and a feed;
-   - one in the rain: "Miss a day. Nothing is lost.", with a week of dots where one day is hollow (shape, not colour, carries the meaning);
-   - one bedside table: "Your words stay yours.", saying no ads, words never sold, not end to end encrypted, with a link to `/privacy`.
-6. **Questions.** "Before you download." Four questions that open and close (`<details>`, the first one open): time zones; what happens if one of us stops; can Mọyì read our entries; how to delete my account. **The answers are draft copy; Daniel must review them before launch**, the privacy one especially.
-7. **Close.** "I know your worth." with "Mo mọ ìyì rẹ." under it, the two store badges, and a footer: Privacy · Terms · Data processing · Support · Delete account · hello@getmoyi.app · © 2026 Mọyì.
+3. **Statement.** "One note a day for someone you love, sealed until they write theirs." (one sentence; the quiet half begins at "sealed") (shortened and worded by the owner, 2026-11-16; was "One sentence a day about someone you love. Kept sealed until they write theirs.") The words light up one by one as it scrolls into view; the second sentence sits in the muted colour.
+4. **For two.** Removed (owner, 2026-11-16); its photo files were deleted.
+5. **Private.** Centred "Made for only two people." (owner, 2026-11-16) with "No ads, and your words are never sold." (the age line was removed by the owner, 2026-11-16; the 18+ rule belongs on Terms) Three equal cards, each a title, a line, then rows of plain fact on hairlines: Just the two of you (Read receipts, Last seen, Typing dots, each struck and "None"); Kind to missed days ("Miss a day. Nothing is lost.", the week of dots, "Only the streak count resets. Nobody is told, and nobody is waiting on you."); Honest about privacy ("Your words stay yours.", Ads None, Your words sold Never, Encryption Not end to end). One centred button: "Read the privacy page".
+6. **Questions.** Moved off the home page to its own page, `/faq` (owner, 2026-11-16): h1 "FAQs", line "Before you download.", the same four questions and answers, **all closed** on load. Linked from the top bar and the footer ("FAQs"). On `/faq` the top bar and footer send `#how` and `#get` back to `/`. Content CSP (fonts, no media).
+7. **Close.** "I know your worth." with "Mo mọ ìyì rẹ." under it, the two store badges, and then the footer: the mark and "Daily gratitude, for two."; three columns (Mọyì: How it works, Questions. Help: Support, Delete account, hello@getmoyi.app. Legal: Privacy, Terms, Data processing); a bar with "© 2026 Mọyì" and "No ads. Never sold." The brand and its line share one row. No wordmark (owner, 2026-11-16). On the home page the footer rises in once as it enters view (brand, links, bar, 120 ms apart; none under reduced motion or without JS). There is no second "Get the app" link: the floating pill is the only one. On phones only the brand centres (the mark, its line beneath); the links keep two columns, centred as one block with equal space either side, and the bar its row (owner, 2026-11-16).
 
 **Before launch, one config flag** swaps both sets of store badges for the text "Coming soon to the App Store and Google Play." The flag can be per store, since the two stores may approve on different days.
 
@@ -232,3 +229,11 @@ The builder check asked four questions. Each is settled above as my call, for Da
 - Approval of the FAQ answers and the draft legal text, or the lawyer's version of it.
 - The footage: filmed, licensed or generated within §6.4's rule.
 - Creating the GitHub repo and the Cloudflare Pages project at cutover.
+
+**Glass bar (owner, 2026-11-16).** From the statement down, the top bar docks: fixed, frosted
+(translucent surface + an 18px backdrop blur, near-solid where blur is unsupported), sliding down
+as the statement passes 60% of the viewport and back up if the reader returns to the evening
+scene. Above the statement it stays on the page as before. The pill keeps its spot in the bar and
+never tucks while docked. Reduced motion: it appears and goes without a slide. This is the one
+place the site uses a blur; the pill itself stays solid.
+

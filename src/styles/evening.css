@@ -46,10 +46,11 @@
   .frame--hero { padding-top: calc(max(20px, env(safe-area-inset-top)) + 48px + 16px); }
   .evening__hero h1 { font-size: 56px; }
   .evening__lede { font-size: 15px; }
-  .evening__panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
-  .evening__seam { left: 0; right: 0; top: 50%; bottom: auto; width: auto; height: 1px; }
-  .evening__pane { min-height: 50svh; gap: 14px; padding: 24px 16px; }
-  .evening__who b { font-size: 28px; }
+  /* Side by side on phones too: stacked, each phone got half the height and the two panes
+     placed their clocks differently. Two full-height columns mirror the desktop exactly. */
+  .evening__pane { gap: 14px; padding: 24px 8px; }
+  .evening__who b { font-size: 30px; }
+  .evening__who span { font-size: 10px; letter-spacing: .12em; }
 }
 
 /* ------------------------------------------------------------------
@@ -183,12 +184,7 @@
 }
 
 @media (max-width: 699px) {
-  .evening[data-live] [data-role="centre"] .dev { --sw: min(194px, 24svh, calc((100svh - 300px) * .4435)); }
-  .evening[data-live] .evening__panes { clip-path: inset(calc((1 - var(--split)) * 50%) 0); }
-  /* The preview's narrow panes: the clock beside the phone, clear of the progress line. */
-  .evening[data-live] .evening__pane { min-height: 0; }
-  .evening[data-live] .evening__who { position: absolute; top: 16px; right: 18px; align-items: flex-end; text-align: right; }
-  .evening[data-live] .evening__pane:first-child .evening__who { top: 140px; }
-  .evening[data-live] .evening__pane .evening__phone { position: absolute; left: 34%; top: 56%; transform: translate(-50%, -50%) translateY(calc((1 - var(--panes)) * 60svh)); }
-  .evening[data-live] .evening__pane:first-child .evening__phone { top: 64%; }
+  .evening[data-live] [data-role="centre"] .dev { --sw: min(260px, 30svh, calc((100svh - 300px) * .4435)); }
+  /* The panes keep the desktop's columns; content starts below the progress line and pill. */
+  .evening[data-live] .evening__pane { padding: calc(max(20px, env(safe-area-inset-top)) + 48px + 28px) 8px 24px; justify-content: center; }
 }

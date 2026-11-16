@@ -128,12 +128,12 @@ describe('start with motion allowed', () => {
     expect(stage().style.getPropertyValue('--hero')).toBe('1');
   });
 
-  it('paints only the evening: the Private cards keep their CSS stand-ins', () => {
+  it('paints only the evening: Private has no scenes and no canvas', () => {
     stubReduce(false);
     teardowns.push(start(document, window));
     const cards = document.querySelector('[data-section="private"]');
     expect(cards).not.toBeNull();
-    expect(cards!.querySelectorAll('.scene').length).toBe(3);
+    expect(cards!.querySelectorAll('.scene').length).toBe(0);
     expect(cards!.querySelector('canvas')).toBeNull();
     expect(section().querySelectorAll('canvas').length).toBe(3); // sky, Lagos, London
   });
@@ -226,7 +226,7 @@ describe('reduced motion switched on while live', () => {
     window.dispatchEvent(new Event('scroll'));
     vi.advanceTimersByTime(SWAP_MS * 4);
     expect(shownViews()[0]).toBe('reveal');
-    expect(document.querySelectorAll('.st2 .w').length).toBe(14);
+    expect(document.querySelectorAll('.st2 .w').length).toBe(13);
     expect(document.querySelector('[data-section="statement"]')!.hasAttribute('data-live')).toBe(true);
 
     q.fire(true);
