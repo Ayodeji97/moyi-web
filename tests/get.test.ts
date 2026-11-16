@@ -30,12 +30,17 @@ describe('the floating "Get the app" pill', () => {
     expect(pill).toMatch(/min-height:\s*48px/);
     expect(pill).not.toMatch(/transform/);
     expect(pill).not.toMatch(/backdrop-filter/);
-    // The only blur on the page is the docked glass bar (owner, 2026-11-16), with a near-solid
-    // fallback where backdrop-filter is unsupported. The phone menu's panel is solid.
+    // The only blurs are the docked bar's glass layer and the phone menu's glass panel (owner,
+    // 2026-11-16). The bar's glass is on ::before, so the bar is never a backdrop root for the panel.
+    // Both fall back to near-solid surfaces where backdrop-filter is unsupported.
     const css = homeCss.replace(/\/\*[\s\S]*?\*\//g, '');
     const blurs = [...css.matchAll(/([^{}]+)\{[^{}]*backdrop-filter\s*:[^{}]*\}/g)].map((m) => m[1].trim());
-    expect(blurs).toEqual(['.topbar[data-docked]']);
-    expect(homeCss).toMatch(/@supports not \(\(backdrop-filter: blur\(1px\)\) or \(-webkit-backdrop-filter: blur\(1px\)\)\) \{ \.topbar\[data-docked\] \{ background: rgb\(23 19 19 \/ \.96\); \} \}/);
+    expect(blurs).toEqual(['.topbar[data-docked]::before', '.menu__panel']);
+    expect(homeCss).toMatch(/@supports not \(\(backdrop-filter: blur\(1px\)\) or \(-webkit-backdrop-filter: blur\(1px\)\)\) \{ \.topbar\[data-docked\]::before \{ background: rgb\(23 19 19 \/ \.96\); \} \.menu__panel \{ background: var\(--surface-raised\); \} \}/);
+    expect(rule(homeCss, '.topbar[data-docked]')).not.toMatch(/backdrop-filter/);
+    // A filling animation would make the bar a backdrop root again and kill both blurs.
+    expect(rule(homeCss, '.topbar[data-docked]')).not.toMatch(/animation:[^;]*\bboth\b/);
+    expect(homeCss).not.toMatch(/menu-in[^;]*\bboth\b/);
     expect(rule(homeCss, '.topbar .get[data-away]')).toMatch(/visibility:\s*hidden/);
     expect(homeCss).toMatch(/@media \(prefers-reduced-motion: reduce\) \{ \.topbar \.get \{ transition: none; \} \}/);
   });
@@ -52,7 +57,9 @@ describe('the floating "Get the app" pill', () => {
 
   it('respects the notch on phones, and the progress line stops short of it', () => {
     expect(homeCss).toMatch(/--get-top:\s*max\(20px, env\(safe-area-inset-top\)\)/);
-    expect(homeCss).toMatch(/--get-right:\s*max\(20px, env\(safe-area-inset-right\)\)/);
+    expect(homeCss).toMatch(/--edge:\s*max\(20px, env\(safe-area-inset-right\)\)/);
+    // The menu toggle (48px) takes the edge; the pill sits 8px to its left.
+    expect(homeCss).toMatch(/--get-right:\s*calc\(var\(--edge\) \+ 56px\)/);
     const line = rule(eveningCss, '.evening[data-live] .evening__progress');
     expect(line).toMatch(/right:\s*calc\(var\(--get-w\) \+ var\(--get-right\) \+ 16px\)/);
     expect(line).toMatch(/top:\s*calc\(var\(--get-top\) \+ 23px\)/);

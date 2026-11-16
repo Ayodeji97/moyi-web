@@ -26,10 +26,12 @@ describe('the phone menu, as built', () => {
     expect(css).toMatch(/^\.menu \{ display: none; \}/m);
     const phone = css.slice(css.indexOf('@media (max-width: 699px) {\n  .wrap'));
     expect(phone).toMatch(/\.topbar > nav \{ display: none; \}/);
-    expect(phone).toMatch(/\.menu \{ display: block;/);
+    expect(phone).toMatch(/\.menu \{ display: block; position: fixed; top: var\(--get-top\); right: var\(--edge\);/);
+    // It tucks with the pill, but never while open or holding focus.
+    expect(phone).toContain('.topbar:has(.get[data-tucked]:not(:focus)) .menu:not([open]):not(:focus-within)');
     expect(phone).toMatch(/\.menu summary \{[^}]*width: 48px; height: 48px;/);
-    // The panel belongs to the bar: it scrolls with it on the page and rides it when docked.
-    expect(phone).toMatch(/\.menu__panel \{ position: absolute;[^}]*top: calc\(100% \+ 8px\)/);
+    // The panel hangs under the toggle, right-aligned to it.
+    expect(phone).toMatch(/\.menu__panel \{ position: absolute; right: 0; width: calc\(100vw - 2 \* var\(--edge\)\); top: calc\(100% \+ 8px\)/);
   });
   it('is started from the home page module', () => {
     expect(readFileSync('src/scripts/evening/main.ts', 'utf8')).toMatch(/^tidyMenu\(document\);$/m);
