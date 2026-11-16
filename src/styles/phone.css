@@ -1,32 +1,141 @@
-/* The phone, drawn in HTML and CSS. Ported from preview/moyi-directions.html
-   (option 4). Slice 3 drives the views (src/scripts/evening/phone.ts). */
-.dev { --pw: 300px; position: relative; width: var(--pw); aspect-ratio: 9 / 19.4; border-radius: calc(var(--pw) * .165); padding: calc(var(--pw) * .034);
-  background: linear-gradient(140deg, #6d5c57 0%, #2a201e 18%, #120d0c 50%, #3a2f2c 82%, #1a1312 100%);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, .08) inset, 0 calc(var(--pw) * .18) calc(var(--pw) * .3) calc(var(--pw) * -.12) rgba(0, 0, 0, .75), 0 0 calc(var(--pw) * .5) calc(var(--pw) * -.2) rgba(232, 160, 96, .25); }
-.dev--centre { --pw: min(300px, 34svh); }
-.dev--pane { --pw: min(250px, 28svh); }
-@media (max-width: 699px) {
-  .dev--centre { --pw: min(210px, 26svh); }
-  .dev--pane { --pw: min(140px, 16svh); }
+/* The phone: a generic flagship drawn in CSS, and the app's dark screens inside it.
+
+   Device. Sized from the screen width --sw. A brushed graphite band (--ft), a near-black
+   glass bezel (--bz) and the screen, all on one centre so the three radii are concentric.
+   Generic on purpose (Apple marketing guidelines, generic devices): no notch, no island,
+   no volume keys, no switch. A round camera dot and one plain side key only.
+
+   Screen. Every number is a point on the app's 402 x 874 screen (docs/web-screens,
+   iPhone 17 Pro), times --u, so the layout scales with the phone and matches the app. */
+.dev {
+  --sw: 276px;
+  --u: calc(var(--sw) / 402);
+  --ft: calc(var(--sw) * .014);
+  --bz: calc(var(--sw) * .026);
+  --sr: calc(var(--sw) * .135);
+  position: relative; flex: none;
+  width: calc(var(--sw) + 2 * (var(--ft) + var(--bz)));
+  height: calc(var(--sw) * 874 / 402 + 2 * (var(--ft) + var(--bz)));
+  transform-style: preserve-3d;
 }
-.dev::before { content: ""; position: absolute; right: calc(var(--pw) * -.012); top: 28%; width: calc(var(--pw) * .012); height: 12%; border-radius: 2px; background: #3a2f2c; }
-.dev::after { content: ""; position: absolute; left: calc(var(--pw) * -.012); top: 22%; width: calc(var(--pw) * .012); height: 8%; border-radius: 2px; background: #3a2f2c; box-shadow: 0 calc(var(--pw) * .14) 0 #3a2f2c; }
-.dev .scr { position: relative; width: 100%; height: 100%; border-radius: calc(var(--pw) * .135); overflow: hidden; background: #171313; color: #F8EFE9; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: calc(var(--pw) * .039); line-height: 1.45; }
-.dev .scr .glass { position: absolute; inset: 0; z-index: 4; pointer-events: none; background: linear-gradient(115deg, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 28%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, .04) 100%); }
-.dev .scr .isl { position: absolute; top: 2.4%; left: 50%; transform: translateX(-50%); width: 31%; height: 3.4%; border-radius: 99px; background: #000; z-index: 5; }
-.dev .scr .sb { position: absolute; top: 2.7%; left: 9%; right: 9%; display: flex; justify-content: space-between; font-weight: 600; font-size: .9em; z-index: 3; }
-.dev .v { position: absolute; inset: 0; padding: 14% 7.5% 8%; display: flex; flex-direction: column; gap: 3.6%; transition: opacity 160ms var(--ease, ease); }
+.dev--centre { --sw: min(276px, 31.5svh); }
+.dev--pane { --sw: min(230px, 26svh); }
+@media (max-width: 699px) {
+  .dev--centre { --sw: min(194px, 24svh); }
+  .dev--pane { --sw: min(130px, 15svh); }
+}
+
+/* The back of the frame, a few px behind the front: under a tilt it shows as the edge. */
+.dev__edge {
+  position: absolute; inset: 0; border-radius: calc(var(--sr) + var(--ft) + var(--bz));
+  transform: translateZ(calc(var(--sw) * -.03));
+  background: linear-gradient(90deg, #2a2524, #575150 18%, #2f2a29 50%, #5a5352 82%, #262120);
+}
+.dev__body {
+  position: relative; height: 100%; padding: var(--ft);
+  border-radius: calc(var(--sr) + var(--ft) + var(--bz));
+  /* Graphite band: a vertical brush, a cool sheen across the top-left, a darker foot. */
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, .38) 0%, rgba(255, 255, 255, 0) 22%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, .16) 100%),
+    linear-gradient(90deg, #4a4443 0%, #7d7674 7%, #3b3534 16%, #5a5352 50%, #3b3534 84%, #7d7674 93%, #4a4443 100%);
+  box-shadow:
+    inset 0 0 0 calc(var(--sw) * .0018) rgba(255, 255, 255, .42),
+    inset 0 0 0 calc(var(--sw) * .006) rgba(0, 0, 0, .22),
+    0 1px 2px rgba(0, 0, 0, .3),
+    0 calc(var(--sw) * .03) calc(var(--sw) * .06) rgba(0, 0, 0, .22),
+    0 calc(var(--sw) * .12) calc(var(--sw) * .22) calc(var(--sw) * -.02) rgba(0, 0, 0, .34),
+    0 calc(var(--sw) * .3) calc(var(--sw) * .5) calc(var(--sw) * -.1) rgba(0, 0, 0, .38);
+}
+/* One plain side key, flush with the band. */
+.dev__key {
+  position: absolute; right: calc(var(--sw) * -.006); top: 25%; width: calc(var(--sw) * .009); height: 12%;
+  border-radius: 0 2px 2px 0; background: linear-gradient(90deg, #3b3534, #77706e 60%, #3b3534);
+}
+.dev__bezel {
+  height: 100%; padding: var(--bz); border-radius: calc(var(--sr) + var(--bz));
+  background: #060505;
+  box-shadow: 0 0 0 calc(var(--sw) * .0022) rgba(0, 0, 0, .9), inset 0 0 0 calc(var(--sw) * .0022) rgba(255, 255, 255, .05);
+}
+
+.dev .scr {
+  --surface: #171313; --raised: #211A1A; --ink: #F8EFE9; --muted: #CDBBB5; --line: #493737; --line2: #7E6A6A;
+  position: relative; width: var(--sw); height: calc(var(--sw) * 874 / 402); border-radius: var(--sr); overflow: hidden;
+  background: var(--surface); color: var(--ink);
+}
+/* The app's screen. Where the browser can divide lengths, it is laid out at the app's own
+   402 x 874 and scaled down whole, so every line wraps exactly as on the phone (the system
+   font tracks wider at small sizes, which would re-wrap a merely shrunk layout). Elsewhere,
+   every length is multiplied by --u instead: the same layout, give or take a wrap. */
+.dev .ui {
+  position: absolute; left: 0; top: 0; width: calc(402 * var(--u)); height: calc(874 * var(--u));
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: calc(17 * var(--u)); line-height: calc(24 * var(--u));
+  -webkit-font-smoothing: antialiased;
+}
+@supports (scale: calc(1px / 1px)) {
+  .dev .ui { --u: 1px; transform: scale(calc(var(--sw) / 402px)); transform-origin: 0 0; }
+}
+.dev .scr p { margin: 0; }
+/* A very faint sweep of reflected light, under 5% white: it never costs the text contrast. */
+.dev .scr .glass { position: absolute; inset: 0; z-index: 4; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(122deg, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, .014) 30%, rgba(255, 255, 255, .004) 36%, rgba(255, 255, 255, 0) 46%);
+  box-shadow: inset 0 0 0 calc(var(--sw) * .002) rgba(255, 255, 255, .04); }
+
+/* Status bar: time, the camera dot, generic signal, wifi and battery. */
+.dev .sb { position: absolute; top: calc(22 * var(--u)); left: 0; right: 0; height: calc(22 * var(--u)); z-index: 3; }
+.dev .clock { position: absolute; left: calc(56 * var(--u)); top: 0; font-weight: 600; font-size: calc(17 * var(--u)); line-height: calc(22 * var(--u)); letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.dev .cam { position: absolute; left: 50%; top: calc(5 * var(--u)); width: calc(12 * var(--u)); height: calc(12 * var(--u)); margin-left: calc(-6 * var(--u)); border-radius: 50%;
+  background: #050505; box-shadow: inset 0 0 0 calc(1.6 * var(--u)) #141418, inset calc(1 * var(--u)) calc(-1 * var(--u)) calc(2 * var(--u)) rgba(70, 80, 120, .5); }
+.dev .sys { position: absolute; left: calc(288.5 * var(--u)); top: calc(4 * var(--u)); width: calc(78 * var(--u)); height: calc(13 * var(--u)); fill: var(--ink); }
+.dev .sys .bo { fill: none; stroke: var(--ink); stroke-opacity: .45; stroke-width: 1.1; }
+
+/* Views: one at a time; the controller swaps them. */
+.dev .v { position: absolute; inset: 0; padding: calc(99 * var(--u)) calc(16 * var(--u)) 0; display: flex; flex-direction: column; transition: opacity 160ms var(--ease, ease); }
 .dev .v[hidden] { display: none; }
 .dev .v.is-out, .dev .v.is-in { opacity: 0; }
-.dev .an { display: flex; justify-content: space-between; align-items: center; color: #CDBBB5; font-size: .92em; }
-.dev .an b { color: #F8EFE9; font-weight: 600; }
-.dev .an u { text-underline-offset: 2px; margin-left: 9px; }
-.dev .an .sp { width: 3em; }
-.dev .lb { font-size: .74em; letter-spacing: .14em; text-transform: uppercase; color: #CDBBB5; margin: 0; }
-.dev .en { font-family: "Newsreader", ui-serif, Georgia, serif; font-size: 1.62em; line-height: 1.36; margin: 0; }
-.dev .en.s { font-size: 1.28em; }
-.dev .st { color: #CDBBB5; margin: 0; font-size: .98em; }
-.dev .st.top { margin-top: 4%; }
-.dev .gr { flex: 1; }
-.dev .pa { border-radius: 12px; background: #F8EFE9; color: #171313; text-align: center; font-weight: 600; padding: 4.6% 0; }
-.dev .ec { border: 1px solid #493737; border-radius: 12px; padding: 5.5%; display: flex; flex-direction: column; gap: 5px; background: #211A1A; }
+
+.dev .hd { display: flex; align-items: center; justify-content: space-between; height: calc(22 * var(--u)); flex: none; }
+.dev .dt { font-size: calc(14 * var(--u)); letter-spacing: .075em; text-transform: uppercase; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.dev .ic { display: flex; gap: calc(26 * var(--u)); margin-right: calc(12 * var(--u)); }
+.dev svg { display: block; }
+.dev .ic svg, .dev .md svg, .dev .x { width: calc(24 * var(--u)); height: calc(24 * var(--u)); fill: none; stroke: var(--ink); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+.dev .cn { font-size: calc(17 * var(--u)); text-decoration: underline; text-decoration-color: rgba(248, 239, 233, .45); text-underline-offset: calc(4 * var(--u)); text-decoration-thickness: max(1px, calc(1 * var(--u))); }
+
+/* Entry text: Newsreader 34 / 1.40, the app's entry style. */
+.dev .en { font-family: "Newsreader", ui-serif, Georgia, serif; font-size: calc(34 * var(--u)); line-height: calc(47.6 * var(--u)); letter-spacing: -.005em; }
+.dev .pr { font-family: "Newsreader", ui-serif, Georgia, serif; font-size: calc(34 * var(--u)); line-height: calc(47.6 * var(--u)); letter-spacing: -.005em; margin-top: calc(78 * var(--u)) !important; }
+.dev .wr { font-family: "Newsreader", ui-serif, Georgia, serif; font-size: calc(26 * var(--u)); line-height: calc(34 * var(--u)); }
+.dev .st { color: var(--muted); }
+
+/* The primary action: cream, 176 x 48, a serif label. */
+.dev .pa { position: absolute; left: 50%; bottom: calc(58 * var(--u)); width: calc(176 * var(--u)); height: calc(48 * var(--u)); margin-left: calc(-88 * var(--u));
+  display: flex; align-items: center; justify-content: center; border-radius: calc(16 * var(--u));
+  background: var(--ink); color: var(--surface); font-family: "Newsreader", ui-serif, Georgia, serif; font-size: calc(17 * var(--u)); }
+
+/* Write: the compose card, its prompt, the typed words, the media keys. */
+.dev .v--write .pa { bottom: auto; top: calc(475 * var(--u)); }
+.dev .cf { position: relative; margin-top: calc(37 * var(--u)); height: calc(293 * var(--u)); border: max(1px, calc(1 * var(--u))) solid var(--line2); border-radius: calc(16 * var(--u)); background: var(--raised); padding: calc(18 * var(--u)) calc(20 * var(--u)); }
+.dev .cq { position: relative; color: var(--muted); padding-right: calc(40 * var(--u)); line-height: calc(25 * var(--u)); }
+.dev .x { position: absolute; right: calc(-2 * var(--u)); top: calc(2 * var(--u)); stroke-width: 1.9; }
+.dev .cf .en { margin-top: calc(22 * var(--u)); }
+.dev .ca { display: inline-block; width: max(1px, calc(2 * var(--u))); height: calc(32 * var(--u)); margin-left: calc(2 * var(--u)); vertical-align: calc(-6 * var(--u)); background: var(--ink); }
+.dev .md { position: absolute; left: calc(18 * var(--u)); bottom: calc(10 * var(--u)); display: flex; gap: calc(26 * var(--u)); }
+
+/* Entry cards. */
+.dev .ec { position: relative; border: max(1px, calc(1 * var(--u))) solid var(--line); border-radius: calc(16 * var(--u)); background: var(--raised); padding: calc(20 * var(--u)) calc(24 * var(--u)) calc(21.5 * var(--u)); }
+.dev .lb { font-size: calc(14 * var(--u)); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 500; line-height: calc(24 * var(--u)); margin-bottom: calc(15.5 * var(--u)) !important; }
+.dev .mo { position: absolute; right: calc(35.5 * var(--u)); top: calc(29 * var(--u)); width: calc(4.4 * var(--u)); height: calc(4.4 * var(--u)); border-radius: 50%; background: var(--muted);
+  box-shadow: calc(6.6 * var(--u)) 0 var(--muted), calc(13.2 * var(--u)) 0 var(--muted); }
+
+/* Written, waiting. */
+.dev .v--wait .ec { margin-top: calc(193 * var(--u)); }
+.dev .v--wait .wr { margin-top: calc(14 * var(--u)); }
+.dev .v--wait .st { margin-top: calc(18 * var(--u)); }
+
+/* Revealed: both cards, and the reactions under the partner's. */
+.dev .v--reveal .wr { margin-top: calc(28 * var(--u)); }
+.dev .rv { margin-top: calc(46 * var(--u)); }
+.dev .rv .st { margin-top: calc(10 * var(--u)); }
+.dev .ch { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)) calc(9 * var(--u)); list-style: none; margin: calc(11.5 * var(--u)) 0 0; padding: 0; }
+.dev .ch li { display: flex; align-items: center; gap: calc(4 * var(--u)); height: calc(40 * var(--u)); padding: 0 calc(15 * var(--u)); font-weight: 500; border: max(1px, calc(1 * var(--u))) solid var(--line2); border-radius: calc(20 * var(--u)); font-size: calc(14 * var(--u)); letter-spacing: -.005em; white-space: nowrap; }
+.dev .ch span { font-size: calc(15 * var(--u)); line-height: 1; }
+.dev .v--reveal [data-card="1"] { margin-top: calc(20 * var(--u)); }
