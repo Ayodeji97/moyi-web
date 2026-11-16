@@ -75,7 +75,7 @@ const sky = scene({
     let x = -0.02;
     while (x < 1.02) {
       const bw = 0.03 + r() * 0.07;
-      const bh = 0.08 + r() * 0.26;
+      const bh = 0.05 + r() * 0.16;
       const win: Array<[number, number, number, string]> = [];
       const cols = Math.max(2, Math.floor(bw * 90));
       const rows = Math.floor(bh * 60);
@@ -87,8 +87,17 @@ const sky = scene({
       b.push({ x, w: bw, h: bh, win, cols, rows });
       x += bw + r() * 0.006;
     }
+    // A far row behind the near one, drawn half-transparent, so the skyline has depth
+    // instead of reading as one flat row of boxes. No windows: it sits in the haze.
+    const far: Array<[number, number, number]> = [];
+    for (let fx = -0.02; fx < 1.02; ) {
+      const fw = 0.02 + r() * 0.05;
+      far.push([fx, fw, 0.1 + r() * 0.12]);
+      fx += fw;
+    }
     return {
       b,
+      far,
       stars: Array.from({ length: 90 }, (): [number, number, number] => [r(), r() * 0.55, r()]),
     };
   },
@@ -120,6 +129,10 @@ const sky = scene({
     // under the headline and the store line instead of running up behind them.
     const sky = Math.min(h, w * 1.1);
     const sil = ramp([[0, K.sil0], [0.45, K.sil1], [1, K.sil2]], p);
+    ctx.fillStyle = sil;
+    ctx.globalAlpha = 0.45;
+    for (const [fx, fw, fh] of st.far) ctx.fillRect(fx * w, base - fh * sky, fw * w + 1, fh * sky);
+    ctx.globalAlpha = 1;
     for (const b of st.b) {
       const bx = b.x * w;
       const bw = b.w * w;
@@ -175,11 +188,13 @@ const lagos = scene({
 const rain = scene({
   init(r) {
     return {
-      lights: Array.from({ length: 30 }, (): Mote => ({
-        x: r(), y: 0.2 + r() * 0.6, s: 0.02 + r() * 0.06, a: 0.15 + r() * 0.3,
+      // Few, small lights in one band read as a street seen through wet glass; thirty large
+      // ones scattered top to bottom read as smudges on the screen.
+      lights: Array.from({ length: 12 }, (): Mote => ({
+        x: r(), y: 0.5 + r() * 0.25, s: 0.012 + r() * 0.025, a: 0.2 + r() * 0.3,
         c: r() > 0.5 ? R.cool : R.warm, ph: r() * 6,
       })),
-      drops: Array.from({ length: 110 }, (): [number, number, number] => [r(), r(), 0.6 + r() * 2]),
+      drops: Array.from({ length: 70 }, (): [number, number, number] => [r(), r(), 0.6 + r() * 2]),
       runs: Array.from({ length: 22 }, () => ({ x: r(), y: r(), v: 0.0008 + r() * 0.002, l: 0.02 + r() * 0.05 })),
       rng: r, // the slot's seeded generator, so a run that restarts lands in the same place every time
     };
