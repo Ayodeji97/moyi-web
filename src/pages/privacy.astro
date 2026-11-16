@@ -1,0 +1,7 @@
+---
+import Doc from '../components/Doc.astro';
+import { Content, frontmatter } from '../content/legal/privacy.md';
+---
+<Doc title={frontmatter.title} lede={frontmatter.lede} description="What Mọyì keeps about you, why, where, and for how long." version="unpublished">
+  <Content />
+</Doc>

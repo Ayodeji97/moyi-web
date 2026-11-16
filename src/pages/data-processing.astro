@@ -1,0 +1,7 @@
+---
+import Doc from '../components/Doc.astro';
+import { Content, frontmatter } from '../content/legal/data-processing.md';
+---
+<Doc title={frontmatter.title} lede={frontmatter.lede} description="A plain summary of how Mọyì handles your data, with every company that processes it." version="unpublished">
+  <Content />
+</Doc>
