@@ -24,7 +24,7 @@ Email [hello@getmoyi.app](mailto:hello@getmoyi.app) from the address on your acc
 
 ## What is kept
 
-- Records without content, such as that a report or block happened, kept by account number to keep Mọyì safe.
+- Safety records without content, such as that a report or block happened, kept by account number for 2 years to keep Mọyì safe.
 - Backups, which expire within 35 days.
 - Anything under an open safety report, until a person has reviewed it.
 

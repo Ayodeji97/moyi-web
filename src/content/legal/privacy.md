@@ -66,7 +66,8 @@ Before the other person can see a photo, a smaller copy of it (1280 pixels acros
 - **Archive exports:** 24 hours.
 - **Support messages:** until your request is closed.
 - **Backups:** our encrypted backups are kept for up to 35 days, and our hosting provider's whole server backups for 7 days. Anything you delete leaves every backup within 35 days.
-- **Records without content** (that a report, block or notification happened) are kept by account number after deletion, to keep Mọyì safe.
+- **Safety records without content** (that a report, block or suspension happened, by account number): 2 years, to keep Mọyì safe, also after an account is deleted.
+- **The record that a notification was sent** (never its content): 90 days.
 
 ## Your rights
 
@@ -75,7 +76,7 @@ You can ask to see, correct, export or delete your data, and to restrict or obje
 - **See and export:** in the app, open Bond settings, then Account, then Export your archive. You get a zip with a JSON file of your data, a README, and your photos and voice notes.
 - **Correct:** change your settings in the app, or write to us to correct your name or email.
 - **Delete:** see [Delete your account](/delete-account).
-- **Anything else:** write to [hello@getmoyi.app](mailto:hello@getmoyi.app). We answer within one month.
+- **Anything else:** write to [hello@getmoyi.app](mailto:hello@getmoyi.app). We answer within 14 days.
 
 You can also complain to the Portuguese data protection authority, the CNPD, or to the authority where you live.
 
