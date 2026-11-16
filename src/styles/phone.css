@@ -22,7 +22,7 @@
 .dev--pane { --sw: min(230px, 26svh); }
 @media (max-width: 699px) {
   .dev--centre { --sw: min(260px, 30svh); }
-  .dev--pane { --sw: min(160px, calc(50vw - 30px), calc((100svh - 220px) / 2.3)); }
+  .dev--pane { --sw: min(196px, calc(50vw - 40px), calc((100svh - 220px) / 2.3)); }
 }
 
 /* The back of the frame, a few px behind the front: under a tilt it shows as the edge. */
