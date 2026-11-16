@@ -82,8 +82,8 @@ describe('home page, the rest', () => {
       'For two', 'Whoever your one person is.',
       'My partner', 'Across the room, or across the world.',
       'My close friend', 'The one you would call first.',
-      'My family', 'A sibling, a parent, a cousin. Both of you 18 or over.',
-      'Lagos and London, or Lisbon and Los Angeles. Mọyì keeps one shared day for both of you, whatever the time zones say.',
+      'My family', 'A sibling, a parent, a cousin.',
+      'Lagos and London, or Lisbon and Los Angeles. Mọyì keeps one shared day for both of you, whatever the time zones say. Both of you 18 or over.',
       'Private by construction', 'Made for two people, and only two.',
       'Just the two of you', 'Read receipts', 'Last seen', 'Typing dots', 'Followers', 'A feed',
       'Two people. Nobody else.',
@@ -112,6 +112,31 @@ describe('home page, the rest', () => {
     const days = doc.querySelector('[role="img"][aria-label="A week with six days written and one missed"]')!;
     expect(days.querySelectorAll('i')).toHaveLength(7);
     expect(days.querySelectorAll('i.miss')).toHaveLength(1);
+  });
+
+  it('shows each kind of bond by one entry, in the app\'s entry-card shape, with no numbers', () => {
+    const section = doc.querySelector('[data-section="for-two"]')!;
+    const bonds = [...section.querySelectorAll('ul.bonds > li.bond')];
+    expect(bonds.map((b) => [
+      b.querySelector('h3')!.textContent!.trim(),
+      b.querySelector('.bond__sub')!.textContent!.trim(),
+      b.querySelector('figure.ent > figcaption.ent__from')!.textContent!.trim(),
+      b.querySelector('figure.ent blockquote.ent__text')!.textContent!.trim(),
+      b.querySelector('[data-media]')?.getAttribute('data-media') ?? null,
+    ])).toEqual([
+      ['My partner', 'Across the room, or across the world.', 'From Tunde', 'You stayed on the phone until I fell asleep.', null],
+      ['My close friend', 'The one you would call first.', 'From Dayo', 'You remembered my interview and checked in at eight.', 'photo'],
+      ['My family', 'A sibling, a parent, a cousin.', 'From Mum', "You still ask if I've eaten, every call.", 'voice'],
+    ]);
+    // No step numbers, and no media length or size until the real limits are confirmed:
+    // the age rule is the section's only figure.
+    const text = (section.textContent ?? '').replace(/\s+/g, ' ');
+    expect(text.match(/\d+/g)).toEqual(['18']);
+    expect(text).toContain('Both of you 18 or over.');
+    // The placeholders are named for screen readers and carry nothing that pretends to be real.
+    expect(section.querySelector('[data-media="photo"]')!.getAttribute('aria-label')).toBe('A photo, sent with the entry');
+    expect(section.querySelector('[data-media="voice"]')!.getAttribute('aria-label')).toBe('A voice note, sent with the entry');
+    expect(section.querySelectorAll('img, audio, video')).toHaveLength(0);
   });
 
   it('puts the stores in the close, with #get', () => {

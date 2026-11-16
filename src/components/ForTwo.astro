@@ -1,14 +1,48 @@
 ---
 import '../styles/sections.css';
+// Three bonds, each shown by what writing to that person looks like: one entry in the app's own
+// entry-card style (src/styles/phone.css .ec / .lb / .en, at site scale). Fictional names only.
+// The photo and voice note are neutral placeholders (data-media) until the app's real look is
+// captured; neither carries a number, since media limits are not confirmed yet.
 ---
 <section class="for2" data-section="for-two">
   <div class="wrap">
     <div class="head"><p class="eyebrow">For two</p><h2>Whoever your one person is.</h2></div>
-    <div class="row">
-      <div class="w2"><span class="n2">1</span><h3>My partner</h3><p>Across the room, or across the world.</p></div>
-      <div class="w2"><span class="n2">2</span><h3>My close friend</h3><p>The one you would call first.</p></div>
-      <div class="w2"><span class="n2">3</span><h3>My family</h3><p>A sibling, a parent, a cousin. Both of you 18 or over.</p></div>
-    </div>
-    <p class="far">Lagos and London, or Lisbon and Los Angeles. Mọyì keeps one shared day for both of you, whatever the time zones say.</p>
+    <ul class="bonds">
+      <li class="bond">
+        <h3>My partner</h3>
+        <p class="bond__sub">Across the room, or across the world.</p>
+        <figure class="ent">
+          <figcaption class="ent__from">From Tunde</figcaption>
+          <blockquote class="ent__text"><p>You stayed on the phone until I fell asleep.</p></blockquote>
+        </figure>
+      </li>
+      <li class="bond">
+        <h3>My close friend</h3>
+        <p class="bond__sub">The one you would call first.</p>
+        <figure class="ent">
+          <figcaption class="ent__from">From Dayo</figcaption>
+          <blockquote class="ent__text"><p>You remembered my interview and checked in at eight.</p></blockquote>
+          <div class="ent__media ent__photo" data-media="photo" role="img" aria-label="A photo, sent with the entry">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2.5"></rect><circle cx="9" cy="10" r="1.8"></circle><path d="M4 17.5l5-4.5 3.5 3 3-2.5 4.5 4"></path></svg>
+          </div>
+        </figure>
+      </li>
+      <li class="bond">
+        <h3>My family</h3>
+        <p class="bond__sub">A sibling, a parent, a cousin.</p>
+        <figure class="ent">
+          <figcaption class="ent__from">From Mum</figcaption>
+          <blockquote class="ent__text"><p>You still ask if I've eaten, every call.</p></blockquote>
+          <div class="ent__media ent__voice" data-media="voice" role="img" aria-label="A voice note, sent with the entry">
+            <span class="ent__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="M9 7.2v9.6l7.6-4.8z"></path></svg></span>
+            <svg class="ent__wave" viewBox="0 0 148 28" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <rect x="0" y="11" width="3" height="6" rx="1.5"></rect><rect x="7" y="8" width="3" height="12" rx="1.5"></rect><rect x="14" y="4" width="3" height="20" rx="1.5"></rect><rect x="21" y="9" width="3" height="10" rx="1.5"></rect><rect x="28" y="2" width="3" height="24" rx="1.5"></rect><rect x="35" y="7" width="3" height="14" rx="1.5"></rect><rect x="42" y="10" width="3" height="8" rx="1.5"></rect><rect x="49" y="5" width="3" height="18" rx="1.5"></rect><rect x="56" y="1" width="3" height="26" rx="1.5"></rect><rect x="63" y="6" width="3" height="16" rx="1.5"></rect><rect x="70" y="9" width="3" height="10" rx="1.5"></rect><rect x="77" y="4" width="3" height="20" rx="1.5"></rect><rect x="84" y="8" width="3" height="12" rx="1.5"></rect><rect x="91" y="11" width="3" height="6" rx="1.5"></rect><rect x="98" y="6" width="3" height="16" rx="1.5"></rect><rect x="105" y="3" width="3" height="22" rx="1.5"></rect><rect x="112" y="8" width="3" height="12" rx="1.5"></rect><rect x="119" y="10" width="3" height="8" rx="1.5"></rect><rect x="126" y="7" width="3" height="14" rx="1.5"></rect><rect x="133" y="11" width="3" height="6" rx="1.5"></rect><rect x="140" y="9" width="3" height="10" rx="1.5"></rect><rect x="145" y="12" width="3" height="4" rx="1.5"></rect>
+            </svg>
+          </div>
+        </figure>
+      </li>
+    </ul>
+    <p class="far">Lagos and London, or Lisbon and Los Angeles. Mọyì keeps one shared day for both of you, whatever the time zones say. Both of you 18 or over.</p>
   </div>
 </section>
