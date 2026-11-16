@@ -128,9 +128,11 @@
 .evening[data-live] .evening__rail li::before { content: ""; width: 22px; height: 1px; background: currentColor; }
 .evening[data-live] .evening__rail li[aria-current] { color: #fff; }
 .evening[data-live] .evening__progress {
-  /* Near the top: the top bar is position: absolute and has scrolled away before the line
-     shows (p > .10), and lower down it would cross Amara's pane phone on most phones. */
-  position: absolute; left: 22px; right: 22px; top: max(14px, env(safe-area-inset-top));
+  /* Near the top: lower down it would cross Amara's pane phone on most phones. It shares the
+     top row with the floating "Get the app" pill (home.css): centred on the pill's 48px height,
+     and ending 16px short of it (pill width + the pill's right inset + 16px). */
+  position: absolute; left: 22px; right: calc(var(--get-w) + var(--get-right) + 16px);
+  top: calc(var(--get-top) + 23px);
   display: flex; gap: 8px; opacity: var(--rail); transition: opacity .3s var(--ease, ease);
 }
 .evening[data-live] .evening__progress span { flex: 1; height: 2px; border-radius: 2px; background: rgba(255, 255, 255, .25); overflow: hidden; }

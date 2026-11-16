@@ -30,7 +30,9 @@ export function start(doc: Document, win: Window): () => void {
 
   section.setAttribute('data-live', '');
   for (const el of extras) el.hidden = false;
-  const scenes = mountScenes(doc);
+  // Only the evening is painted. The Private cards keep their calm CSS stand-ins until real footage
+  // drops in (spec 6.4): imitation footage there read as smudges.
+  const scenes = mountScenes(section);
   const bound = bind(section, scenes);
   const stp = doc.querySelector<HTMLElement>('[data-section="statement"] .st2');
   const statement = stp ? lightStatement(stp) : null;

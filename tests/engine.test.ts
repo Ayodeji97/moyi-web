@@ -127,6 +127,16 @@ describe('start with motion allowed', () => {
     expect(document.querySelectorAll('canvas').length).toBeGreaterThan(0);
     expect(stage().style.getPropertyValue('--hero')).toBe('1');
   });
+
+  it('paints only the evening: the Private cards keep their CSS stand-ins', () => {
+    stubReduce(false);
+    teardowns.push(start(document, window));
+    const cards = document.querySelector('[data-section="private"]');
+    expect(cards).not.toBeNull();
+    expect(cards!.querySelectorAll('.scene').length).toBe(3);
+    expect(cards!.querySelector('canvas')).toBeNull();
+    expect(section().querySelectorAll('canvas').length).toBe(3); // sky, Lagos, London
+  });
 });
 
 describe('bind', () => {

@@ -16,11 +16,14 @@
   --scene-lagos-2: #5E2F2D;
   --scene-lagos-3: #6B3A1E;
   --scene-rain-1: #161C27;
-  --scene-rain-2: #25202B;
-  --scene-lamp-1: #3A2418;
-  --scene-lamp-2: #0F0B0A;
-  --scene-bed-1: #4A2F1F;
-  --scene-bed-2: #1A100B;
+  --scene-rain-2: #1D1A22;
+  --scene-rain-3: #2B3547;
+  --scene-lamp-1: #241915;
+  --scene-lamp-2: #140F0E;
+  --scene-lamp-3: #6A4326;
+  --scene-bed-1: #2A1D17;
+  --scene-bed-2: #150F0D;
+  --scene-bed-3: #5A3A28;
   --scrim-alpha: 0.5;
 }
 
@@ -30,7 +33,9 @@
 .scene--sky-dusk { background: linear-gradient(180deg, var(--scene-sky-dusk-1), var(--scene-sky-dusk-2) 55%, var(--scene-sky-dusk-3)); }
 .scene--sky-night { background: linear-gradient(180deg, var(--scene-sky-night-1), var(--scene-sky-night-2) 55%, var(--scene-sky-night-3)); }
 .scene--lagos { background: linear-gradient(180deg, var(--scene-lagos-1), var(--scene-lagos-2) 45%, var(--scene-lagos-3)); }
-.scene--rain { background: linear-gradient(180deg, var(--scene-rain-1), var(--scene-rain-2)); }
-.scene--lamp { background: linear-gradient(180deg, var(--scene-lamp-1), var(--scene-lamp-2)); }
-.scene--bed { background: linear-gradient(135deg, var(--scene-bed-1), var(--scene-bed-2)); }
+/* The three cards: one quiet light each (the lamp, the window, the bedside), no imitation
+   blur. A video replaces each when its clip exists (spec 6.4). */
+.scene--rain { background: radial-gradient(70% 90% at 18% 0%, var(--scene-rain-3), transparent 70%), linear-gradient(180deg, var(--scene-rain-1), var(--scene-rain-2)); }
+.scene--lamp { background: radial-gradient(45% 85% at 82% 18%, var(--scene-lamp-3), transparent 75%), linear-gradient(180deg, var(--scene-lamp-1), var(--scene-lamp-2)); }
+.scene--bed { background: radial-gradient(75% 85% at 92% 6%, var(--scene-bed-3), transparent 72%), linear-gradient(160deg, var(--scene-bed-1), var(--scene-bed-2)); }
 .scrim { position: absolute; inset: 0; background: rgba(14, 10, 10, var(--scrim-alpha)); }

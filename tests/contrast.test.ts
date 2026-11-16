@@ -51,8 +51,8 @@ describe('canvas palette keeps text readable', () => {
   const entries = Object.entries(PALETTE).flatMap(([scene, colors]) =>
     colors.map((c) => ({ scene, hex: c })),
   );
-  it('covers all five scenes with at least 30 colours', () => {
-    expect(Object.keys(PALETTE).sort()).toEqual(['bed', 'lagos', 'lamp', 'rain', 'sky']);
+  it('covers the three evening scenes with at least 30 colours', () => {
+    expect(Object.keys(PALETTE).sort()).toEqual(['lagos', 'rain', 'sky']);
     expect(entries.length).toBeGreaterThanOrEqual(30);
   });
   for (const e of entries) {

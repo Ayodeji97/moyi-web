@@ -3,7 +3,7 @@
 // at most every 33 ms, at a pixel ratio of at most 1.25. Colours come from palette.ts only.
 import { COLORS } from './palette';
 
-export type SceneName = 'sky' | 'lagos' | 'rain' | 'lamp' | 'bed';
+export type SceneName = 'sky' | 'lagos' | 'rain';
 export interface Scenes {
   setSky(p: number): void;
   stop(): void;
@@ -61,55 +61,11 @@ function orb(ctx: Ctx, x: number, y: number, r: number, c: string, a: number) {
   ctx.fill();
 }
 
-const L = COLORS.lamp;
 const K = COLORS.sky;
 const G = COLORS.lagos;
 const R = COLORS.rain;
-const B = COLORS.bed;
 
 interface Mote { x: number; y: number; s: number; a: number; c: string; vx?: number; ph: number }
-
-const lamp = scene({
-  init(r) {
-    const pick = [L.orbAmber, L.orbRose, L.orbCream, L.orbCopper];
-    return {
-      orbs: Array.from({ length: 28 }, (): Mote => ({
-        x: r(), y: r() * 0.9, s: 0.015 + r() * 0.07, a: 0.08 + r() * 0.3,
-        c: pick[Math.floor(r() * 4)], vx: (r() - 0.5) * 0.00004, ph: r() * 6.28,
-      })),
-    };
-  },
-  draw(ctx, w, h, t, st) {
-    const g = ctx.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, L.bgTop);
-    g.addColorStop(1, L.bgBot);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, h);
-    orb(ctx, w * 0.82, h * 0.32, Math.max(w, h) * 0.42, L.glow, 0.3);
-    orb(ctx, w * 0.82, h * 0.3, Math.max(w, h) * 0.1, L.core, 0.5);
-    ctx.fillStyle = rgba(L.pane, 0.07);
-    ctx.fillRect(w * 0.04, h * 0.12, w * 0.22, h * 0.6);
-    ctx.strokeStyle = rgba(L.frame, 0.06);
-    ctx.lineWidth = 3;
-    ctx.strokeRect(w * 0.04, h * 0.12, w * 0.22, h * 0.6);
-    ctx.beginPath();
-    ctx.moveTo(w * 0.15, h * 0.12);
-    ctx.lineTo(w * 0.15, h * 0.72);
-    ctx.stroke();
-    const S = Math.max(w, h);
-    for (const o of st.orbs) {
-      o.x += (o.vx ?? 0) * 16;
-      if (o.x > 1.1) o.x = -0.1;
-      if (o.x < -0.1) o.x = 1.1;
-      orb(ctx, o.x * w, o.y * h, o.s * S * (0.85 + 0.15 * Math.sin(t / 1500 + o.ph)), o.c, o.a);
-    }
-    const f = ctx.createLinearGradient(0, h * 0.75, 0, h);
-    f.addColorStop(0, rgba(L.bgBot, 0));
-    f.addColorStop(1, rgba(L.bgBot, 0.85));
-    ctx.fillStyle = f;
-    ctx.fillRect(0, h * 0.7, w, h * 0.3);
-  },
-});
 
 interface Building { x: number; w: number; h: number; win: Array<[number, number, number, string]>; cols: number; rows: number }
 
@@ -119,7 +75,7 @@ const sky = scene({
     let x = -0.02;
     while (x < 1.02) {
       const bw = 0.03 + r() * 0.07;
-      const bh = 0.08 + r() * 0.26;
+      const bh = 0.05 + r() * 0.16;
       const win: Array<[number, number, number, string]> = [];
       const cols = Math.max(2, Math.floor(bw * 90));
       const rows = Math.floor(bh * 60);
@@ -131,12 +87,18 @@ const sky = scene({
       b.push({ x, w: bw, h: bh, win, cols, rows });
       x += bw + r() * 0.006;
     }
+    // A far row behind the near one, drawn half-transparent, so the skyline has depth
+    // instead of reading as one flat row of boxes. No windows: it sits in the haze.
+    const far: Array<[number, number, number]> = [];
+    for (let fx = -0.02; fx < 1.02; ) {
+      const fw = 0.02 + r() * 0.05;
+      far.push([fx, fw, 0.1 + r() * 0.12]);
+      fx += fw;
+    }
     return {
       b,
+      far,
       stars: Array.from({ length: 90 }, (): [number, number, number] => [r(), r() * 0.55, r()]),
-      clouds: Array.from({ length: 6 }, () => ({
-        x: r(), y: 0.12 + r() * 0.3, s: 0.12 + r() * 0.18, v: 0.000006 + r() * 0.00001,
-      })),
     };
   },
   draw(ctx, w, h, t, st, p) {
@@ -162,21 +124,19 @@ const sky = scene({
         ctx.fillStyle = rgba(K.star, sta * (0.4 + 0.6 * Math.abs(Math.sin(t / 900 + s[2] * 20))));
         ctx.fillRect(s[0] * w, s[1] * h, 1.3, 1.3);
       }
-    for (const c of st.clouds) {
-      c.x += c.v * 16;
-      if (c.x > 1.3) c.x = -0.3;
-      ctx.save();
-      ctx.translate(c.x * w, c.y * h);
-      ctx.scale(3, 1);
-      orb(ctx, 0, 0, (c.s * w) / 3, p < 0.5 ? K.cloudDay : K.cloudNight, lerp(0.35, 0.12, p));
-      ctx.restore();
-    }
-    const base = h * 0.98;
+    const base = h; // to the very bottom: a strip of sky under the skyline read as a stray band
+    // Scaled by the shorter of height and width x 1.1, so on a tall phone the skyline stays
+    // under the headline and the store line instead of running up behind them.
+    const sky = Math.min(h, w * 1.1);
     const sil = ramp([[0, K.sil0], [0.45, K.sil1], [1, K.sil2]], p);
+    ctx.fillStyle = sil;
+    ctx.globalAlpha = 0.45;
+    for (const [fx, fw, fh] of st.far) ctx.fillRect(fx * w, base - fh * sky, fw * w + 1, fh * sky);
+    ctx.globalAlpha = 1;
     for (const b of st.b) {
       const bx = b.x * w;
       const bw = b.w * w;
-      const bh = b.h * h * 1.35;
+      const bh = b.h * sky * 1.05;
       ctx.fillStyle = sil;
       ctx.fillRect(bx, base - bh, bw, bh);
       for (const [wx, wy, thr, lit] of b.win) {
@@ -187,7 +147,7 @@ const sky = scene({
       }
     }
     const hz = ctx.createLinearGradient(0, h * 0.6, 0, h);
-    hz.addColorStop(0, rgba(B.shadow, 0));
+    hz.addColorStop(0, rgba(K.haze, 0));
     hz.addColorStop(1, rgba(K.haze, lerp(0.25, 0.7, p)));
     ctx.fillStyle = hz;
     ctx.fillRect(0, h * 0.6, w, h * 0.4);
@@ -222,28 +182,19 @@ const lagos = scene({
     for (let x = 0; x < w; x += Math.max(14, w * 0.035))
       ctx.fillRect(x, h * 0.78, Math.max(3, w * 0.006), h * 0.22);
     ctx.fillRect(0, h * 0.95, w, h * 0.05);
-    const sway = Math.sin(t / 1700) * 0.015;
-    ctx.fillStyle = G.palm;
-    for (let i = 0; i < 7; i++) {
-      ctx.save();
-      ctx.translate(w * 0.92, h * 0.8);
-      ctx.rotate(-1.1 - i * 0.32 + sway);
-      ctx.beginPath();
-      ctx.ellipse(w * 0.16, 0, w * 0.17, h * 0.022, 0, 0, TAU);
-      ctx.fill();
-      ctx.restore();
-    }
   },
 });
 
 const rain = scene({
   init(r) {
     return {
-      lights: Array.from({ length: 30 }, (): Mote => ({
-        x: r(), y: 0.2 + r() * 0.6, s: 0.02 + r() * 0.06, a: 0.15 + r() * 0.3,
+      // Few, small lights in one band read as a street seen through wet glass; thirty large
+      // ones scattered top to bottom read as smudges on the screen.
+      lights: Array.from({ length: 12 }, (): Mote => ({
+        x: r(), y: 0.5 + r() * 0.25, s: 0.012 + r() * 0.025, a: 0.2 + r() * 0.3,
         c: r() > 0.5 ? R.cool : R.warm, ph: r() * 6,
       })),
-      drops: Array.from({ length: 110 }, (): [number, number, number] => [r(), r(), 0.6 + r() * 2]),
+      drops: Array.from({ length: 70 }, (): [number, number, number] => [r(), r(), 0.6 + r() * 2]),
       runs: Array.from({ length: 22 }, () => ({ x: r(), y: r(), v: 0.0008 + r() * 0.002, l: 0.02 + r() * 0.05 })),
       rng: r, // the slot's seeded generator, so a run that restarts lands in the same place every time
     };
@@ -280,93 +231,16 @@ const rain = scene({
       ctx.fillStyle = rgba(R.runHead, 0.5);
       ctx.fill();
     }
-    ctx.fillStyle = rgba(R.edge, 0.35);
-    ctx.fillRect(0, 0, w * 0.03, h);
-    ctx.fillRect(0, h * 0.97, w, h * 0.03);
   },
 });
 
-const bed = scene({
-  init(r) {
-    return { steam: Array.from({ length: 3 }, (_, i) => ({ ph: r() * 6, dx: i * 0.012 })) };
-  },
-  draw(ctx, w, h, t, st) {
-    const g = ctx.createLinearGradient(0, 0, w, h);
-    g.addColorStop(0, B.g0);
-    g.addColorStop(1, B.g1);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = rgba(B.grain, 0.05);
-    ctx.lineWidth = 1;
-    for (let y = 0; y < h; y += h / 26) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      for (let x = 0; x <= w; x += w / 12) ctx.lineTo(x, y + Math.sin(x * 0.01 + y) * 3);
-      ctx.stroke();
-    }
-    orb(ctx, w * 0.86, h * 0.16, Math.max(w, h) * 0.55, B.glow, 0.42);
-    orb(ctx, w * 0.86, h * 0.16, Math.max(w, h) * 0.09, B.core, 0.75);
-    ctx.save();
-    ctx.translate(w * 0.34, h * 0.3);
-    ctx.rotate(-0.2);
-    const pw = Math.min(w * 0.2, h * 0.28);
-    const ph = pw * 2.05;
-    ctx.fillStyle = rgba(B.shadow, 0.45);
-    ctx.beginPath();
-    ctx.roundRect(-pw / 2 + 10, -ph / 2 + 14, pw, ph, pw * 0.16);
-    ctx.fill();
-    ctx.fillStyle = B.phone;
-    ctx.beginPath();
-    ctx.roundRect(-pw / 2, -ph / 2, pw, ph, pw * 0.16);
-    ctx.fill();
-    const glow = 0.2 + 0.25 * (0.5 + 0.5 * Math.sin(t / 1800));
-    ctx.fillStyle = rgba(B.screen, glow * 0.35);
-    ctx.beginPath();
-    ctx.roundRect(-pw / 2 + pw * 0.05, -ph / 2 + pw * 0.05, pw * 0.9, ph - pw * 0.1, pw * 0.12);
-    ctx.fill();
-    ctx.fillStyle = rgba(B.screen, glow);
-    ctx.fillRect(-pw * 0.3, -ph * 0.05, pw * 0.6, 2);
-    ctx.fillRect(-pw * 0.3, ph * 0.02, pw * 0.45, 2);
-    ctx.restore();
-    const mx = w * 0.66;
-    const my = h * 0.36;
-    const mr = Math.min(w, h) * 0.08;
-    ctx.fillStyle = rgba(B.shadow, 0.35);
-    ctx.beginPath();
-    ctx.arc(mx + 6, my + 8, mr, 0, TAU);
-    ctx.fill();
-    ctx.fillStyle = B.mug;
-    ctx.beginPath();
-    ctx.arc(mx, my, mr, 0, TAU);
-    ctx.fill();
-    ctx.fillStyle = B.coffee;
-    ctx.beginPath();
-    ctx.arc(mx, my, mr * 0.78, 0, TAU);
-    ctx.fill();
-    ctx.strokeStyle = rgba(B.steam, 0.18);
-    ctx.lineWidth = 2;
-    for (const s of st.steam) {
-      ctx.beginPath();
-      for (let k = 0; k <= 20; k++) {
-        const yy = my - mr * 0.3 - k * mr * 0.09;
-        const xx = mx + s.dx * w + Math.sin(k * 0.5 + t / 700 + s.ph) * mr * 0.18;
-        if (k) ctx.lineTo(xx, yy);
-        else ctx.moveTo(xx, yy);
-      }
-      ctx.stroke();
-    }
-  },
-});
-
-const SCENES: Record<SceneName, SceneDef> = { lamp, sky, lagos, rain, bed };
+const SCENES: Record<SceneName, SceneDef> = { sky, lagos, rain };
 
 // Which element gets which scene. sky-dusk and sky-night are never painted: live mode hides them.
 const TARGETS: Array<[string, SceneName]> = [
   ['.scene--sky-afternoon', 'sky'],
   ['.scene--lagos', 'lagos'],
   ['.scene--rain', 'rain'],
-  ['.scene--lamp', 'lamp'],
-  ['.scene--bed', 'bed'],
 ];
 
 interface Slot {
