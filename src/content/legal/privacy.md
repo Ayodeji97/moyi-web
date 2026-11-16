@@ -12,7 +12,7 @@ lede: What Mọyì keeps about you, why, where, and for how long.
 
 ## Who is responsible
 
-Mọyì is run by one person, Daniel Ogunleye, who is the data controller for everything on this page. Write to [hello@getmoyi.app](mailto:hello@getmoyi.app) about any of it, or by post to Daniel Ogunleye, Rua de Pinto Bessa 471, Porto, Portugal.
+Mọyì is run by one person, Daniel Ogunleye, who is the data controller for everything on this page. Write to [hello@getmoyi.app](mailto:hello@getmoyi.app) about any of it, or by post to Daniel Ogunleye, Rua de Pinto Bessa 471, 2.4, 4300-433 Porto, Portugal.
 
 ## What we keep
 

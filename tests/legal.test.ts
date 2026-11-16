@@ -74,7 +74,7 @@ describe('legal and help pages', () => {
   it('privacy and terms name the controller, with no placeholder left', () => {
     for (const p of ['privacy', 'terms']) {
       expect(text(p), p).toContain('Daniel Ogunleye');
-      expect(text(p), p).toContain('Rua de Pinto Bessa 471');
+      expect(text(p), p).toContain('Rua de Pinto Bessa 471, 2.4, 4300-433 Porto, Portugal');
     }
     for (const p of [...LEGAL, ...HELP]) expect(text(p), p).not.toMatch(/\[[a-z' ,]+\]/i);
   });
