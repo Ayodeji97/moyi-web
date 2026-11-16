@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
-import { tidyMenu } from '../src/scripts/menu';
+import { tidyMenu, WIDE } from '../src/scripts/menu';
 
 const LINKS = [['How it works', '#how'], ['Privacy', '/privacy'], ['FAQs', '/faq'], ['Support', '/support']];
 const page = (p: string) => new JSDOM(readFileSync(p, 'utf8')).window.document;
@@ -28,6 +28,11 @@ describe('the phone menu, as built', () => {
     expect(phone).toMatch(/\.topbar > nav \{ display: none; \}/);
     expect(phone).toMatch(/\.menu \{ display: block;/);
     expect(phone).toMatch(/\.menu summary \{[^}]*width: 48px; height: 48px;/);
+    // The panel belongs to the bar: it scrolls with it on the page and rides it when docked.
+    expect(phone).toMatch(/\.menu__panel \{ position: absolute;[^}]*top: calc\(100% \+ 8px\)/);
+  });
+  it('is started from the home page module', () => {
+    expect(readFileSync('src/scripts/evening/main.ts', 'utf8')).toMatch(/^tidyMenu\(document\);$/m);
   });
 });
 
@@ -53,6 +58,19 @@ describe('tidyMenu', () => {
     menu.querySelector('nav')!.dispatchEvent(new Event('pointerdown', { bubbles: true }));
     expect(menu.open).toBe(true);
     document.getElementById('out')!.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+    expect(menu.open).toBe(false);
+  });
+  it('closes when the screen widens past the phone breakpoint', () => {
+    document.body.innerHTML = '<header class="topbar"><details class="menu" open><summary></summary></details></header>';
+    const menu = document.querySelector<HTMLDetailsElement>('details.menu')!;
+    let change: (() => void) | null = null;
+    const mq = { matches: false, addEventListener: (_: string, f: () => void) => { change = f; }, removeEventListener: () => {} };
+    const win = { matchMedia: (q: string) => { expect(q).toBe(WIDE); return mq; } } as unknown as Window;
+    tidyMenu(document, win);
+    change!();
+    expect(menu.open).toBe(true);
+    mq.matches = true;
+    change!();
     expect(menu.open).toBe(false);
   });
   it('stop removes every listener', () => {
