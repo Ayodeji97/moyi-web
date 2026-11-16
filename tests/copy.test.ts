@@ -42,7 +42,7 @@ describe('visible copy', () => {
 
   it('functional page headings', () => {
     expect(readFileSync('dist/verify.html', 'utf8')).toContain('Confirm your email');
-    expect(readFileSync('dist/invite.html', 'utf8')).toContain('You have been invited to a Mọyì bond');
+    expect(readFileSync('dist/invite.html', 'utf8')).toContain('You&#39;re invited to a bond on Mọyì');
     expect(readFileSync('dist/reset-password.html', 'utf8')).toContain('Choose a new password');
   });
 });
