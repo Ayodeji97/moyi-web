@@ -211,6 +211,13 @@ What these pages *say* stays as it is in this project; only the styling moves to
 4. Move the custom domain.
 5. Retire `moyi-backend/site/` in a backend PR.
 
+**Cutover notes (2026-11-16, found while doing it).**
+- The Pages project is `moyi-web`, but its address is **`moyi-web-2fe.pages.dev`**: `moyi-web.pages.dev` belongs to another account (an unrelated site). Check the address the dashboard shows before testing anything.
+- The project's settings: preset Astro, `npm run build`, output `dist`, `NODE_VERSION=22.23.5`.
+- The first merge after the project was created never reached Cloudflare: "disconnected from your Git account" until the GitHub app's settings page was opened, and the missed merge needed a new commit on `main`.
+- Backend #207 changed `moyi-backend/site` on the cutover day; ported in #16 before the domain moved. Its "Open in the Mọyì app" button needs **`open.getmoyi.app`** on this project plus the Redirect Rule in `moyi-backend/site/README.md` ("The open host").
+- The old site is the Pages project `moyi-site` (from `moyi-backend`). The domain moves by removing `getmoyi.app` there and adding it here.
+
 ## 11. Calls made after the builder check
 The builder check asked four questions. Each is settled above as my call, for Daniel to overrule when he reads this:
 - the legal version label, the permanent addresses for each version, and the release order (§6.9);
