@@ -1,8 +1,9 @@
 ---
 const { home = true } = Astro.props as { home?: boolean };
 const base = home ? '' : '/';
-// The site's close: brand, three short link columns, a bottom bar, and the wordmark set very
-// large and fading out, cut off by the page's end. The wordmark is decoration (aria-hidden).
+// The site's close: the brand and its line on one row, three short link columns, and a bottom
+// bar. On the home page it rises in once as it comes into view (scripts/foot.ts, started from
+// the page's one module); elsewhere it simply shows.
 // The mark's geometry matches TopBar.astro, Brand.astro and scripts/make-icons.sh.
 ---
 <footer class="foot">
@@ -41,5 +42,4 @@ const base = home ? '' : '/';
     <span>© 2026 Mọyì</span>
     <span>No ads. Never sold.</span>
   </div>
-  <p class="foot__mark" aria-hidden="true">Mọyì</p>
 </footer>

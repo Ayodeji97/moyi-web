@@ -36,31 +36,36 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
   .topbar .get { padding: 0 14px; font-size: 13px; }
 }
 
-/* Footer: brand and three link columns, a bottom bar, then the wordmark very large, fading
-   from a faint ink to nothing and cut off by the page's end. */
-.foot { position: relative; overflow: hidden; margin-top: 0; padding: 88px 0 0; border-top: 1px solid var(--outline); background: var(--surface); }
-.foot__top, .foot__bar, .foot__mark { width: min(1068px, calc(100% - 112px)); margin-inline: auto; }
+/* Footer: the brand and its line on one row, three link columns, a bottom bar. */
+.foot { position: relative; overflow: hidden; margin-top: 0; padding: 88px 0 48px; border-top: 1px solid var(--outline); background: var(--surface); }
+.foot__top, .foot__bar { width: min(1068px, calc(100% - 112px)); margin-inline: auto; }
 .foot__top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; }
 .foot__logo { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 500; font-size: 28px; color: var(--ink); text-decoration: none; }
 .foot__logo svg { width: 20px; height: auto; }
-.foot__tag { margin: 6px 0 0; color: var(--ink-muted); font-size: 15px; }
+.foot__brand { display: flex; flex-wrap: wrap; align-items: center; column-gap: 16px; row-gap: 2px; align-self: start; }
+.foot__tag { margin: 0; color: var(--ink-muted); font-size: 15px; }
 .foot__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .foot__col { display: flex; flex-direction: column; align-items: flex-start; }
 .foot__h { margin: 0 0 6px; font-size: 13px; color: var(--ink-muted); }
 .foot__col a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; color: var(--ink); text-decoration: none; }
 .foot__col a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .foot__bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 72px; padding-top: 22px; border-top: 1px solid var(--outline); font-size: 13px; color: var(--ink-muted); }
-.foot__mark { margin-top: 8px; margin-bottom: -.12em; padding-top: 0; font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 500; font-size: min(40vw, 500px); line-height: 1.05; letter-spacing: -.035em; text-align: center; white-space: nowrap; color: var(--surface-raised); user-select: none; pointer-events: none; }
 
 @media (max-width: 699px) {
-  .foot { padding-top: 60px; }
-  .foot__top, .foot__bar, .foot__mark { width: calc(100% - 44px); }
+  .foot { padding: 56px 0 40px; }
+  .foot__top, .foot__bar { width: calc(100% - 44px); }
   .foot__top { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
   .foot__col { display: contents; }
   .foot__h { display: none; }
   .foot__col a { min-height: 44px; font-size: 15px; }
   .foot__bar { margin-top: 48px; }
-  .foot__mark { margin-top: 12px; }
-}
+  }
+
+/* The entrance (scripts/foot.ts sets data-reveal, then data-in once in view). */
+.foot[data-reveal] :is(.foot__brand, .foot__cols, .foot__bar) { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s cubic-bezier(.2, .7, .2, 1); }
+.foot[data-reveal][data-in] :is(.foot__brand, .foot__cols, .foot__bar) { opacity: 1; transform: none; }
+.foot[data-in] .foot__cols { transition-delay: .12s; }
+.foot[data-in] .foot__bar { transition-delay: .24s; }
+@media (prefers-reduced-motion: reduce) { .foot[data-reveal] :is(.foot__brand, .foot__cols, .foot__bar) { opacity: 1; transform: none; transition: none; } }
 

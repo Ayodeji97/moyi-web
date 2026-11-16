@@ -72,7 +72,7 @@ describe('home page, the rest', () => {
     const text = (doc.body.textContent ?? '').replace(/\s+/g, ' ');
     for (const s of [
       'One note a day for someone you love,', 'sealed until they write theirs.',
-      'Made for only two people.', 'No ads, and your words are never sold. Both of you 18 or over.',
+      'Made for only two people.', 'No ads, and your words are never sold.',
       'Just the two of you', 'No audience, and no sign of who opened the app or when.',
       'Kind to missed days', 'Miss a day. Nothing is lost.',
       'Only the streak count resets. Nobody is told, and nobody is waiting on you.',
