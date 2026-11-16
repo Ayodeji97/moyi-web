@@ -12,10 +12,11 @@ const text = (p: string) => doc(p).querySelector('main')!.textContent!.replace(/
 
 describe('legal and help pages', () => {
   for (const p of [...LEGAL, ...HELP]) {
-    it(`/${p}: one h1, the DRAFT notice, the shared chrome, and the contact address`, () => {
+    it(`/${p}: one h1, no DRAFT notice, the shared chrome, and the contact address`, () => {
       const d = doc(p);
       expect(d.querySelectorAll('h1')).toHaveLength(1);
-      expect(d.querySelector('[data-draft]')!.textContent).toMatch(/^Draft\./);
+      expect(d.querySelector('[data-draft]')).toBeNull();
+      expect(d.querySelector('main')!.textContent).not.toMatch(/once approved|waiting for approval/);
       expect(d.querySelector('header.topbar')).not.toBeNull();
       expect(d.querySelector('footer.foot')).not.toBeNull();
       expect(d.querySelector('main a[href="mailto:hello@getmoyi.app"]')).not.toBeNull();
@@ -23,8 +24,8 @@ describe('legal and help pages', () => {
     });
   }
 
-  it('legal pages carry the version the backend records until approval, help pages none', () => {
-    for (const p of LEGAL) expect(doc(p).querySelector('[data-version]')!.textContent).toBe('unpublished');
+  it('legal pages carry the published version the backend records (deploy.yml), help pages none', () => {
+    for (const p of LEGAL) expect(doc(p).querySelector('[data-version]')!.textContent).toBe('2026-12-01');
     for (const p of HELP) expect(doc(p).querySelector('[data-version]')).toBeNull();
   });
 
