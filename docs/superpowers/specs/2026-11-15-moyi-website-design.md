@@ -255,3 +255,9 @@ notes are not checked automatically, backups last up to 35 days, and the process
 Cloudflare, Resend, Google FCM and Apple APNs. `/data-processing` is the plain summary
 (ADR-0056 d3), not a DPA, and holds the public processor list (NFR-053).
 
+**Phone menu, revised (owner, 2026-11-16).** The toggle takes the far right edge and the pill sits
+8px to its left; both float (fixed) and tuck together. The panel is glass like the docked bar
+(24px blur, near-solid fallback). To let it blur at all, the docked bar's glass moved to a
+`::before` layer and the slide-ins hold no fill: an element with a backdrop-filter, or with an
+animation still filling its end frame, is a backdrop root and the glass inside it blurs nothing.
+
