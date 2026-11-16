@@ -12,7 +12,8 @@ lede: Ask us anything. A person reads every message.
 
 | Question | Answer |
 |---|---|
-| I forgot my password | On the sign in screen, tap I forgot my password, then follow the email we send you. |
+| I forgot my password | On the sign in screen, tap I forgot my password, then Send the code, and type the 6-digit code from the email. No email? Tap Send it again for a new code. |
+| I want to change my password | In Bond settings, open Account and tap Change password. |
 | The email never came | Check spam, then ask the app to send it again. Use the newest email. |
 | My invite link does not open | Install Mọyì, tap I have an invite code, and enter the code from the invite. |
 | We live in different time zones | Your bond shares one time zone for its day. Either of you can propose a change in Bond settings, under Shared time zone. |
