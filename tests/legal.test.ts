@@ -90,6 +90,15 @@ describe('legal and help pages', () => {
     expect(t).toContain('Voice notes are not checked automatically');
   });
 
+  it('retention and reply time match the owner rulings (2026-11-16)', () => {
+    expect(text('privacy')).toContain('2 years');
+    expect(text('privacy')).toContain('90 days');
+    expect(text('privacy')).toContain('We answer within 14 days');
+    expect(text('privacy')).not.toContain('one month');
+    expect(text('delete-account')).toContain('for 2 years');
+    expect(text('data-processing')).toMatch(/Safety records without content\s*2 years/);
+  });
+
   it('terms cover the age floor and the governing law', () => {
     expect(text('terms')).toContain('18 or over');
     expect(text('terms')).toContain('law of Portugal');

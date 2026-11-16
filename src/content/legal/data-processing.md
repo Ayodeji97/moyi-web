@@ -33,6 +33,8 @@ We keep this list current. When a company is added, it appears here first.
 | Full size photos | 90 days, then a smaller copy |
 | Archive exports | 24 hours |
 | Support messages | Until your request is closed |
+| Safety records without content | 2 years |
+| Notification records | 90 days |
 | Backups | Up to 35 days |
 
 ## Your choices
