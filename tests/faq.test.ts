@@ -10,7 +10,7 @@ const FAQ: [string, string][] = [
   ['How does one shared day work across time zones?', "Each bond keeps one shared day, set by a single time zone for the bond (the creator's own, to begin with). You both write within that day wherever you are, and either of you can propose a different time zone in Bond settings."],
   ['What happens if one of us stops writing?', 'Nothing is sent to the other person, and nobody is told they are waiting on you. A missed day only resets the streak count. You can also leave a bond at any time, without explaining.'],
   ['Can Mọyì read our entries?', 'Entries are not end to end encrypted, so in principle they can be read on our servers. We never sell them or use them for ads, and the privacy page explains exactly who can see them, and when.'],
-  ['How do I delete my account?', "In the app, go to Settings, then Account, then Delete account. No phone? Email hello@getmoyi.app from your account's address. The delete account page lists what is removed, and when."],
+  ['How do I delete my account?', "In the app, go to Bond settings, then Account, then Delete your account. No phone? Email hello@getmoyi.app from your account's address. The delete account page lists what is removed, and when."],
 ];
 
 describe('the FAQs page', () => {

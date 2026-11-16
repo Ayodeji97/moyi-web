@@ -62,7 +62,9 @@ describe('built pages', () => {
         const storeHref =
           m[0].trimStart().startsWith('href') &&
           (m[1].startsWith('https://apps.apple.com/') || m[1].startsWith('https://play.google.com/'));
-        expect(external && !storeHref, `${f}: ${m[1]}`).toBe(false);
+        // The canonical link names our own address absolutely; an href to our own origin loads nothing.
+        const ownHref = m[0].trimStart().startsWith('href') && m[1].startsWith('https://getmoyi.app/');
+        expect(external && !storeHref && !ownHref, `${f}: ${m[1]}`).toBe(false);
       }
     }
   });

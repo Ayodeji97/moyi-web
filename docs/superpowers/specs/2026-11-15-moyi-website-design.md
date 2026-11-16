@@ -261,3 +261,10 @@ Cloudflare, Resend, Google FCM and Apple APNs. `/data-processing` is the plain s
 `::before` layer and the slide-ins hold no fill: an element with a backdrop-filter, or with an
 animation still filling its end frame, is a backdrop root and the glass inside it blurs nothing.
 
+**Sharing, sitemap, robots (2026-11-16).** Every indexable page carries a canonical link, Open Graph
+and Twitter card tags from its own title and description, and one card image, `public/og.png`
+(1200x630: the mark, "Write before you read." and the statement, on surface). The functional pages
+are noindex and carry none, since their links hold tokens and codes. `/sitemap.xml` lists the seven
+indexable pages (`src/pages/sitemap.xml.ts`), and robots.txt points to it. FAQ answer 4's path was
+corrected to the app's real one: Bond settings, then Account, then Delete your account.
+
