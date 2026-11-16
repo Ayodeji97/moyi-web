@@ -71,6 +71,18 @@ describe('legal and help pages', () => {
     for (const p of ['privacy', 'terms', 'data-processing']) expect(text(p), p).toContain('or when the law requires it');
   });
 
+  it('privacy and terms name the controller, with no placeholder left', () => {
+    for (const p of ['privacy', 'terms']) {
+      expect(text(p), p).toContain('Daniel Ogunleye');
+      expect(text(p), p).toContain('Rua de Pinto Bessa 471');
+    }
+    for (const p of [...LEGAL, ...HELP]) expect(text(p), p).not.toMatch(/\[[a-z' ,]+\]/i);
+  });
+
+  it('the CNPD is named as the authority', () => {
+    expect(text('privacy')).toContain('the CNPD');
+  });
+
   it('terms cover the age floor and the governing law', () => {
     expect(text('terms')).toContain('18 or over');
     expect(text('terms')).toContain('law of Portugal');
