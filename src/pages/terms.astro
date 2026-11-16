@@ -1,0 +1,7 @@
+---
+import Doc from '../components/Doc.astro';
+import { Content, frontmatter } from '../content/legal/terms.md';
+---
+<Doc title={frontmatter.title} lede={frontmatter.lede} description="The agreement between you and Mọyì, in plain words." version="unpublished">
+  <Content />
+</Doc>

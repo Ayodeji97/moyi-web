@@ -237,3 +237,14 @@ scene. Above the statement it stays on the page as before. The pill keeps its sp
 never tucks while docked. Reduced motion: it appears and goes without a slide. This is the one
 place the site uses a blur; the pill itself stays solid.
 
+**Slice 4, legal and help pages (2026-11-16).** `/privacy`, `/terms`, `/data-processing`, `/support`
+and `/delete-account` are written in Markdown (`src/content/legal/`) and set by one layout
+(`Doc.astro`): the centred head, a DRAFT notice, one 720px column, tables as hairline rows that
+stack on phones. Legal pages carry the version `unpublished`, as the backend records until the
+text is approved; the dated copies at `/<doc>/2026-12-01` are made at approval (6.9). The text
+states what the backend does today (a cited fact sheet, 2026-11-16), not what the planning documents
+promise: entries are not end to end encrypted and are plain text in the database, photos and voice
+notes are not checked automatically, backups last up to 35 days, and the processors are Hetzner,
+Cloudflare, Resend, Google FCM and Apple APNs. `/data-processing` is the plain summary
+(ADR-0056 d3), not a DPA, and holds the public processor list (NFR-053).
+

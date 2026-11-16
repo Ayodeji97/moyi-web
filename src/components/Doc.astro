@@ -1,0 +1,38 @@
+---
+// A legal or help page: a centred head, the DRAFT notice while the text awaits the owner's
+// approval, then the document set from Markdown. The version label is exactly the string the
+// backend records at acceptance (spec 6.9): "unpublished" until the text is approved and dated.
+import Base from '../layouts/Base.astro';
+import TopBar from './TopBar.astro';
+import Footer from './Footer.astro';
+import '../styles/home.css';
+import '../styles/sections.css';
+import '../styles/doc.css';
+
+interface Props {
+  title: string;
+  lede: string;
+  description: string;
+  /** Legal documents carry a version line; help pages do not. */
+  version?: string;
+  draft?: boolean;
+}
+const { title, lede, description, version, draft = true } = Astro.props;
+---
+<Base title={`${title} · Mọyì`} description={description} fonts>
+  <TopBar home={false} />
+  <main class="page doc">
+    <header class="shead">
+      <h1>{title}</h1>
+      <p>{lede}</p>
+      {version && <p class="doc__ver">Version: <span data-version>{version}</span>. Takes effect 1 December 2026, once approved.</p>}
+    </header>
+    {draft && (
+      <p class="doc__draft" data-draft><strong>Draft.</strong> This text is waiting for approval and may change before Mọyì launches.</p>
+    )}
+    <article class="doc__body">
+      <slot />
+    </article>
+  </main>
+  <Footer home={false} />
+</Base>

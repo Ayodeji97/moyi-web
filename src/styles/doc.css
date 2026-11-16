@@ -1,0 +1,29 @@
+/* Legal and help pages: one readable column under the centred head, tables as hairline rows. */
+.doc { padding: 150px 0 120px; }
+.doc .shead { margin-inline: auto; padding-inline: 22px; }
+.doc__ver { margin-top: 14px; font-size: 14px; }
+.doc__draft { max-width: 720px; margin: 40px auto 0; padding: 16px 20px; border: 1px solid var(--outline-strong); border-radius: 8px; background: var(--surface-raised); color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
+.doc__draft strong { color: var(--ink); font-weight: 600; }
+.doc__body { max-width: 720px; margin: 0 auto; padding-inline: 22px; box-sizing: content-box; color: var(--ink-muted); font-size: 17px; line-height: 1.65; }
+.doc__body > :first-child { margin-top: 40px; }
+.doc__body h2 { margin: 56px 0 14px; font-size: 28px; line-height: 1.25; color: var(--ink); }
+.doc__body > h2:first-child { margin-top: 48px; }
+.doc__body p, .doc__body ul, .doc__body ol { margin: 0 0 16px; }
+.doc__body ul, .doc__body ol { padding-left: 22px; }
+.doc__body li { margin-bottom: 8px; }
+.doc__body strong { color: var(--ink); font-weight: 600; }
+.doc__body a { color: var(--ink); text-underline-offset: 3px; }
+.doc__body table { width: 100%; border-collapse: collapse; margin: 8px 0 24px; font-size: 15px; line-height: 1.45; }
+.doc__body th { text-align: left; font-weight: 400; font-size: 13px; color: var(--ink-muted); padding: 0 12px 10px 0; }
+.doc__body td { padding: 14px 12px 14px 0; border-top: 1px solid var(--outline); vertical-align: top; }
+.doc__body td:first-child { color: var(--ink); }
+@media (max-width: 699px) {
+  .doc { padding: 110px 0 80px; }
+  .doc__draft { margin: 32px 22px 0; }
+  .doc__body { font-size: 16px; }
+  .doc__body h2 { margin-top: 44px; font-size: 24px; }
+  /* Tables become stacked rows on phones: each cell on its own line, the first as the row's name. */
+  .doc__body thead { display: none; }
+  .doc__body tr { display: block; padding: 14px 0; border-top: 1px solid var(--outline); }
+  .doc__body td { display: block; padding: 2px 0; border: 0; }
+}
