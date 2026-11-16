@@ -27,7 +27,7 @@ We do not collect your date of birth, contacts, location or advertising ID, and 
 
 Today the app has no analytics. If we add them, they will be opt in, you will be asked first, and this page will say so before they start.
 
-You need an email address and a password to have an account. Everything else is up to you. We make no automated decisions about you.
+You need an email address and a password to have an account. Everything else is up to you. Apart from the photo check below, which only holds a photo back for a person to look at, we make no automated decisions about you.
 
 ## Why we use it
 
@@ -53,10 +53,11 @@ What you write may touch on health, beliefs or other sensitive matters. We never
 | Resend | Sends account emails, such as confirming your address | United States |
 | Google Firebase Cloud Messaging | Delivers notifications | United States |
 | Apple Push Notification service | Delivers notifications to iPhones | United States |
+| Amazon Web Services | Checks photos automatically for content that is not allowed | Frankfurt, Germany |
 
 Google and Apple receive a push token and a notification's type and id, never what you wrote. Transfers outside the European Economic Area rely on each provider's standard contractual clauses.
 
-Photos and voice notes are not checked automatically today. If we turn on automatic checks for photos, we will name the provider here first.
+Before the other person can see a photo, a smaller copy of it (1280 pixels across) is checked automatically by Amazon Rekognition, in Frankfurt, for content that is not allowed. A photo it flags is held back until a person has looked at it. Voice notes are not checked automatically.
 
 ## How long we keep it
 
