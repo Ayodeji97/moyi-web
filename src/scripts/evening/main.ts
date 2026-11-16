@@ -1,8 +1,10 @@
 import { dockBar } from '../dock';
 import { revealFoot } from '../foot';
+import { tidyMenu } from '../menu';
 import { floatGet } from '../get';
 import { start } from './live';
 floatGet(document);
 start(document, window);
 dockBar(document);
 revealFoot(document);
+tidyMenu(document);

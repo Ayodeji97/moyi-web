@@ -2,6 +2,9 @@
 // `home` is false on every page but /, where the anchors live; elsewhere they point back to /.
 const { home = true } = Astro.props as { home?: boolean };
 const base = home ? '' : '/';
+// On phones the centred nav is hidden and the same four links sit behind a menu toggle: a <details>,
+// so it opens and closes without JavaScript (scripts/menu.ts adds closing on a link, Escape or a
+// tap outside, on the home page). Above 699px the toggle is hidden and the nav shows.
 // The mark's geometry is copied in TopBar.astro, Brand.astro and scripts/make-icons.sh; keep the three in sync.
 ---
 <header class="topbar">
@@ -18,5 +21,16 @@ const base = home ? '' : '/';
     <a href="/faq">FAQs</a>
     <a href="/support">Support</a>
   </nav>
+  <details class="menu">
+    <summary aria-label="Menu">
+      <span class="menu__icon" aria-hidden="true"><i></i><i></i></span>
+    </summary>
+    <nav class="menu__panel" aria-label="Main">
+      <a href={`${base}#how`}>How it works</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/faq">FAQs</a>
+      <a href="/support">Support</a>
+    </nav>
+  </details>
   <a class="get" href={`${base}#get`}>Get the app</a>
 </header>
