@@ -67,15 +67,15 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
 @media (max-width: 699px) {
   .foot { padding: 56px 0 40px; }
   .foot__top, .foot__bar { width: calc(100% - 44px); }
-  /* On phones everything centres: the mark, its line beneath it, then the links as one wrapped
-     row with the same gap between every pair, then the bar stacked. */
-  .foot__top { grid-template-columns: minmax(0, 1fr); gap: 28px; text-align: center; }
-  .foot__brand { flex-direction: column; justify-content: center; row-gap: 4px; }
-  .foot__cols { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 24px; }
+  /* On phones only the brand centres: the mark, with its line beneath it. The links keep two
+     columns and the bar keeps its row. */
+  .foot__top { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .foot__brand { flex-direction: column; justify-content: center; row-gap: 4px; text-align: center; }
+  .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
   .foot__col { display: contents; }
   .foot__h { display: none; }
   .foot__col a { min-height: 44px; font-size: 15px; }
-  .foot__bar { margin-top: 40px; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+  .foot__bar { margin-top: 48px; }
   }
 
 /* The entrance (scripts/foot.ts sets data-reveal, then data-in once in view). */
