@@ -72,18 +72,14 @@ describe('home page, the rest', () => {
   it('orders the sections after #how inside main', () => {
     const main = doc.querySelector('main')!;
     const kids = [...main.children].map((c) => c.id || c.getAttribute('data-section'));
-    expect(kids).toEqual(['how', 'statement', 'for-two', 'private', 'questions', 'close']);
+    expect(kids).toEqual(['how', 'statement', 'private', 'questions', 'close']);
   });
 
   it('carries every approved string', () => {
     const text = (doc.body.textContent ?? '').replace(/\s+/g, ' ');
     for (const s of [
       'One sentence a day about someone you love.', 'Kept sealed until they write theirs.',
-      'Whoever your one person is.', 'A partner, a close friend, or family. Both of you 18 or over.',
-      'My partner', 'Across the room, or across the world.',
-      'My close friend', 'The one you would call first.',
-      'My family', 'A sibling, a parent, a cousin.',
-      'Made for two people, and only two.', 'No ads, and your words are never sold.',
+      'Made for only two people.', 'No ads, and your words are never sold. Both of you 18 or over.',
       'Just the two of you', 'No audience, and no sign of who opened the app or when.',
       'Kind to missed days', 'Miss a day. Nothing is lost.',
       'Only the streak count resets. Nobody is told, and nobody is waiting on you.',
@@ -108,39 +104,6 @@ describe('home page, the rest', () => {
     const days = doc.querySelector('[role="img"][aria-label="A week with six days written and one missed"]')!;
     expect(days.querySelectorAll('i')).toHaveLength(7);
     expect(days.querySelectorAll('i.miss')).toHaveLength(1);
-  });
-
-  it('shows each kind of bond as a card with one entry, and no step numbers', () => {
-    const section = doc.querySelector('[data-section="for-two"]')!;
-    const bonds = [...section.querySelectorAll('ul.bonds > li.bond')];
-    expect(bonds.map((b) => [
-      b.querySelector('h3')!.textContent!.trim(),
-      b.querySelector('.card__sub')!.textContent!.trim(),
-      b.querySelector('figure.ent > figcaption.ent__from')!.textContent!.trim(),
-      b.querySelector('figure.ent blockquote.ent__text')!.textContent!.trim(),
-      b.querySelector('[data-media]')?.getAttribute('data-media') ?? null,
-    ])).toEqual([
-      ['My partner', 'Across the room, or across the world.', 'From Tunde', 'You stayed on the phone until I fell asleep.', null],
-      ['My close friend', 'The one you would call first.', 'From Ellie', 'You remembered my interview and had dinner waiting after.', 'photo'],
-      ['My family', 'A sibling, a parent, a cousin.', 'From Mum', "You still ask if I've eaten, every call.", 'voice'],
-    ]);
-    // No step numbers. The only figures are the age rule and the voice clock, which stays inside
-    // the app's real cap (one voice note per entry, at most 1:00).
-    const voice = section.querySelector('[data-media="voice"]')!;
-    expect(voice.querySelector('.ent__clock')!.textContent).toBe('0:00 of 0:24');
-    expect(voice.querySelector('.ent__speed')!.textContent).toBe('1×');
-    const rest = section.cloneNode(true) as HTMLElement;
-    rest.querySelector('[data-media="voice"]')!.remove();
-    const text = (rest.textContent ?? '').replace(/\s+/g, ' ');
-    expect(text.match(/\d+/g)).toEqual(['18']);
-    expect(text).toContain('Both of you 18 or over.');
-    // The photo is a real, self-hosted image with honest alt text; the voice note is named.
-    const photo = section.querySelector<HTMLImageElement>('img[data-media="photo"]')!;
-    expect(photo.getAttribute('src')).toBe('/media/table-640.webp');
-    expect(photo.getAttribute('alt')).toBe('A dinner table laid with candles, flowers and food.');
-    expect(photo.getAttribute('loading')).toBe('lazy');
-    expect(section.querySelector('[data-media="voice"]')!.getAttribute('aria-label')).toBe('A voice note, 24 seconds, sent with the entry');
-    expect(section.querySelectorAll('audio, video')).toHaveLength(0);
   });
 
   it('puts the stores in the close, with #get', () => {
