@@ -5,7 +5,7 @@ import { lightStatement, litCount } from '../src/scripts/evening/statement';
 
 const built = readFileSync('dist/index.html', 'utf8');
 const builtBody = /<body[^>]*>([\s\S]*)<\/body>/.exec(built)![1]!;
-const TEXT = 'One line a day for someone you love. Sealed until they write theirs.';
+const TEXT = 'One note a day for someone you love. Sealed until they write theirs.';
 
 describe('litCount', () => {
   it('is 0 below the fold and all words once scrolled well past', () => {
