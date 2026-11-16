@@ -83,7 +83,7 @@ describe('home page, the rest', () => {
       'My partner', 'Across the room, or across the world.',
       'My close friend', 'The one you would call first.',
       'My family', 'A sibling, a parent, a cousin.',
-      'Lagos and London, or Lisbon and Los Angeles. Mọyì keeps one shared day for both of you, whatever the time zones say. Both of you 18 or over.',
+      'Both of you 18 or over.',
       'Private by construction', 'Made for two people, and only two.',
       'Just the two of you', 'Read receipts', 'Last seen', 'Typing dots', 'Followers', 'A feed',
       'Two people. Nobody else.',
@@ -92,6 +92,7 @@ describe('home page, the rest', () => {
       'Only the streak count resets. Nobody is told, and nobody is waiting on you.',
       'Honest about privacy', 'Your words stay yours.',
       'No ads, and your words are never sold. Entries are not end to end encrypted, and we explain why in plain words.',
+      'No ads', 'Never sold', 'Explained in plain words',
       'Read the privacy page', 'Questions', 'Before you download.', 'I know your worth.', 'Mo mọ ìyì rẹ.',
     ]) expect(text, s).toContain(s);
   });
