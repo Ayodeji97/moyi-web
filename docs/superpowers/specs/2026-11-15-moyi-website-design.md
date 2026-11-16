@@ -237,3 +237,9 @@ scene. Above the statement it stays on the page as before. The pill keeps its sp
 never tucks while docked. Reduced motion: it appears and goes without a slide. This is the one
 place the site uses a blur; the pill itself stays solid.
 
+**Phone menu (owner, 2026-11-16).** At 699px and below, the centred nav is replaced by a 48px menu
+toggle left of the pill: two lines that cross when open. It is a `<details>`, so it works without
+JavaScript, and it holds the same four links. Its panel drops under the bar on a solid raised
+surface, with the links set in Newsreader 24 on 56px rows. On home, `scripts/menu.ts` closes it on
+a link, on Escape (focus returns to the toggle) and on a tap outside. Above 699px it is hidden.
+
