@@ -39,7 +39,8 @@ function htmlFiles(dir: string): string[] {
 }
 
 describe('built pages', () => {
-  // Byte for byte moyi-backend/site after #207 (3d9808bb), until that site is retired.
+  // Byte for byte moyi-backend/site after #207 (3d9808bb). That folder is retired, so these are now
+  // the source: change one only on purpose, keep the app's lists equal (docs/link-pages.md), re-pin.
   it("link.js is the backend's byte for byte", () => {
     const sum = createHash('sha256').update(readFileSync('dist/link.js')).digest('hex');
     expect(sum).toBe('1600fb9ffc92744acb737da80d8d580f2d1c67e48104fa8fd4b05ee306f6e5e5');
