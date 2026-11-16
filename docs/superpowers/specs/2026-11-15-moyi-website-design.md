@@ -95,7 +95,7 @@ Dark throughout. Section by section, in order:
    - one in the rain: "Miss a day. Nothing is lost.", with a week of dots where one day is hollow (shape, not colour, carries the meaning);
    - one bedside table: "Your words stay yours.", saying no ads, words never sold, not end to end encrypted, with a link to `/privacy`.
 6. **Questions.** "Before you download." Four questions that open and close (`<details>`, the first one open): time zones; what happens if one of us stops; can Mọyì read our entries; how to delete my account. **The answers are draft copy; Daniel must review them before launch**, the privacy one especially.
-7. **Close.** "I know your worth." with "Mo mọ ìyì rẹ." under it, the two store badges, and a footer: Privacy · Terms · Data processing · Support · Delete account · hello@getmoyi.app · © 2026 Mọyì.
+7. **Close.** "I know your worth." with "Mo mọ ìyì rẹ." under it, the two store badges, and then the footer: the mark and "Daily gratitude, for two."; three columns (Mọyì: How it works, Questions. Help: Support, Delete account, hello@getmoyi.app. Legal: Privacy, Terms, Data processing); a bar with "© 2026 Mọyì" and "No ads. Never sold."; and the wordmark set across the content width in a faint fading ink, cut by the page end (decorative, aria-hidden). There is no second "Get the app" link: the floating pill is the only one.
 
 **Before launch, one config flag** swaps both sets of store badges for the text "Coming soon to the App Store and Google Play." The flag can be per store, since the two stores may approve on different days.
 

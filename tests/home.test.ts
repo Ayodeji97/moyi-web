@@ -159,7 +159,7 @@ describe('home page, the rest', () => {
   });
 
   it('only links to allowed hrefs', () => {
-    const ok = ['/', '#how', '#get', '/privacy', '/terms', '/data-processing', '/support', '/delete-account', 'mailto:hello@getmoyi.app'];
+    const ok = ['/', '#how', '#get', '#questions', '/privacy', '/terms', '/data-processing', '/support', '/delete-account', 'mailto:hello@getmoyi.app'];
     for (const a of doc.querySelectorAll('a[href]')) {
       const h = a.getAttribute('href')!;
       expect(ok.includes(h) || h.startsWith('https://apps.apple.com/') || h.startsWith('https://play.google.com/'), h).toBe(true);

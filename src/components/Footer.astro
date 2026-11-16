@@ -1,12 +1,43 @@
 ---
+// The site's close: brand, three short link columns, a bottom bar, and the wordmark set very
+// large and fading out, cut off by the page's end. The wordmark is decoration (aria-hidden).
+// The mark's geometry matches TopBar.astro, Brand.astro and scripts/make-icons.sh.
 ---
 <footer class="foot">
-  <nav aria-label="Footer">
-    <a href="/privacy">Privacy</a>
-    <a href="/terms">Terms</a>
-    <a href="/data-processing">Data processing</a>
-    <a href="/support">Support</a>
-    <a href="/delete-account">Delete account</a>
-  </nav>
-  <span><a href="mailto:hello@getmoyi.app">hello@getmoyi.app</a> · © 2026 Mọyì</span>
+  <div class="foot__top">
+    <div class="foot__brand">
+      <a class="foot__logo" href="/">
+        <svg viewBox="0 0 40 52" width="18" height="23" aria-hidden="true" focusable="false">
+          <circle cx="20" cy="22" r="14.5" fill="none" stroke="currentColor" stroke-width="4.5"></circle>
+          <circle cx="20" cy="46" r="4" fill="currentColor"></circle>
+        </svg>
+        Mọyì
+      </a>
+      <p class="foot__tag">Daily gratitude, for two.</p>
+    </div>
+    <nav class="foot__cols" aria-label="Footer">
+      <div class="foot__col">
+        <p class="foot__h">Mọyì</p>
+        <a href="#how">How it works</a>
+        <a href="#questions">Questions</a>
+      </div>
+      <div class="foot__col">
+        <p class="foot__h">Help</p>
+        <a href="/support">Support</a>
+        <a href="/delete-account">Delete account</a>
+        <a href="mailto:hello@getmoyi.app">hello@getmoyi.app</a>
+      </div>
+      <div class="foot__col">
+        <p class="foot__h">Legal</p>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/data-processing">Data processing</a>
+      </div>
+    </nav>
+  </div>
+  <div class="foot__bar">
+    <span>© 2026 Mọyì</span>
+    <span>No ads. Never sold.</span>
+  </div>
+  <p class="foot__mark" aria-hidden="true">Mọyì</p>
 </footer>

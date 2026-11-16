@@ -27,10 +27,6 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
 .soon { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; color: var(--ink); }
 
 /* The rule spans the content column (.wrap: 1180px less 56px each side), not the padding. */
-.foot { margin: 90px auto 0; width: min(1068px, calc(100% - 112px)); padding: 24px 0 40px; border-top: 1px solid var(--outline); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; font-size: 13px; color: var(--ink-muted); }
-.foot nav { display: flex; gap: 18px; flex-wrap: wrap; }
-.foot a { display: inline-flex; align-items: center; min-height: 48px; color: var(--ink-muted); }
-.foot span { display: inline-flex; align-items: center; gap: 6px; }
 
 @media (max-width: 699px) {
   .wrap { padding-inline: 22px; }
@@ -38,6 +34,30 @@ h1, h2, h3 { font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 4
   .topbar nav { display: none; }
   :root { --get-top: max(20px, env(safe-area-inset-top)); --get-right: max(20px, env(safe-area-inset-right)); --get-w: 108px; }
   .topbar .get { padding: 0 14px; font-size: 13px; }
-  .foot { width: calc(100% - 44px); padding: 22px 0 40px; margin-top: 60px; }
-  .foot nav { row-gap: 0; }
 }
+
+/* Footer: brand and three link columns, a bottom bar, then the wordmark very large, fading
+   from a faint ink to nothing and cut off by the page's end. */
+.foot { position: relative; overflow: hidden; margin-top: 0; padding: 88px 0 0; border-top: 1px solid var(--outline); background: var(--surface); }
+.foot__top, .foot__bar, .foot__mark { width: min(1068px, calc(100% - 112px)); margin-inline: auto; }
+.foot__top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; }
+.foot__logo { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 500; font-size: 28px; color: var(--ink); text-decoration: none; }
+.foot__logo svg { width: 20px; height: auto; }
+.foot__tag { margin: 6px 0 0; color: var(--ink-muted); font-size: 15px; }
+.foot__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.foot__col { display: flex; flex-direction: column; align-items: flex-start; }
+.foot__h { margin: 0 0 6px; font-size: 13px; color: var(--ink-muted); }
+.foot__col a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; color: var(--ink); text-decoration: none; }
+.foot__col a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.foot__bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 72px; padding-top: 22px; border-top: 1px solid var(--outline); font-size: 13px; color: var(--ink-muted); }
+.foot__mark { margin-top: 40px; margin-bottom: -.12em; padding-top: .12em; font-family: "Newsreader", ui-serif, Georgia, serif; font-weight: 500; font-size: min(40vw, 500px); line-height: 1.05; letter-spacing: -.035em; text-align: center; white-space: nowrap; color: transparent; background: linear-gradient(180deg, rgba(248, 239, 233, .2) 0%, rgba(248, 239, 233, .08) 60%, rgba(248, 239, 233, .02) 100%); -webkit-background-clip: text; background-clip: text; user-select: none; pointer-events: none; }
+
+@media (max-width: 699px) {
+  .foot { padding-top: 60px; }
+  .foot__top, .foot__bar, .foot__mark { width: calc(100% - 44px); }
+  .foot__top { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 20px; }
+  .foot__bar { margin-top: 48px; }
+  .foot__mark { margin-top: 28px; }
+}
+
