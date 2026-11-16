@@ -12,7 +12,7 @@ lede: The agreement between you and Mọyì, in plain words.
 
 ## Who we are
 
-Mọyì is run by one person, Daniel Ogunleye, Rua de Pinto Bessa 471, Porto, Portugal. Contact: [hello@getmoyi.app](mailto:hello@getmoyi.app).
+Mọyì is run by one person, Daniel Ogunleye, Rua de Pinto Bessa 471, 2.4, 4300-433 Porto, Portugal. Contact: [hello@getmoyi.app](mailto:hello@getmoyi.app).
 
 ## Agreeing to these terms
 
