@@ -16,44 +16,46 @@ function load(page: string, url: string) {
   const doc = window.document;
   const text = (id: string) => doc.getElementById(id)!.textContent;
   const hidden = (id: string) => doc.getElementById(id)!.hidden;
-  return { text, hidden };
+  const href = (id: string) => doc.getElementById(id)!.getAttribute('href');
+  return { text, hidden, href };
 }
 
-describe('link.js on the built pages', () => {
-  it('verify shows the token and command', () => {
+describe('link.js on the built pages (backend #207)', () => {
+  it('verify opens the app on the open host and copies the whole link', () => {
     const p = load('verify', 'https://getmoyi.app/verify?token=abc_DEF-123');
-    expect(p.text('value')).toBe('abc_DEF-123');
-    expect(p.text('command')).toBe('scripts/moyi verify abc_DEF-123');
+    expect(p.href('open')).toBe('https://open.getmoyi.app/verify?token=abc_DEF-123');
+    expect(p.text('value')).toBe('https://getmoyi.app/verify?token=abc_DEF-123');
+    expect(p.hidden('found')).toBe(false);
     expect(p.hidden('missing')).toBe(true);
   });
 
-  it('reset shows its command', () => {
+  it('reset points at the reset path', () => {
     const p = load('reset-password', 'https://getmoyi.app/reset-password?token=X1');
-    expect(p.text('command')).toBe('scripts/moyi reset-password X1');
+    expect(p.href('open')).toBe('https://open.getmoyi.app/reset-password?token=X1');
+    expect(p.text('value')).toBe('https://getmoyi.app/reset-password?token=X1');
   });
 
-  it('invite upper-cases the code', () => {
+  it('invite upper-cases the code and copies the code alone', () => {
     const p = load('invite', 'https://getmoyi.app/i/k7qx2m');
     expect(p.text('value')).toBe('K7QX2M');
-    expect(p.text('command')).toBe('scripts/moyi bond join K7QX2M');
+    expect(p.href('open')).toBe('https://open.getmoyi.app/i/K7QX2M');
   });
 
-  it('shell metacharacters show the incomplete panel', () => {
+  it('an invite with a trailing slash is the same page', () => {
+    const p = load('invite', 'https://getmoyi.app/i/k7qx2m/');
+    expect(p.text('value')).toBe('K7QX2M');
+    expect(p.hidden('found')).toBe(false);
+  });
+
+  it('shell metacharacters show the incomplete panel, and no button', () => {
     const p = load('verify', 'https://getmoyi.app/verify?token=$(rm%20-rf)');
     expect(p.hidden('found')).toBe(true);
     expect(p.hidden('missing')).toBe(false);
-    expect(p.text('command')).toBe('');
+    expect(p.href('open')).toBe('/');
   });
 
   it('a broken escape shows the incomplete panel', () => {
     const p = load('invite', 'https://getmoyi.app/i/%E0%A4%A');
-    expect(p.hidden('missing')).toBe(false);
-    expect(p.hidden('found')).toBe(true);
-  });
-
-  // Under Pages /i/abc/ is a 404 (pinned in scripts/headers-table.mjs); this covers link.js's own guard.
-  it('a trailing slash shows the incomplete panel', () => {
-    const p = load('invite', 'https://getmoyi.app/i/abc/');
     expect(p.hidden('missing')).toBe(false);
     expect(p.hidden('found')).toBe(true);
   });
@@ -64,12 +66,40 @@ describe('link.js on the built pages', () => {
     expect(long.hidden('found')).toBe(true);
     const ok = load('verify', `https://getmoyi.app/verify?token=${'a'.repeat(128)}`);
     expect(ok.hidden('missing')).toBe(true);
-    expect(ok.text('value')).toBe('a'.repeat(128));
+    expect(ok.text('value')).toBe(`https://getmoyi.app/verify?token=${'a'.repeat(128)}`);
   });
 
   it('no token', () => {
     const p = load('verify', 'https://getmoyi.app/verify');
     expect(p.hidden('missing')).toBe(false);
     expect(p.hidden('found')).toBe(true);
+  });
+
+  it('without JavaScript nothing but the noscript line shows: both panels start hidden', () => {
+    for (const page of ['verify', 'reset-password', 'invite']) {
+      const html = readFileSync(`dist/${page}.html`, 'utf8');
+      expect(html, page).toMatch(/id="found"[^>]*hidden/);
+      expect(html, page).toMatch(/id="missing"[^>]*hidden/);
+      expect(html, page).not.toContain('scripts/moyi');
+    }
+  });
+});
+
+describe('the app-link files match the backend site after #207', () => {
+  const aasa = JSON.parse(readFileSync('dist/.well-known/apple-app-site-association', 'utf8'));
+  const links = JSON.parse(readFileSync('dist/.well-known/assetlinks.json', 'utf8'));
+
+  it('Apple: the three routed paths, and password autofill', () => {
+    const paths = aasa.applinks.details[0].components.map((c: { '/': string }) => c['/']);
+    expect(paths).toEqual(['/verify', '/reset-password', '/i/?*']);
+    expect(aasa.webcredentials.apps).toEqual(['7DUJFVWF7W.app.getmoyi.moyi']);
+  });
+
+  it('Android: app links and shared sign-in credentials', () => {
+    expect(links[0].relation).toEqual([
+      'delegate_permission/common.handle_all_urls',
+      'delegate_permission/common.get_login_creds',
+    ]);
+    expect(links[0].target.package_name).toBe('app.getmoyi.moyi');
   });
 });

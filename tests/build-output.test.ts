@@ -39,9 +39,10 @@ function htmlFiles(dir: string): string[] {
 }
 
 describe('built pages', () => {
+  // Byte for byte moyi-backend/site after #207 (3d9808bb), until that site is retired.
   it("link.js is the backend's byte for byte", () => {
     const sum = createHash('sha256').update(readFileSync('dist/link.js')).digest('hex');
-    expect(sum).toBe('edf3c34d646ba523b3a3169f6b8cbae5d73603aec69c0e50b219be4fe67dfc9d');
+    expect(sum).toBe('1600fb9ffc92744acb737da80d8d580f2d1c67e48104fa8fd4b05ee306f6e5e5');
   });
 
   it('no inline code anywhere', () => {
@@ -89,20 +90,20 @@ describe('built pages', () => {
     for (const [n, kind] of Object.entries(pages)) {
       const html = readFileSync(`dist/${n}.html`, 'utf8');
       expect(html, n).toContain(`data-link="${kind}"`);
-      expect(html, n).toContain('id="found"');
+      expect(html, n).toContain('id="found" hidden');
       expect(html, n).toContain('id="missing" hidden');
       expect(html, n).toContain('id="value"');
-      expect(html, n).toContain('id="command"');
-      expect(html.match(/data-copy=/g), n).toHaveLength(2);
+      expect(html, n).toContain('id="open"');
+      expect(html.match(/data-copy=/g), n).toHaveLength(1);
       expect(html, n).toContain('<script src="/link.js"></script>');
     }
   });
 
   it("well-known files are the backend's byte for byte", () => {
     const sha = (f: string) => createHash('sha256').update(readFileSync(f)).digest('hex');
-    expect(sha('dist/.well-known/assetlinks.json')).toBe('e84e7845c7d70232d1803ff854243a621b66c9fa36ab5fae285383b88cd437aa');
-    expect(sha('dist/.well-known/apple-app-site-association')).toBe('66ab7a51dc292075aab0e5067e6767fcc643477df65d450a5f8869aeb6191e68');
-    expect(sha('dist/_redirects')).toBe('cc3fb993ff7a6e195e1f6a40139801ceab4f979ee634ad2f81fe384cda8b6af7');
+    expect(sha('dist/.well-known/assetlinks.json')).toBe('da98b3635e010773ce2554c837191b4da86a34653de22536979ff7c3e559e966');
+    expect(sha('dist/.well-known/apple-app-site-association')).toBe('ccc9bf308e9735ae1da39559d30ff0b17be7bdb325aeae1a3d99897168a8c1ff');
+    expect(sha('dist/_redirects')).toBe('51794f671bda0d5b098d39d3a02d6bc0edb8211b42ca6eb134d94556a5b7f073');
   });
 });
 

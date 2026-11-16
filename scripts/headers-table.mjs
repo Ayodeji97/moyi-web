@@ -28,7 +28,8 @@ export const ROUTES = [
   { path: '/reset-password?token=a', csp: STRICT, noStore: true, status: 200 },
   { path: '/invite', csp: STRICT, noStore: true, status: 200 },
   { path: '/i/ABC123', csp: STRICT, noStore: true, status: 200 },
-  { path: '/i/abc/', csp: STRICT, noStore: true, status: 404 },
+  // A trailing slash is the same invite page (backend #207): _redirects rewrites /i/:code/ too.
+  { path: '/i/abc/', csp: STRICT, noStore: true, status: 200 },
   { path: '/no-such-page', csp: STRICT, noStore: false, status: 404 },
   { path: '/sitemap.xml', csp: STRICT, noStore: false, status: 200 },
   { path: '/robots.txt', csp: STRICT, noStore: false, status: 200 },

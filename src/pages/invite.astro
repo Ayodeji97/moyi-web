@@ -1,6 +1,7 @@
 ---
 import LinkPage from '../components/LinkPage.astro';
 ---
-<LinkPage kind="invite" heading="You have been invited to a Mọyì bond" note="The code works once. Opening this page did not use it.">
-  <Fragment slot="intro">Your partner sent you this invite code. Sign in first, then run the command below to join their bond.</Fragment>
+<LinkPage kind="invite" heading="You're invited to a bond on Mọyì" copyLabel="Copy code" where="message" last="/" note="The code works once. Opening this page hasn't used it.">
+  <Fragment slot="intro">Open this invite in the Mọyì app. You'll see who sent it before you join.</Fragment>
+  <Fragment slot="by-hand">Copy this code, then open Mọyì, sign in, and choose “I have an invite code”.</Fragment>
 </LinkPage>

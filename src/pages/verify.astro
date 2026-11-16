@@ -1,6 +1,7 @@
 ---
 import LinkPage from '../components/LinkPage.astro';
 ---
-<LinkPage kind="verify" heading="Confirm your email" note="Opening this page confirmed nothing yet: it only shows you the code.">
-  <Fragment slot="intro">Your confirmation code is below. Run the command in a terminal, from the <code class="inline">moyi-backend</code> folder, to confirm this address.</Fragment>
+<LinkPage kind="verify" heading="Confirm your email" copyLabel="Copy link" where="email" last="=" note="This link works once and expires in 24 hours. Opening this page hasn't confirmed anything yet.">
+  <Fragment slot="intro">Open this link in the Mọyì app to confirm your address.</Fragment>
+  <Fragment slot="by-hand">Copy this link, then open Mọyì and paste it where the app asks for the code from the email. The 6-digit code in the email works there too, for 15 minutes.</Fragment>
 </LinkPage>
